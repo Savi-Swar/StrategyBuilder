@@ -43,7 +43,7 @@ def test_build_brief_renders_without_llm_or_news():
         "shorts": ["BBB"],
     }
     md = build_brief(snap, xsec, headlines={}, commentary=None)
-    assert "Quark Daily Brief" in md
+    assert "Vig Daily Brief" in md
     assert "AAA" in md and "BBB" in md
     assert "Not investment advice" in md
-    assert "Analyst commentary" not in md  # section absent when no LLM
+    assert "commentary" not in md.lower()  # section absent when no LLM

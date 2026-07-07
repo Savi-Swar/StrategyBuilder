@@ -62,7 +62,53 @@ tr:last-child td { border-bottom: none; }
 .commentary p { margin-bottom: 12px; color: #c7d2dc; }
 .commentary strong { color: #e6edf3; }
 footer { margin-top: 44px; color: #58656f; font-size: 12px; max-width: 860px; }
+.health { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 14px; margin-bottom: 8px; }
+.htile { background: #10161d; border: 1px solid #1f2937; border-radius: 12px;
+         padding: 14px 18px; }
+.htile .hlabel { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+                 color: #8b949e; margin-bottom: 6px; }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+       margin-right: 7px; vertical-align: 1px; }
+.dot.green { background: #34d399; box-shadow: 0 0 8px rgba(52,211,153,.6); }
+.dot.yellow { background: #fbbf24; box-shadow: 0 0 8px rgba(251,191,36,.6); }
+.dot.red { background: #f87171; box-shadow: 0 0 8px rgba(248,113,113,.6); }
+.dot.warming { background: #60a5fa; box-shadow: 0 0 8px rgba(96,165,250,.6); }
+.hdetail { font-size: 12.5px; color: #9fb0c0; margin-top: 4px; }
+.edgemath { font-size: 12.5px; color: #7d8a97; margin: 10px 2px 0; max-width: 900px; }
 """
+
+
+def _health_panel(health: dict | None) -> str:
+    if not health:
+        return ""
+    model_dot = health.get("model_status", "warming")
+    ic_t = health.get("ic_t")
+    ic_line = ("—" if pd.isna(health.get("ic_mean", float("nan")))
+               else f'{health["ic_mean"]:+.3f} <span class="muted">'
+                    f'(t={ic_t:.1f}, {health["n_scored"]} wks scored)</span>')
+    spread = health.get("spread_bps")
+    spread_line = ("—" if spread is None or pd.isna(spread)
+                   else f"{spread:+.0f} bps / 5d")
+    data_dot = health.get("data_status", "yellow")
+    age = health.get("data_age_bdays", "?")
+    return f"""
+<h2>Model health — trust gate</h2>
+<div class="health">
+  <div class="htile"><div class="hlabel">Live edge (trailing {health.get("window", 26)}w IC)</div>
+    <div><span class="dot {model_dot}"></span><span class="num">{ic_line}</span></div>
+    <div class="hdetail">{html_mod.escape(str(health.get("model_detail", "")))}</div></div>
+  <div class="htile"><div class="hlabel">Realized decile spread</div>
+    <div><span class="dot {model_dot}"></span><span class="num">{spread_line}</span></div>
+    <div class="hdetail">top-vs-bottom decile, realized, gross</div></div>
+  <div class="htile"><div class="hlabel">Data freshness</div>
+    <div><span class="dot {data_dot}"></span><span class="num">{age} business day(s) old</span></div>
+    <div class="hdetail">walk-forward + live predictions, scored after each 5-day horizon completes</div></div>
+</div>
+<div class="edgemath">Edge math, honestly: at the backtested best case (monthly
+config, net Sharpe ≈ 0.26), the half-Kelly growth rate is ≈ Sharpe²/4 ≈
+<b>1.7%/yr</b> per unit of gross exposure. Vig's value is consistency and
+calibration — it compounds knowledge and discipline, not (yet) capital.</div>"""
 
 
 def _spark_svg(values: list[float], width: int = 264, height: int = 54) -> str:
@@ -172,16 +218,16 @@ def render_dashboard(result: dict) -> str:
     )
     commentary = ""
     if result["commentary"]:
-        commentary = (f'<h2>Analyst commentary — Claude</h2>'
+        commentary = (f'<h2>Vig&rsquo;s commentary</h2>'
                       f'<div class="commentary">{_commentary_html(result["commentary"])}</div>')
 
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta http-equiv="refresh" content="900">
-<title>Trader — Quark Daily</title>
+<title>Vig — Daily Desk</title>
 <style>{CSS}</style></head><body>
 <header>
-  <div class="wordmark">QUARK <span>TRADER</span></div>
+  <div class="wordmark">VIG <span>DAILY DESK</span></div>
   <div class="date">{result["generated_at"].replace("T", " · ")}</div>
 </header>
 <div class="chips">
@@ -191,6 +237,8 @@ def render_dashboard(result: dict) -> str:
   <span class="chip">backtested IC <b>0.017</b> (t=3.2, 756 wks)</span>
   <span class="chip">horizon <b>5 trading days</b></span>
 </div>
+
+{_health_panel(result.get("health"))}
 
 <h2>Top trades today</h2>
 <div class="cards">{trades_html}</div>

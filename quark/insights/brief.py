@@ -17,22 +17,29 @@ DISCLAIMER = (
     "limitations (see RESEARCH_NOTES.md). Not investment advice.*"
 )
 
-SYSTEM_PROMPT = """You are a senior quantitative PM writing the morning note \
-for an internal systematic trading research desk. You receive a JSON payload \
-of model outputs (multi-asset trend/vol snapshot, cross-sectional equity \
-rankings, recent headlines).
+SYSTEM_PROMPT = """You are Vig, the analyst for a systematic trading desk of \
+one. You are rigorous, direct, and allergic to hype: your job is to protect \
+the trader's capital and calibration, not to excite them. You receive a \
+research dossier (the desk's complete backtest evidence and live track \
+record) and a JSON payload of today's model outputs.
 
 Rules:
-- Ground every claim in the payload. Never invent numbers, tickers, events, \
-or causal stories that are not supported by the data or headlines provided.
-- If headlines are provided, you may connect them to the model's picks, but \
-label any such connection as interpretation, not model output.
-- Be candid about weakness: these models have modest, documented edges \
-(weekly IC ~0.017 on the equity cross-section; trend signals do not clear \
-costs decisively). Do not oversell.
-- 250-400 words, markdown, three sections: **Market state**, \
-**Model positioning**, **Watch-outs**.
-- This is research commentary, not investment advice; write accordingly."""
+- Ground every claim in the dossier or payload. Never invent numbers, \
+tickers, events, or causal stories not supported by the data provided.
+- Weigh today's signals against the LIVE track record in the dossier's IC \
+ledger and health status — if the trailing edge is weak or inverted, say so \
+prominently and advise sizing down or standing down.
+- Headlines may be connected to picks, but label such connections as \
+interpretation, not model output.
+- Quantify honestly: this desk's edge is a weekly IC around 0.017. That is \
+real but thin — consistency and cost control matter more than any single \
+pick. Never imply a pick is a sure thing; probabilities near 0.55 ARE the \
+honest size of this edge.
+- End with one line: "What would change my mind:" and the specific evidence \
+that would flip today's stance.
+- 250-450 words, markdown, sections: **Market state**, **Model positioning**, \
+**Watch-outs**, and the closing line.
+- Research commentary, not investment advice; write accordingly."""
 
 
 def _fmt_pct(x: float) -> str:
@@ -46,10 +53,10 @@ def build_brief(
     commentary: str | None = None,
 ) -> str:
     today = date.today().isoformat()
-    lines = [f"# Quark Daily Brief — {today}", ""]
+    lines = [f"# Vig Daily Brief — {today}", ""]
 
     if commentary:
-        lines += ["## Analyst commentary (Claude, grounded in the data below)",
+        lines += ["## Vig's commentary (grounded in the research dossier)",
                   "", commentary, ""]
 
     lines += [
@@ -123,9 +130,10 @@ def payload_for_llm(snapshot: pd.DataFrame, xsec: dict,
     return json.dumps(payload, sort_keys=True)
 
 
-def llm_commentary(payload_json: str) -> str | None:
-    """Analyst commentary via claude-opus-4-8. Returns None (with a notice)
-    when the SDK or credentials are unavailable — the brief works without it."""
+def llm_commentary(payload_json: str, dossier: str | None = None) -> str | None:
+    """Vig's commentary via claude-opus-4-8, grounded in the research
+    dossier. Returns None (with a notice) when the SDK or credentials are
+    unavailable — the brief works without it."""
     try:
         import anthropic
     except ImportError:
@@ -133,13 +141,17 @@ def llm_commentary(payload_json: str) -> str | None:
               "(pip install anthropic)")
         return None
 
+    system = [{"type": "text", "text": SYSTEM_PROMPT}]
+    if dossier:
+        system.append({"type": "text", "text": dossier})
+
     try:
         client = anthropic.Anthropic()
         response = client.messages.create(
             model="claude-opus-4-8",
             max_tokens=8000,
             thinking={"type": "adaptive"},
-            system=SYSTEM_PROMPT,
+            system=system,
             messages=[{
                 "role": "user",
                 "content": "Today's model payload:\n" + payload_json,

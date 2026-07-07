@@ -1,4 +1,4 @@
-"""Launched by Trader.app: open today's dashboard, regenerating it first if
+"""Launched by Vig.app: open today's dashboard, regenerating it first if
 stale. Kept dependency-light and fast on the happy path."""
 
 import json
@@ -15,7 +15,7 @@ META = ROOT / "reports" / "dashboard" / "meta.json"
 def notify(text: str) -> None:
     subprocess.run(
         ["osascript", "-e",
-         f'display notification "{text}" with title "Quark Trader"'],
+         f'display notification "{text}" with title "Vig"'],
         check=False,
     )
 
@@ -32,7 +32,7 @@ def is_fresh() -> bool:
 
 def main() -> None:
     if not is_fresh():
-        notify("Updating market data and retraining — dashboard opens when ready (~3 min)")
+        notify("Updating market data and retraining — the desk opens when ready (~3 min)")
         proc = subprocess.run(
             [sys.executable, str(ROOT / "scripts" / "update_dashboard.py")],
             cwd=ROOT, check=False,
@@ -40,7 +40,7 @@ def main() -> None:
         if proc.returncode != 0 and DASH.exists():
             notify("Update failed — showing the last good dashboard")
         elif proc.returncode == 0:
-            notify("Dashboard updated")
+            notify("Desk updated")
     if DASH.exists():
         subprocess.run(["open", str(DASH)], check=False)
     else:

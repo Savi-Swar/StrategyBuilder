@@ -1,13 +1,14 @@
-"""Install the Trader experience on this Mac:
+"""Install Vig on this Mac (and clean up the old Trader install):
 
-1. Trader.app (Spotlight-launchable) that opens/refreshes the dashboard.
-2. A launchd agent that refreshes data + regenerates the dashboard every
-   morning at 07:15 (missed runs fire on wake).
+1. Vig.app (Spotlight-launchable) that opens/refreshes the daily desk.
+2. A launchd agent regenerating everything at 07:15 daily (fires on wake
+   if the laptop was asleep).
 
-Idempotent — re-run any time. Uninstall notes are printed at the end.
+Idempotent — re-run any time (e.g. if the repo moves or python changes).
 """
 
 import plistlib
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -15,22 +16,38 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 PYTHON = sys.executable
-LABEL = "com.quark.trader.daily"
+LABEL = "com.quark.vig.daily"
 AGENT = Path.home() / "Library" / "LaunchAgents" / f"{LABEL}.plist"
 LOG_DIR = ROOT / "reports" / "logs"
+
+OLD_LABEL = "com.quark.trader.daily"
+OLD_AGENT = Path.home() / "Library" / "LaunchAgents" / f"{OLD_LABEL}.plist"
+OLD_APPS = [Path("/Applications/Trader.app"),
+            Path.home() / "Applications" / "Trader.app"]
+
+
+def remove_old_install() -> None:
+    if OLD_AGENT.exists():
+        subprocess.run(["launchctl", "unload", "-w", str(OLD_AGENT)],
+                       check=False, capture_output=True)
+        OLD_AGENT.unlink()
+        print(f"Removed old agent {OLD_LABEL}")
+    for app in OLD_APPS:
+        if app.exists():
+            shutil.rmtree(app)
+            print(f"Removed {app}")
 
 
 def build_app() -> Path:
     script = (
         f'do shell script "{PYTHON} '
-        f'{ROOT / "scripts" / "trader_open.py"} '
-        f'>> {LOG_DIR / "trader_app.log"} 2>&1"'
+        f'{ROOT / "scripts" / "vig_open.py"} '
+        f'>> {LOG_DIR / "vig_app.log"} 2>&1"'
     )
-    candidates = [Path("/Applications"), Path.home() / "Applications"]
-    for base in candidates:
+    for base in (Path("/Applications"), Path.home() / "Applications"):
         try:
             base.mkdir(exist_ok=True)
-            app = base / "Trader.app"
+            app = base / "Vig.app"
             with tempfile.NamedTemporaryFile("w", suffix=".applescript",
                                              delete=False) as f:
                 f.write(script)
@@ -39,7 +56,7 @@ def build_app() -> Path:
             return app
         except (PermissionError, subprocess.CalledProcessError):
             continue
-    raise RuntimeError("could not write Trader.app to /Applications or ~/Applications")
+    raise RuntimeError("could not write Vig.app to /Applications or ~/Applications")
 
 
 def install_agent() -> None:
@@ -61,8 +78,9 @@ def install_agent() -> None:
 
 
 def main() -> None:
+    remove_old_install()
     app = build_app()
-    print(f"Installed {app} — launch with Cmd+Space, type 'Trader'")
+    print(f"Installed {app} — launch with Cmd+Space, type 'Vig'")
     install_agent()
     print(f"Scheduled daily refresh 07:15 via {AGENT}")
     print("\nUninstall:")

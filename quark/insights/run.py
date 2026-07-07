@@ -9,6 +9,8 @@ from quark.data.loader import load_prices
 from quark.data.quality import clean_panel, quality_report
 from quark.data.refresh import fetch_sp500_universe, load_sp500_tickers, refresh_tickers
 from quark.insights.brief import build_brief, llm_commentary, payload_for_llm
+from quark.insights.knowledge import build_dossier
+from quark.insights.ledger import health_summary, record_predictions, update_realized
 from quark.insights.news import get_headlines
 from quark.insights.signals import multi_asset_snapshot, xsec_latest_predictions
 from quark.insights.trades import top_trades
@@ -40,6 +42,12 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
                              field="volume").reindex(eq_prices.index)
     xsec = xsec_latest_predictions(eq_prices, eq_volumes)
 
+    print("Updating the prediction ledger and model health...")
+    record_predictions(xsec["as_of"], xsec["table"]["prob_outperform"], source="live")
+    ic_history = update_realized(eq_prices)
+    health = health_summary(ic_history, data_through=eq_prices.index[-1])
+    print(f"  model: {health['model_status']} — {health['model_detail']}")
+
     headlines: dict = {}
     if news:
         picks = xsec["longs"][:6] + xsec["shorts"][:6]
@@ -56,8 +64,11 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
 
     commentary = None
     if llm:
-        print("Requesting analyst commentary from Claude...")
-        commentary = llm_commentary(payload_for_llm(snapshot, xsec, headlines))
+        print("Requesting Vig's commentary...")
+        commentary = llm_commentary(
+            payload_for_llm(snapshot, xsec, headlines),
+            dossier=build_dossier(health),
+        )
 
     return {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
@@ -67,6 +78,7 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
         "headlines": headlines,
         "trades": trades,
         "sparks": sparks,
+        "health": health,
         "commentary": commentary,
     }
 
