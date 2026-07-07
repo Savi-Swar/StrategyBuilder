@@ -30,6 +30,16 @@ header { display: flex; align-items: flex-end; justify-content: space-between;
 }
 .btn:hover { background: #ffb000; color: #060708; }
 
+/* ── tabs ─────────────────────────────────────────────── */
+.tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c; }
+.tab { flex: 1; text-align: center; padding: 13px 10px; font-size: 12px;
+  letter-spacing: 3px; color: #8a9199; text-decoration: none;
+  border-right: 1px solid #22262c; }
+.tab:last-child { border-right: none; }
+.tab:hover { color: #ffb000; background: rgba(255,176,0,.05); }
+.tab.active { background: #ffb000; color: #060708; font-weight: 700; }
+.tab .k { color: inherit; opacity: .55; margin-right: 8px; }
+
 /* ── tape ─────────────────────────────────────────────── */
 .tape { border-top: 1px dashed #2a2e35; border-bottom: 1px dashed #2a2e35;
         overflow: hidden; white-space: nowrap; padding: 7px 0; margin: 8px 0 26px; }
@@ -129,8 +139,9 @@ footer { margin: 48px 44px 0; color: #565d64; font-size: 11px; max-width: 880px;
     <div class="wordmark">VIG</div>
     <div class="tagline">the house takes its cut — <b>systematic daily desk</b></div>
   </div>
-  <div class="stamp-date">2026-07-07 · 19:23:55<br><a class="btn" href="index.html">◈ desk</a> <a class="btn" href="past_trades.html">◈ past trades</a> <a class="btn" href="portfolio.html">◈ portfolio</a></div>
+  <div class="stamp-date">2026-07-07 · 19:27:18</div>
 </header>
+<nav class="tabs"><a class="tab" href="index.html"><span class="k">01</span>DESK</a><a class="tab active" href="analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab" href="past_trades.html"><span class="k">03</span>PAST TRADES</a><a class="tab" href="portfolio.html"><span class="k">04</span>PORTFOLIO</a></nav>
 
 <div class="wrap">
 <style>
@@ -249,14 +260,14 @@ document.querySelectorAll(".bm-btn").forEach(b =>
 <div class="art" data-search="^GSPC tech caution again undercuts wall street pre-bell; asia, europe off"
      data-class="macro" data-side="LONG"
      >
-  <div class="meta"><span>MT Newswires</span><span>15m ago</span></div>
+  <div class="meta"><span>MT Newswires</span><span>18m ago</span></div>
   <a class="t" href="https://finance.yahoo.com/markets/stocks/articles/tech-caution-again-undercuts-wall-110820368.html" target="_blank">Tech Caution Again Undercuts Wall Street Pre-Bell; Asia, Europe Off</a>
   <div class="foot"><span class="tickchip">^GSPC</span><span class="stance l">LONG 0.78x</span></div>
 </div>
 <div class="art" data-search="^GSPC voo vs. qqq: which index fund is the better buy for long-term investors?"
      data-class="macro" data-side="LONG"
      >
-  <div class="meta"><span>Motley Fool</span><span>20m ago</span></div>
+  <div class="meta"><span>Motley Fool</span><span>24m ago</span></div>
   <a class="t" href="https://www.fool.com/coverage/etfs/2026/07/07/voo-vs-qqq-which-index-fund-is-the-better-buy-for-long-term-investors/" target="_blank">VOO vs. QQQ: Which Index Fund Is the Better Buy for Long-Term Investors?</a>
   <div class="foot"><span class="tickchip">^GSPC</span><span class="stance l">LONG 0.78x</span></div>
 </div>
@@ -274,11 +285,11 @@ document.querySelectorAll(".bm-btn").forEach(b =>
   <a class="t" href="https://finance.yahoo.com/markets/article/president-rings-opening-bell-from-oval-office-in-event-promoting-newly-launched-trump-accounts-134810560.html" target="_blank">President rings opening bell from Oval Office in event promoting newly launched Trump Accounts</a>
   <div class="foot"><span class="tickchip">^IXIC</span><span class="stance l">LONG 0.5x</span></div>
 </div>
-<div class="art" data-search="^IXIC what to know as spacex joins the nasdaq-100"
+<div class="art" data-search="^IXIC nasdaq futures fall after record samsung profit fails to calm ai chip worries"
      data-class="macro" data-side="LONG"
      >
-  <div class="meta"><span>The Wall Street Journal</span><span>1h ago</span></div>
-  <a class="t" href="https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-07-07-2026/card/what-to-know-as-spacex-joins-the-nasdaq-100-4OyXMZvS1wVIQTZg1rlf?siteid=yhoof2&amp;yptr=yahoo" target="_blank">What to Know as SpaceX Joins the Nasdaq-100</a>
+  <div class="meta"><span>Reuters</span><span>7m ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/stocks/articles/nasdaq-futures-fall-samsungs-record-092753715.html" target="_blank">Nasdaq futures fall after record Samsung profit fails to calm AI chip worries</a>
   <div class="foot"><span class="tickchip">^IXIC</span><span class="stance l">LONG 0.5x</span></div>
 </div>
 <div class="art" data-search="GC=F gold prices today, monday, july 6: higher prices following thursday&#x27;s jobs report"
@@ -291,14 +302,14 @@ document.querySelectorAll(".bm-btn").forEach(b =>
 <div class="art" data-search="GC=F dryden gold to acquire lost lake claims from orebot"
      data-class="macro" data-side="LONG"
      >
-  <div class="meta"><span>Mining Technology</span><span>31m ago</span></div>
+  <div class="meta"><span>Mining Technology</span><span>34m ago</span></div>
   <a class="t" href="https://www.mining-technology.com/news/dryden-gold-to-acquire-lost-lake-orebot/" target="_blank">Dryden Gold to acquire Lost Lake claims from Orebot</a>
   <div class="foot"><span class="tickchip">GC=F</span><span class="stance l">LONG 0.44x</span></div>
 </div>
 <div class="art" data-search="GC=F basic materials roundup: market talk"
      data-class="macro" data-side="LONG"
      >
-  <div class="meta"><span>The Wall Street Journal</span><span>54m ago</span></div>
+  <div class="meta"><span>The Wall Street Journal</span><span>58m ago</span></div>
   <a class="t" href="https://www.wsj.com/business/basic-materials-roundup-market-talk-e0cfe53e?siteid=yhoof2&amp;yptr=yahoo" target="_blank">Basic Materials Roundup: Market Talk</a>
   <div class="foot"><span class="tickchip">GC=F</span><span class="stance l">LONG 0.44x</span></div>
 </div>
@@ -326,14 +337,14 @@ document.querySelectorAll(".bm-btn").forEach(b =>
 <div class="art" data-search="CL=F u.s. treasury yields up amid mideast tension"
      data-class="macro" data-side="LONG"
      >
-  <div class="meta"><span>The Wall Street Journal</span><span>31m ago</span></div>
+  <div class="meta"><span>The Wall Street Journal</span><span>35m ago</span></div>
   <a class="t" href="https://www.wsj.com/finance/jgbs-mixed-ahead-of-30-year-auction-2661524b?siteid=yhoof2&amp;yptr=yahoo" target="_blank">U.S. Treasury Yields Up Amid Mideast Tension</a>
   <div class="foot"><span class="tickchip">CL=F</span><span class="stance l">LONG 0.17x</span></div>
 </div>
 <div class="art" data-search="CL=F bitcoin rally stalls near $64k – strategy&#x27;s biggest btc sale fails to shake bulls"
      data-class="macro" data-side="LONG"
      >
-  <div class="meta"><span>Stocktwits</span><span>43m ago</span></div>
+  <div class="meta"><span>Stocktwits</span><span>46m ago</span></div>
   <a class="t" href="https://stocktwits.com/news-articles/markets/cryptocurrency/bitcoin-rally-stalls-near-64-k-mstr-biggest-btc-sale-fails-to-shake-bulls/cZmli9dR7m8" target="_blank">Bitcoin Rally Stalls Near $64K – Strategy&#x27;s Biggest BTC Sale Fails To Shake Bulls</a>
   <div class="foot"><span class="tickchip">CL=F</span><span class="stance l">LONG 0.17x</span></div>
 </div>

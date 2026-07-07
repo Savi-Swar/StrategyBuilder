@@ -101,7 +101,4 @@ def render_review_page(review: dict, generated_at: str,
 {filter_bar(classes=None, show_prob=True, show_side=True)}
 {_log_table(trades)}"""
 
-    return page_shell("Vig — Past Trades", generated_at,
-                      '<a class="btn" href="index.html">◈ desk</a> '
-                      '<a class="btn" href="analysis.html">◈ analysis</a> '
-                      '<a class="btn" href="portfolio.html">◈ portfolio</a>', body)
+    return page_shell("Vig — Past Trades", generated_at, "past_trades", body)

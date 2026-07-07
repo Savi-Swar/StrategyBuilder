@@ -202,9 +202,4 @@ document.querySelectorAll(".bm-btn").forEach(b =>
 {_heat_table(wire["heat"])}
 {read_html}"""
 
-    return page_shell(
-        "Vig — Analysis", generated_at,
-        '<a class="btn" href="index.html">◈ desk</a> '
-        '<a class="btn" href="past_trades.html">◈ past trades</a> '
-        '<a class="btn" href="portfolio.html">◈ portfolio</a>',
-        body)
+    return page_shell("Vig — Analysis", generated_at, "analysis", body)

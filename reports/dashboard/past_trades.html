@@ -30,6 +30,16 @@ header { display: flex; align-items: flex-end; justify-content: space-between;
 }
 .btn:hover { background: #ffb000; color: #060708; }
 
+/* ── tabs ─────────────────────────────────────────────── */
+.tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c; }
+.tab { flex: 1; text-align: center; padding: 13px 10px; font-size: 12px;
+  letter-spacing: 3px; color: #8a9199; text-decoration: none;
+  border-right: 1px solid #22262c; }
+.tab:last-child { border-right: none; }
+.tab:hover { color: #ffb000; background: rgba(255,176,0,.05); }
+.tab.active { background: #ffb000; color: #060708; font-weight: 700; }
+.tab .k { color: inherit; opacity: .55; margin-right: 8px; }
+
 /* ── tape ─────────────────────────────────────────────── */
 .tape { border-top: 1px dashed #2a2e35; border-bottom: 1px dashed #2a2e35;
         overflow: hidden; white-space: nowrap; padding: 7px 0; margin: 8px 0 26px; }
@@ -129,8 +139,9 @@ footer { margin: 48px 44px 0; color: #565d64; font-size: 11px; max-width: 880px;
     <div class="wordmark">VIG</div>
     <div class="tagline">the house takes its cut — <b>systematic daily desk</b></div>
   </div>
-  <div class="stamp-date">2026-07-07 · 19:23:55<br><a class="btn" href="index.html">◈ desk</a> <a class="btn" href="analysis.html">◈ analysis</a> <a class="btn" href="portfolio.html">◈ portfolio</a></div>
+  <div class="stamp-date">2026-07-07 · 19:27:18</div>
 </header>
+<nav class="tabs"><a class="tab" href="index.html"><span class="k">01</span>DESK</a><a class="tab" href="analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab active" href="past_trades.html"><span class="k">03</span>PAST TRADES</a><a class="tab" href="portfolio.html"><span class="k">04</span>PORTFOLIO</a></nav>
 
 <div class="wrap">
 <h2>The record <span class="dim">/ weekly top-3, graded after each 5-day horizon</span></h2>

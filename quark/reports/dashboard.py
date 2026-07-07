@@ -34,6 +34,16 @@ header { display: flex; align-items: flex-end; justify-content: space-between;
 }
 .btn:hover { background: #ffb000; color: #060708; }
 
+/* ── tabs ─────────────────────────────────────────────── */
+.tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c; }
+.tab { flex: 1; text-align: center; padding: 13px 10px; font-size: 12px;
+  letter-spacing: 3px; color: #8a9199; text-decoration: none;
+  border-right: 1px solid #22262c; }
+.tab:last-child { border-right: none; }
+.tab:hover { color: #ffb000; background: rgba(255,176,0,.05); }
+.tab.active { background: #ffb000; color: #060708; font-weight: 700; }
+.tab .k { color: inherit; opacity: .55; margin-right: 8px; }
+
 /* ── tape ─────────────────────────────────────────────── */
 .tape { border-top: 1px dashed #2a2e35; border-bottom: 1px dashed #2a2e35;
         overflow: hidden; white-space: nowrap; padding: 7px 0; margin: 8px 0 26px; }
@@ -149,8 +159,21 @@ def _spark_svg(values: list[float], width: int = 270, height: int = 52,
             f'stroke-width="1.6" stroke-linejoin="round"/></svg>')
 
 
-def page_shell(title: str, generated_at: str, nav_html: str, body: str,
+PAGES = [
+    ("desk", "index.html", "01", "DESK"),
+    ("analysis", "analysis.html", "02", "ANALYSIS"),
+    ("past_trades", "past_trades.html", "03", "PAST TRADES"),
+    ("portfolio", "portfolio.html", "04", "PORTFOLIO"),
+]
+
+
+def page_shell(title: str, generated_at: str, active: str, body: str,
                tape_html: str = "") -> str:
+    tabs = "".join(
+        f'<a class="tab{" active" if key == active else ""}" href="{href}">'
+        f'<span class="k">{num}</span>{label}</a>'
+        for key, href, num, label in PAGES
+    )
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta http-equiv="refresh" content="900">
@@ -160,8 +183,9 @@ def page_shell(title: str, generated_at: str, nav_html: str, body: str,
     <div class="wordmark">VIG</div>
     <div class="tagline">the house takes its cut — <b>systematic daily desk</b></div>
   </div>
-  <div class="stamp-date">{generated_at.replace("T", " · ")}<br>{nav_html}</div>
+  <div class="stamp-date">{generated_at.replace("T", " · ")}</div>
 </header>
+<nav class="tabs">{tabs}</nav>
 {tape_html}
 <div class="wrap">{body}</div>
 <footer>Research tooling output — signals from backtested models with modest,
@@ -437,9 +461,6 @@ as-of rebalance <b>{result["xsec"]["as_of"].date()}</b> · horizon <b>5 trading 
 </div>"""
 
     return page_shell(
-        "Vig — Daily Desk", result["generated_at"],
-        '<a class="btn" href="analysis.html">◈ analysis</a> '
-        '<a class="btn" href="portfolio.html">◈ portfolio</a> '
-        '<a class="btn" href="past_trades.html">◈ past trades</a>',
+        "Vig — Daily Desk", result["generated_at"], "desk",
         body, tape_html=_tape(result["snapshot"]),
     )
