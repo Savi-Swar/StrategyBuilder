@@ -11,6 +11,7 @@ from quark.data.refresh import fetch_sp500_universe, load_sp500_tickers, refresh
 from quark.insights.brief import build_brief, llm_commentary, payload_for_llm
 from quark.insights.knowledge import build_dossier
 from quark.insights.ledger import health_summary, record_predictions, update_realized
+from quark.insights.review import build_review, llm_self_review
 from quark.insights.news import get_headlines
 from quark.insights.signals import multi_asset_snapshot, xsec_latest_predictions
 from quark.insights.trades import top_trades
@@ -48,6 +49,9 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
     health = health_summary(ic_history, data_through=eq_prices.index[-1])
     print(f"  model: {health['model_status']} — {health['model_detail']}")
 
+    print("Grading the past year of top-3 calls...")
+    review = build_review(eq_prices, weeks=52)
+
     headlines: dict = {}
     if news:
         picks = xsec["longs"][:6] + xsec["shorts"][:6]
@@ -63,12 +67,15 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
     }
 
     commentary = None
+    self_review = None
     if llm:
         print("Requesting Vig's commentary...")
         commentary = llm_commentary(
             payload_for_llm(snapshot, xsec, headlines),
             dossier=build_dossier(health),
         )
+        if review["summary"]:
+            self_review = llm_self_review(review["summary"], review["lessons"])
 
     return {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
@@ -79,6 +86,8 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
         "trades": trades,
         "sparks": sparks,
         "health": health,
+        "review": review,
+        "self_review": self_review,
         "commentary": commentary,
     }
 
@@ -103,6 +112,12 @@ def write_outputs(result: dict) -> dict:
     html = render_dashboard(result)
     dash_path = dash_dir / "index.html"
     dash_path.write_text(html)
+
+    from quark.reports.review_page import render_review_page
+    (dash_dir / "past_trades.html").write_text(
+        render_review_page(result["review"], result["generated_at"],
+                           result.get("self_review")))
+
     (dash_dir / "meta.json").write_text(json.dumps(
         {"generated_at": result["generated_at"],
          "data_through": result["data_through"]}))

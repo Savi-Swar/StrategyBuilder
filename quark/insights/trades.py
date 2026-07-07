@@ -42,12 +42,13 @@ def top_trades(
     headlines = headlines or {}
     table, feats = xsec["table"], xsec["features"]
 
-    candidates = [(t, "LONG") for t in xsec["longs"]] + [
-        (t, "SHORT") for t in xsec["shorts"]
-    ]
-    candidates.sort(
-        key=lambda c: abs(table.at[c[0], "prob_outperform"] - 0.5), reverse=True
-    )
+    # Fixed 2 longs + 1 short. The floating by-|p-0.5| rule was retired
+    # 2026-07-07 after the past-trades review showed it overweighting the
+    # short tail (-32 bps/call over 156 walk-forward weeks vs +28 for this
+    # composition; paired t=+2.06) — consistent with the backtest's
+    # long-side-driven edge. See RESEARCH_NOTES.
+    candidates = ([(t, "LONG") for t in xsec["longs"][:2]] +
+                  [(t, "SHORT") for t in xsec["shorts"][-1:]])
 
     trades = []
     for ticker, side in candidates[:n]:

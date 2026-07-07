@@ -73,6 +73,31 @@ that could have been a degree of freedom is written down.
   middle. Consistent with the post-2010 literature — shorting large caps on
   price signals doesn't pay.
 
+## Vig top-3 selection review (2026-07-07)
+
+The past-trades review surfaced that the top-3-by-|p−0.5| picks lost −117
+bps/call (hit 37%) over the trailing 52 weeks, while the full decile book
+stayed positive. Investigated on the full 156-week walk-forward record with
+**four pre-declared selection rules, all reported, trial-counted**:
+
+| Rule | avg bps/call | hit | t |
+|---|---|---|---|
+| Production: floating top-3 by \|p−0.5\| | −32.4 | 44.9% | −1.2 |
+| A: fixed 2L+1S by prob | +27.8 | 51.5% | +0.99 |
+| B: top-3 longs by prob | +9.1 | 48.7% | +0.34 |
+| C: longs ranked 5–7 (off the tail) | +32.0 | 52.4% | +1.18 |
+| D: random-3 in 90–97th pct band | +17.0 | 52.6% | +0.82 |
+
+Five variants examined, all reported. The production rule was the outlier:
+by ranking on |p−0.5| it let the short tail dominate selection (83 shorts vs
+70 longs in the trailing year) — precisely the side the original backtest
+showed carries no alpha. **Adopted: fixed 2 longs + 1 short.** Justification
+is twofold and ordered: (1) the pre-registered long-side-driven finding from
+Study 2, (2) a PAIRED comparison on the same 156 weeks: +60.2 bps/week
+improvement, t=+2.06. Rules B–D are not separable from A and were not
+adopted. The review page contextualizes any display window against the full
+record automatically, so a single bad year can't drive rule churn again.
+
 ## Future work (ordered by expected value)
 
 1. Point-in-time S&P universe from Wikipedia change history (kills the main
