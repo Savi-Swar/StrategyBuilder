@@ -100,6 +100,7 @@ def xsec_latest_predictions(
         "n_trained": len(train),
         "n_universe": n,
         "table": table,
+        "features": today[x_cols],  # per-name cross-sectional feature ranks
         "longs": list(table.index[:k]),
         "shorts": list(table.index[-k:]),
     }

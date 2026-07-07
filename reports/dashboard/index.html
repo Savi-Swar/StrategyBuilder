@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta http-equiv="refresh" content="900">
+<title>Trader — Quark Daily</title>
+<style>
+:root { color-scheme: dark; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0b0f14; color: #e6edf3;
+  font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  padding: 32px 40px 60px;
+}
+.num, .mono { font-family: "SF Mono", ui-monospace, Menlo, monospace; }
+header { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 6px; }
+.wordmark { font-size: 26px; font-weight: 800; letter-spacing: 3px; }
+.wordmark span { color: #60a5fa; }
+.date { color: #8b949e; font-size: 15px; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 30px; }
+.chip {
+  background: #131a22; border: 1px solid #1f2937; border-radius: 999px;
+  padding: 4px 14px; font-size: 12.5px; color: #9fb0c0;
+}
+.chip b { color: #e6edf3; font-weight: 600; }
+h2 { font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase;
+     color: #8b949e; margin: 34px 0 14px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
+.card {
+  background: linear-gradient(180deg, #141c26 0%, #10161d 100%);
+  border: 1px solid #1f2937; border-radius: 16px; padding: 22px;
+}
+.cardtop { display: flex; justify-content: space-between; align-items: center; }
+.tick { font-size: 30px; font-weight: 800; letter-spacing: 1px; }
+.badge { border-radius: 8px; padding: 3px 12px; font-weight: 700; font-size: 13px; }
+.long  { background: rgba(52,211,153,.14); color: #34d399; border: 1px solid rgba(52,211,153,.35); }
+.short { background: rgba(248,113,113,.14); color: #f87171; border: 1px solid rgba(248,113,113,.35); }
+.spark { margin: 14px 0 10px; }
+.probrow { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.probbar { flex: 1; height: 6px; background: #1f2937; border-radius: 3px; overflow: hidden; }
+.probfill { height: 100%; border-radius: 3px; }
+.probtxt { font-size: 13px; color: #9fb0c0; white-space: nowrap; }
+ul.why { list-style: none; margin-bottom: 12px; }
+ul.why li { padding-left: 18px; position: relative; margin-bottom: 6px;
+            color: #c7d2dc; font-size: 13.5px; }
+ul.why li::before { content: "▸"; position: absolute; left: 0; color: #60a5fa; }
+.news a { color: #93c5fd; text-decoration: none; font-size: 13px; }
+.news a:hover { text-decoration: underline; }
+.sizing { margin-top: 12px; font-size: 12px; color: #7d8a97; border-top: 1px solid #1f2937; padding-top: 10px; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 980px) { .cols { grid-template-columns: 1fr; } }
+table { width: 100%; border-collapse: collapse; background: #10161d;
+        border: 1px solid #1f2937; border-radius: 12px; overflow: hidden; }
+th { text-align: left; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+     color: #8b949e; padding: 10px 14px; border-bottom: 1px solid #1f2937; }
+td { padding: 8px 14px; font-size: 13.5px; border-bottom: 1px solid #161d27; }
+tr:last-child td { border-bottom: none; }
+.pos { color: #34d399; } .neg { color: #f87171; } .muted { color: #7d8a97; }
+.commentary { background: #10161d; border: 1px solid #1f2937; border-radius: 16px;
+              padding: 24px 28px; max-width: 860px; }
+.commentary p { margin-bottom: 12px; color: #c7d2dc; }
+.commentary strong { color: #e6edf3; }
+footer { margin-top: 44px; color: #58656f; font-size: 12px; max-width: 860px; }
+</style></head><body>
+<header>
+  <div class="wordmark">QUARK <span>TRADER</span></div>
+  <div class="date">2026-07-07 · 17:58:15</div>
+</header>
+<div class="chips">
+  <span class="chip">data through <b>2026-07-06</b></span>
+  <span class="chip">universe <b>500</b> names</span>
+  <span class="chip">as-of rebalance <b>2026-07-06</b></span>
+  <span class="chip">backtested IC <b>0.017</b> (t=3.2, 756 wks)</span>
+  <span class="chip">horizon <b>5 trading days</b></span>
+</div>
+
+<h2>Top trades today</h2>
+<div class="cards">
+<div class="card">
+  <div class="cardtop">
+    <span class="tick">AES</span>
+    <span class="badge long">LONG</span>
+  </div>
+  <svg class="spark" width="264" height="54" viewBox="0 0 264 54"><polyline points="0.0,16.8 3.0,18.5 5.9,4.0 8.9,47.0 11.9,47.4 14.8,45.9 17.8,46.9 20.8,47.9 23.7,47.3 26.7,47.0 29.7,46.7 32.6,46.9 35.6,47.3 38.6,47.2 41.5,47.2 44.5,47.4 47.5,47.9 50.4,48.6 53.4,48.9 56.4,48.2 59.3,49.1 62.3,49.9 65.3,50.0 68.2,49.7 71.2,48.7 74.2,47.2 77.1,45.7 80.1,45.3 83.1,44.0 86.0,44.5 89.0,44.3 92.0,44.6 94.9,44.5 97.9,44.5 100.9,43.8 103.8,43.0 106.8,43.5 109.8,43.3 112.7,43.9 115.7,43.8 118.7,43.0 121.6,43.2 124.6,43.2 127.6,43.3 130.5,43.8 133.5,43.8 136.4,43.6 139.4,43.6 142.4,42.3 145.3,42.8 148.3,43.5 151.3,42.9 154.2,42.6 157.2,41.6 160.2,41.5 163.1,41.1 166.1,40.9 169.1,40.1 172.0,39.5 175.0,37.2 178.0,37.8 180.9,37.9 183.9,38.1 186.9,37.9 189.8,37.8 192.8,38.1 195.8,37.6 198.7,37.9 201.7,37.5 204.7,37.2 207.6,38.1 210.6,37.5 213.6,38.2 216.5,38.6 219.5,38.1 222.5,37.9 225.4,37.9 228.4,38.5 231.4,38.9 234.3,38.8 237.3,38.4 240.3,37.6 243.2,37.9 246.2,38.2 249.2,38.1 252.1,38.6 255.1,38.2 258.1,38.5 261.0,39.4 264.0,39.5" fill="none" stroke="#f87171" stroke-width="1.8" stroke-linejoin="round"/></svg>
+  <div class="probrow">
+    <div class="probbar"><div class="probfill" style="width:59%;background:#34d399"></div></div>
+    <span class="probtxt num">P(outperform) 0.589 · edge +8.9pp <span class="num neg">-9.9% / 90d</span></span>
+  </div>
+  <ul class="why"><li>medium-term vol regime in the 0th percentile of the S&amp;P 500</li><li>12-month momentum in the 100th percentile of the S&amp;P 500</li><li>1-week momentum in the 4th percentile of the S&amp;P 500</li></ul>
+  <div class="news">📰 <a href="https://finance.yahoo.com/energy/articles/ai-driven-electricity-demand-fuel-164200415.html" target="_blank">Can AI-Driven Electricity Demand Fuel CEG&#x27;s Long-Term Growth?</a> <span class="muted">— Zacks</span></div>
+  <div class="sizing">equal-weight within the decile of a dollar-neutral book (backtested convention); horizon 5 trading days</div>
+</div>
+<div class="card">
+  <div class="cardtop">
+    <span class="tick">WDAY</span>
+    <span class="badge short">SHORT</span>
+  </div>
+  <svg class="spark" width="264" height="54" viewBox="0 0 264 54"><polyline points="0.0,28.8 3.0,22.6 5.9,28.1 8.9,27.9 11.9,18.0 14.8,18.6 17.8,14.3 20.8,10.4 23.7,13.3 26.7,19.2 29.7,23.9 32.6,27.7 35.6,28.8 38.6,28.3 41.5,26.7 44.5,29.6 47.5,28.5 50.4,25.9 53.4,24.7 56.4,32.7 59.3,35.0 62.3,34.1 65.3,38.0 68.2,33.3 71.2,32.1 74.2,33.0 77.1,29.7 80.1,32.3 83.1,34.6 86.0,43.1 89.0,49.4 92.0,50.0 94.9,42.4 97.9,44.5 100.9,38.1 103.8,37.3 106.8,38.3 109.8,34.1 112.7,32.9 115.7,35.5 118.7,47.8 121.6,42.5 124.6,44.5 127.6,41.1 130.5,39.8 133.5,39.8 136.4,35.1 139.4,34.2 142.4,33.2 145.3,39.6 148.3,31.1 151.3,34.2 154.2,40.8 157.2,43.7 160.2,45.9 163.1,43.6 166.1,37.1 169.1,33.2 172.0,32.7 175.0,35.5 178.0,40.4 180.9,33.9 183.9,38.2 186.9,37.7 189.8,32.0 192.8,15.4 195.8,4.0 198.7,12.6 201.7,14.6 204.7,13.6 207.6,17.3 210.6,17.9 213.6,21.5 216.5,24.3 219.5,31.5 222.5,31.2 225.4,32.4 228.4,35.3 231.4,40.4 234.3,45.4 237.3,49.4 240.3,47.3 243.2,44.3 246.2,48.7 249.2,38.0 252.1,38.6 255.1,39.8 258.1,31.7 261.0,26.4 264.0,23.8" fill="none" stroke="#34d399" stroke-width="1.8" stroke-linejoin="round"/></svg>
+  <div class="probrow">
+    <div class="probbar"><div class="probfill" style="width:42%;background:#f87171"></div></div>
+    <span class="probtxt num">P(outperform) 0.422 · edge +7.8pp <span class="num pos">+3.6% / 90d</span></span>
+  </div>
+  <ul class="why"><li>medium-term vol regime in the 95th percentile of the S&amp;P 500</li><li>distance from 52-week high in the 5th percentile of the S&amp;P 500</li><li>6-month momentum in the 8th percentile of the S&amp;P 500</li></ul>
+  
+  <div class="sizing">equal-weight within the decile of a dollar-neutral book (backtested convention); horizon 5 trading days</div>
+</div>
+<div class="card">
+  <div class="cardtop">
+    <span class="tick">MU</span>
+    <span class="badge long">LONG</span>
+  </div>
+  <svg class="spark" width="264" height="54" viewBox="0 0 264 54"><polyline points="0.0,44.5 3.0,45.2 5.9,45.3 8.9,45.3 11.9,47.0 14.8,45.9 17.8,46.1 20.8,47.5 23.7,46.5 26.7,45.8 29.7,45.0 32.6,45.7 35.6,44.6 38.6,43.8 41.5,42.8 44.5,42.8 47.5,43.7 50.4,44.8 53.4,45.8 56.4,46.2 59.3,46.9 62.3,48.3 65.3,48.2 68.2,50.0 71.2,49.2 74.2,47.6 77.1,47.7 80.1,47.1 83.1,47.1 86.0,45.6 89.0,44.9 92.0,44.9 94.9,44.6 97.9,42.6 100.9,43.1 103.8,43.0 106.8,43.1 109.8,43.5 112.7,43.4 115.7,41.5 118.7,41.8 121.6,41.0 124.6,39.5 127.6,40.6 130.5,39.9 133.5,39.9 136.4,38.6 139.4,36.9 142.4,33.6 145.3,32.2 148.3,33.2 151.3,28.1 154.2,25.6 157.2,27.1 160.2,25.1 163.1,26.6 166.1,29.2 169.1,31.4 172.0,30.6 175.0,28.8 178.0,27.3 180.9,27.9 183.9,20.4 186.9,18.7 189.8,19.0 192.8,16.5 195.8,13.2 198.7,11.7 201.7,10.9 204.7,15.2 207.6,22.0 210.6,17.6 213.6,18.3 216.5,20.6 219.5,15.2 222.5,16.0 225.4,10.5 228.4,13.9 231.4,12.8 234.3,8.1 237.3,4.1 240.3,12.3 243.2,12.5 246.2,4.0 249.2,8.2 252.1,7.5 255.1,7.1 258.1,13.4 261.0,16.3 264.0,15.8" fill="none" stroke="#34d399" stroke-width="1.8" stroke-linejoin="round"/></svg>
+  <div class="probrow">
+    <div class="probbar"><div class="probfill" style="width:57%;background:#34d399"></div></div>
+    <span class="probtxt num">P(outperform) 0.574 · edge +7.4pp <span class="num pos">+129.7% / 90d</span></span>
+  </div>
+  <ul class="why"><li>12-month momentum in the 99th percentile of the S&amp;P 500</li><li>6-month momentum in the 97th percentile of the S&amp;P 500</li><li>3-month momentum in the 96th percentile of the S&amp;P 500</li></ul>
+  <div class="news">📰 <a href="https://finance.yahoo.com/video/micron-ford-chip-deal-terawulf-stock-gets-lift-private-equity-takes-over-easyjet-193058739.html" target="_blank">Micron-Ford chip deal, TeraWulf stock gets lift, private equity takes over easyJet</a> <span class="muted">— Yahoo Finance Video</span></div>
+  <div class="sizing">equal-weight within the decile of a dollar-neutral book (backtested convention); horizon 5 trading days</div>
+</div></div>
+
+
+
+<h2>The books</h2>
+<div class="cols">
+  <div><table><tr><th>Long book</th><th>P(out)</th><th>Short book</th><th>P(out)</th></tr><tr><td><b>AES</b></td><td class="num pos">0.589</td><td><b>WDAY</b></td><td class="num neg">0.422</td></tr><tr><td><b>MU</b></td><td class="num pos">0.574</td><td><b>GIS</b></td><td class="num neg">0.441</td></tr><tr><td><b>CIEN</b></td><td class="num pos">0.573</td><td><b>FOX</b></td><td class="num neg">0.441</td></tr><tr><td><b>NUE</b></td><td class="num pos">0.570</td><td><b>TYL</b></td><td class="num neg">0.441</td></tr><tr><td><b>DDOG</b></td><td class="num pos">0.569</td><td><b>TRMB</b></td><td class="num neg">0.441</td></tr><tr><td><b>DELL</b></td><td class="num pos">0.568</td><td><b>FOXA</b></td><td class="num neg">0.442</td></tr><tr><td><b>INTC</b></td><td class="num pos">0.567</td><td><b>ISRG</b></td><td class="num neg">0.442</td></tr><tr><td><b>STLD</b></td><td class="num pos">0.567</td><td><b>CTAS</b></td><td class="num neg">0.444</td></tr><tr><td><b>CAH</b></td><td class="num pos">0.565</td><td><b>BAX</b></td><td class="num neg">0.445</td></tr><tr><td><b>STX</b></td><td class="num pos">0.565</td><td><b>PAYX</b></td><td class="num neg">0.447</td></tr></table></div>
+  <div><table><tr><th>Instrument</th><th>21d</th><th>Vol</th><th>Trend position</th></tr><tr><td><b>ZF=F</b> <span class="muted">bond_fut</span></td><td class="num">+0.1%</td><td class="num">3%</td><td class="num neg">SHORT 3.37x</td></tr><tr><td><b>EURGBP=X</b> <span class="muted">fx_cross</span></td><td class="num">-1.2%</td><td class="num">3%</td><td class="num neg">SHORT 3.17x</td></tr><tr><td><b>CAD=X</b> <span class="muted">fx_g10</span></td><td class="num">+1.9%</td><td class="num">4%</td><td class="num pos">LONG 2.56x</td></tr><tr><td><b>ZN=F</b> <span class="muted">bond_fut</span></td><td class="num">+0.1%</td><td class="num">4%</td><td class="num neg">SHORT 2.31x</td></tr><tr><td><b>EURUSD=X</b> <span class="muted">fx_g10</span></td><td class="num">-0.8%</td><td class="num">5%</td><td class="num neg">SHORT 2.11x</td></tr><tr><td><b>CHFJPY=X</b> <span class="muted">fx_cross</span></td><td class="num">-0.3%</td><td class="num">5%</td><td class="num pos">LONG 2.00x</td></tr><tr><td><b>EURJPY=X</b> <span class="muted">fx_cross</span></td><td class="num">+0.1%</td><td class="num">5%</td><td class="num pos">LONG 1.94x</td></tr><tr><td><b>JPY=X</b> <span class="muted">fx_g10</span></td><td class="num">+1.0%</td><td class="num">5%</td><td class="num pos">LONG 1.85x</td></tr><tr><td><b>GBPJPY=X</b> <span class="muted">fx_cross</span></td><td class="num">+1.4%</td><td class="num">6%</td><td class="num pos">LONG 1.82x</td></tr><tr><td><b>GBPUSD=X</b> <span class="muted">fx_g10</span></td><td class="num">+0.4%</td><td class="num">6%</td><td class="num neg">SHORT 1.64x</td></tr></table></div>
+</div>
+
+<footer>Research tooling output — signals from backtested models with modest,
+documented edges (weekly IC ≈ 0.017; see RESEARCH_NOTES.md). Probabilities are
+calibrated conviction, not certainty. Not investment advice.
+Generated 2026-07-07T17:58:15.</footer>
+</body></html>
