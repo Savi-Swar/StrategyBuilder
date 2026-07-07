@@ -1,2 +1,9 @@
 quant.db
 Quark.db
+*.db-journal
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+bfg.jar

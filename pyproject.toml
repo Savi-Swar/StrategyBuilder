@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quark"
+version = "1.0.0"
+description = "Systematic trading research: multi-asset time-series and cross-sectional ML strategies with an honest, tested backtest engine"
+requires-python = ">=3.12"
+dependencies = [
+    "pandas>=2.2",
+    "numpy>=1.26",
+    "scipy>=1.13",
+    "scikit-learn>=1.5",
+    "statsmodels>=0.14",
+    "matplotlib>=3.9",
+    "yfinance>=0.2.50",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+include = ["quark*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
