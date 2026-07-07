@@ -7,11 +7,15 @@ import pandas as pd
 from quark import config
 
 
+_FIELDS = {"open", "high", "low", "close", "volume"}
+
+
 def load_prices(
     db_path=None,
     tickers: list[str] | None = None,
     start: str | None = None,
     end: str | None = None,
+    field: str = "close",
 ) -> pd.DataFrame:
     """Close-price panel (DatetimeIndex business days x ticker columns).
 
@@ -22,8 +26,10 @@ def load_prices(
       closed — they must NOT be forward-filled (see compute_returns).
     - Leading NaNs before an instrument's first observation are preserved.
     """
+    if field not in _FIELDS:
+        raise ValueError(f"field must be one of {_FIELDS}")
     db_path = str(db_path or config.DB_PATH)
-    query = "SELECT ticker, date, close FROM stocks"
+    query = f"SELECT ticker, date, {field} FROM stocks"
     params: list = []
     clauses = []
     if tickers is not None:
@@ -43,9 +49,12 @@ def load_prices(
 
     df["date"] = pd.to_datetime(df["date"], format="mixed").dt.normalize()
     df = df.drop_duplicates(subset=["ticker", "date"], keep="last")
-    panel = df.pivot(index="date", columns="ticker", values="close").sort_index()
+    panel = df.pivot(index="date", columns="ticker", values=field).sort_index()
     bdays = pd.bdate_range(panel.index.min(), panel.index.max())
-    return panel.reindex(bdays)
+    panel = panel.reindex(bdays)
+    panel.index.name = "date"
+    panel.columns.name = "ticker"
+    return panel
 
 
 def compute_returns(prices: pd.DataFrame) -> pd.DataFrame:

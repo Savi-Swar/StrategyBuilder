@@ -11,8 +11,15 @@ import pandas as pd
 
 
 def forward_return(returns: pd.DataFrame, horizon: int = 5) -> pd.DataFrame:
-    log_fwd = np.log1p(returns).rolling(horizon, min_periods=horizon).sum().shift(-horizon)
-    return np.expm1(log_fwd)
+    """Tolerates up to 2 NaN bars inside the window: market holidays are NaN
+    on a business-day calendar and would otherwise silently void every window
+    containing one (a closed market genuinely contributes zero return — the
+    move lands in the next bar, which IS in the window). The result is masked
+    where the instrument itself has no return at t (pre-listing, local
+    holiday), so no label exists before an instrument trades."""
+    min_p = max(2, horizon - 2)
+    log_fwd = np.log1p(returns).rolling(horizon, min_periods=min_p).sum().shift(-horizon)
+    return np.expm1(log_fwd).where(returns.notna())
 
 
 def build_target(

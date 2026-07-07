@@ -63,7 +63,9 @@ def run_ml_strategy(
     features = build_features(prices, returns, universe)
     _, label = build_target(returns, horizon)
 
-    df = features.join(label.stack().rename("y"), how="inner").dropna(subset=["y"])
+    ys = label.stack().rename("y")
+    ys.index.names = ["date", "ticker"]
+    df = features.join(ys, how="inner").dropna(subset=["y"])
 
     if universe is not None:
         # Train and predict only on instruments we would actually trade:
@@ -102,7 +104,9 @@ def run_ml_strategy(
         sig_parts.append(pd.Series(2.0 * proba - 1.0, index=te.index))
 
     raw = pd.concat(sig_parts).unstack("ticker")
-    signals = _calibrate_signal(raw)
+    # Hold positions through label-less days (local holidays): a 1-day NaN
+    # signal would otherwise close and reopen the position, paying 2x costs.
+    signals = _calibrate_signal(raw).ffill(limit=5)
 
     importance = None
     if compute_importance and clf is not None and not shuffle_labels:
