@@ -154,8 +154,13 @@ long-only top decile, equal weight; treat as equity risk with a thin tilt</span>
 </div>
 {data_js}"""
 
+    from quark.reports.chat_widget import chat_widget
     return page_shell(
         "Vig — Portfolio Builder", generated_at,
         '<a class="btn" href="index.html">◈ desk</a> '
         '<a class="btn" href="past_trades.html">◈ past trades</a>',
-        body)
+        body,
+        chat_html=chat_widget(
+            {"profiles": pconf["profiles"],
+             "alpha_names": pconf["alpha_names"],
+             "note": "set_portfolio works on this page"}, "portfolio"))

@@ -48,7 +48,9 @@ def _log_table(trades) -> str:
         side_cls = "pos" if r["side"] == "LONG" else "neg"
         grade = '<span class="win">✓ WIN</span>' if r["win_rel"] else '<span class="loss">✗ LOSS</span>'
         rows.append(
-            f'<tr><td class="muted">{r["as_of"].date()}</td>'
+            f'<tr data-search="{r["ticker"]}" data-side="{r["side"]}" '
+            f'data-prob="{r["prob"]:.3f}">'
+            f'<td class="muted">{r["as_of"].date()}</td>'
             f'<td><b>{r["ticker"]}</b></td>'
             f'<td class="{side_cls}">{r["side"]}</td>'
             f'<td>{r["prob"]:.3f}</td>'
@@ -63,7 +65,10 @@ def _log_table(trades) -> str:
 
 def render_review_page(review: dict, generated_at: str,
                        self_review: str | None = None) -> str:
+    from quark.reports.chat_widget import chat_widget
     trades, s = review["trades"], review["summary"]
+    chat = chat_widget({"record_summary": s, "lessons": review["lessons"]},
+                       "past_trades")
     if trades is None or trades.empty:
         body = ('<h2>Past trades</h2><p class="muted">No scored history yet — '
                 'run scripts/backfill_ledger.py.</p>')
@@ -98,4 +103,5 @@ def render_review_page(review: dict, generated_at: str,
 
     return page_shell("Vig — Past Trades", generated_at,
                       '<a class="btn" href="index.html">◈ desk</a> '
-                      '<a class="btn" href="portfolio.html">◈ portfolio</a>', body)
+                      '<a class="btn" href="portfolio.html">◈ portfolio</a>', body,
+                      chat_html=chat)

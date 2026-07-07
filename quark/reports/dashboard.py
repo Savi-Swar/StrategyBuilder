@@ -24,8 +24,6 @@ a { color: #ffb000; }
 header { display: flex; align-items: flex-end; justify-content: space-between;
          flex-wrap: wrap; gap: 12px; padding: 30px 44px 18px; }
 .wordmark { font-size: 58px; font-weight: 800; letter-spacing: -2px; line-height: 1; }
-.wordmark .cursor { color: #ffb000; animation: blink 1.1s steps(1) infinite; }
-@keyframes blink { 50% { opacity: 0; } }
 .tagline { color: #8a9199; font-size: 12px; letter-spacing: 1px; margin-top: 6px; }
 .tagline b { color: #ffb000; font-weight: 600; }
 .stamp-date { color: #8a9199; font-size: 12px; text-align: right; }
@@ -131,14 +129,14 @@ def _spark_svg(values: list[float], width: int = 270, height: int = 52,
 
 
 def page_shell(title: str, generated_at: str, nav_html: str, body: str,
-               tape_html: str = "") -> str:
+               tape_html: str = "", chat_html: str = "") -> str:
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta http-equiv="refresh" content="900">
 <title>{title}</title><style>{CSS}</style></head><body>
 <header>
   <div>
-    <div class="wordmark">VIG<span class="cursor">▮</span></div>
+    <div class="wordmark">VIG</div>
     <div class="tagline">the house takes its cut — <b>systematic daily desk</b></div>
   </div>
   <div class="stamp-date">{generated_at.replace("T", " · ")}<br>{nav_html}</div>
@@ -148,6 +146,7 @@ def page_shell(title: str, generated_at: str, nav_html: str, body: str,
 <footer>Research tooling output — signals from backtested models with modest,
 documented edges (weekly IC ≈ 0.017; see RESEARCH_NOTES.md). Probabilities are
 calibrated conviction, not certainty. Not investment advice.</footer>
+{chat_html}
 </body></html>"""
 
 
@@ -234,7 +233,9 @@ def _xsec_table(xsec: dict, k: int = 10) -> str:
     rows = []
     for lo, sh in zip(xsec["longs"][:k], list(reversed(xsec["shorts"]))[:k]):
         rows.append(
-            f'<tr><td><b>{lo}</b></td>'
+            f'<tr data-search="{lo} {sh}" data-class="stock" '
+            f'data-prob="{t.at[lo, "prob_outperform"]:.3f}">'
+            f'<td><b>{lo}</b></td>'
             f'<td class="pos">{t.at[lo, "prob_outperform"]:.3f}</td>'
             f'<td><b>{sh}</b></td>'
             f'<td class="neg">{t.at[sh, "prob_outperform"]:.3f}</td></tr>'
@@ -243,7 +244,7 @@ def _xsec_table(xsec: dict, k: int = 10) -> str:
             "<th>Short book</th><th>P(out)</th></tr>" + "".join(rows) + "</table>")
 
 
-def _trend_table(snapshot: pd.DataFrame, k: int = 10) -> str:
+def _trend_table(snapshot: pd.DataFrame, k: int = 18) -> str:
     top = snapshot.reindex(
         snapshot["target_position"].abs().sort_values(ascending=False).index
     ).head(k)
@@ -253,7 +254,8 @@ def _trend_table(snapshot: pd.DataFrame, k: int = 10) -> str:
         cls = "pos" if r["target_position"] > 0 else "neg"
         r21 = "—" if pd.isna(r["ret_21d"]) else f"{r['ret_21d'] * 100:+.1f}%"
         rows.append(
-            f'<tr><td><b>{tick}</b> <span class="muted">{r["asset_class"]}</span></td>'
+            f'<tr data-search="{tick}" data-class="{r["asset_class"]}" data-side="{side}">'
+            f'<td><b>{tick}</b> <span class="muted">{r["asset_class"]}</span></td>'
             f'<td>{r21}</td><td>{r["ann_vol_63d"] * 100:.0f}%</td>'
             f'<td class="{cls}">{side} {abs(r["target_position"]):.2f}x</td></tr>'
         )
@@ -273,7 +275,33 @@ def _commentary_html(text: str) -> str:
     return "".join(paras)
 
 
+def _desk_context(result: dict) -> dict:
+    t = result["xsec"]["table"]
+    snap = result["snapshot"]
+    top_trend = snap.reindex(
+        snap["target_position"].abs().sort_values(ascending=False).index).head(12)
+    return {
+        "data_through": result["data_through"],
+        "health": result.get("health", {}),
+        "top_trades": [{k: tr[k] for k in ("ticker", "side", "prob", "drivers")}
+                       for tr in result["trades"]],
+        "long_book": {x: round(float(t.at[x, "prob_outperform"]), 3)
+                      for x in result["xsec"]["longs"][:10]},
+        "short_book": {x: round(float(t.at[x, "prob_outperform"]), 3)
+                       for x in result["xsec"]["shorts"][-10:]},
+        "trend_book": {i: {"class": r["asset_class"],
+                           "position": round(float(r["target_position"]), 2),
+                           "ret_21d": None if pd.isna(r["ret_21d"])
+                           else round(float(r["ret_21d"]), 4)}
+                       for i, r in top_trend.iterrows()},
+        "n_instruments_trend": int(snap.shape[0]),
+        "backtest": "xsec weekly IC 0.0165 (t=3.22); trend/timing do not "
+                    "clear costs decisively; see RESEARCH_NOTES",
+    }
+
+
 def render_dashboard(result: dict) -> str:
+    from quark.reports.chat_widget import chat_widget
     trades_html = "".join(
         _trade_card(t, result["sparks"].get(t["ticker"], []))
         for t in result["trades"]
@@ -302,4 +330,5 @@ as-of rebalance <b>{result["xsec"]["as_of"].date()}</b> · horizon <b>5 trading 
         '<a class="btn" href="portfolio.html">◈ portfolio</a> '
         '<a class="btn" href="past_trades.html">◈ past trades</a>',
         body, tape_html=_tape(result["snapshot"]),
+        chat_html=chat_widget(_desk_context(result), "desk"),
     )
