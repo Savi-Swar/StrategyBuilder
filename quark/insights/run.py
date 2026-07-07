@@ -52,6 +52,10 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
     print("Grading the past year of top-3 calls...")
     review = build_review(eq_prices, weeks=52)
 
+    print("Building portfolio profiles...")
+    from quark.insights.portfolio import build_portfolio_config
+    portfolio = build_portfolio_config(ma_prices, xsec, eq_prices)
+
     headlines: dict = {}
     if news:
         picks = xsec["longs"][:6] + xsec["shorts"][:6]
@@ -88,6 +92,7 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
         "health": health,
         "review": review,
         "self_review": self_review,
+        "portfolio": portfolio,
         "commentary": commentary,
     }
 
@@ -117,6 +122,10 @@ def write_outputs(result: dict) -> dict:
     (dash_dir / "past_trades.html").write_text(
         render_review_page(result["review"], result["generated_at"],
                            result.get("self_review")))
+
+    from quark.reports.portfolio_page import render_portfolio_page
+    (dash_dir / "portfolio.html").write_text(
+        render_portfolio_page(result["portfolio"], result["generated_at"]))
 
     (dash_dir / "meta.json").write_text(json.dumps(
         {"generated_at": result["generated_at"],

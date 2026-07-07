@@ -58,7 +58,7 @@ def test_review_page_renders(tmp_ledger):
     html = render_review_page(review, "2026-07-07T08:00:00")
     assert "Past Trades" in html
     assert "WIN" in html and "Grade" in html
-    assert "back to desk" in html
+    assert 'href="index.html"' in html  # nav back to the desk
 
 
 def test_review_empty_ledger_is_graceful(tmp_ledger):

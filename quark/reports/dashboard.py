@@ -299,6 +299,7 @@ as-of rebalance <b>{result["xsec"]["as_of"].date()}</b> · horizon <b>5 trading 
 
     return page_shell(
         "Vig — Daily Desk", result["generated_at"],
-        '<a class="btn" href="past_trades.html">◈ past trades / self-review</a>',
+        '<a class="btn" href="portfolio.html">◈ portfolio</a> '
+        '<a class="btn" href="past_trades.html">◈ past trades</a>',
         body, tape_html=_tape(result["snapshot"]),
     )
