@@ -78,7 +78,7 @@ function render() {
     const vehicle = k === "cash" ? "SGOV / cash" :
                     k === "alpha" ? `${DATA.alpha_names.length} single names below` :
                     DATA.sleeve_etfs[k];
-    return `<tr><td><b>${LABELS[k]}</b></td><td class="muted">${vehicle}</td>
+    return `<tr><td><b>${LABELS[k]}</b></td><td class="muted tl">${vehicle}</td>
       <td>${pct(w)}</td><td><b>${fmt$(cap * w)}</b></td></tr>`;
   }).join("");
 
@@ -96,8 +96,8 @@ function render() {
     `<div class="htile"><div class="hlabel">${k}</div><div class="hval">${v}</div></div>`).join("");
 
   document.getElementById("ddrows").innerHTML = (p.top_dd || []).map(d =>
-    `<tr><td class="neg">${pct(d.depth)}</td><td class="muted">${d.peak}</td>
-     <td class="muted">${d.trough}</td><td>${d.recovered}</td>
+    `<tr><td class="neg">${pct(d.depth)}</td><td class="muted tl">${d.peak}</td>
+     <td class="muted tl">${d.trough}</td><td class="tl">${d.recovered}</td>
      <td>${fmt$(Math.abs(cap * d.depth))}</td></tr>`).join("");
 
   const an = document.getElementById("alpharows");

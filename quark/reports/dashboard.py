@@ -11,6 +11,7 @@ CSS = """
 body {
   background: #060708; color: #e6e2d8;
   font: 14px/1.6 "SF Mono", ui-monospace, "JetBrains Mono", Menlo, monospace;
+  font-variant-numeric: tabular-nums lining-nums;
   padding: 0 0 70px;
 }
 body::after {
@@ -34,8 +35,9 @@ header { display: flex; align-items: flex-end; justify-content: space-between;
 }
 .btn:hover { background: #ffb000; color: #060708; }
 
-/* ── tabs ─────────────────────────────────────────────── */
-.tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c; }
+/* ── tabs (sticky: the screens are always one keystroke away) ── */
+.tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c;
+  position: sticky; top: 0; z-index: 40; background: #060708; }
 .tab { flex: 1; text-align: center; padding: 13px 10px; font-size: 12px;
   letter-spacing: 3px; color: #8a9199; text-decoration: none;
   border-right: 1px solid #22262c; }
@@ -63,7 +65,8 @@ h2 .dim { color: #8a9199; }
 .htile { background: #0b0d10; border: 1px solid #22262c; padding: 14px 18px; }
 .hlabel { font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
           color: #8a9199; margin-bottom: 7px; }
-.hval { font-size: 17px; }
+.hval { font-size: 21px; font-weight: 600; }
+.hval .muted { font-size: 12px; font-weight: 400; }
 .led { display: inline-block; width: 9px; height: 9px; margin-right: 9px; }
 .led.green  { background: #46ff9a; box-shadow: 0 0 10px #46ff9a; }
 .led.yellow { background: #ffb000; box-shadow: 0 0 10px #ffb000; }
@@ -101,11 +104,22 @@ ul.why li::before { content: ">"; position: absolute; left: 0; color: #ffb000; }
 /* ── tables ───────────────────────────────────────────── */
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 @media (max-width: 980px) { .cols { grid-template-columns: 1fr; } }
-table { width: 100%; border-collapse: collapse; background: #0b0d10; border: 1px solid #22262c; }
-th { text-align: left; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-     color: #ffb000; padding: 9px 13px; border-bottom: 1px double #2a2e35; font-weight: 600; }
+table { width: 100%; border-collapse: separate; border-spacing: 0;
+        background: #0b0d10; border: 1px solid #22262c; }
+/* numbers read right-to-left: numeric columns right-aligned, headers match;
+   first column (names) left; .tl marks additional text columns */
+th, td { text-align: right; }
+th:first-child, td:first-child, th.tl, td.tl { text-align: left; }
+th { font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+     color: #ffb000; padding: 9px 13px; border-bottom: 1px double #2a2e35;
+     font-weight: 600; cursor: pointer; user-select: none;
+     position: sticky; top: var(--tabs-h, 47px); background: #0e1114; z-index: 5; }
+th:hover { color: #ffd668; }
+th[data-dir="desc"]::after { content: " ▾"; }
+th[data-dir="asc"]::after { content: " ▴"; }
 td { padding: 7px 13px; font-size: 12.5px; border-bottom: 1px solid #14171b; }
 tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,176,0,.035); }
 .pos { color: #46ff9a; } .neg { color: #ff5d5d; } .muted { color: #6d747c; }
 .win { color: #46ff9a; font-weight: 700; } .loss { color: #ff5d5d; font-weight: 700; }
 
@@ -166,6 +180,56 @@ PAGES = [
     ("portfolio", "portfolio.html", "04", "PORTFOLIO"),
 ]
 
+# Terminal behaviors, page-wide: numbered-key screen switching ("/" focuses
+# search), sticky-header offset tracking, and click-to-sort on every table.
+GLOBAL_JS = """
+<script>
+(() => {
+  const pages = { "1": "index.html", "2": "analysis.html",
+                  "3": "past_trades.html", "4": "portfolio.html" };
+  document.addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target instanceof Element && e.target.matches("input,textarea")) return;
+    if (pages[e.key]) location.href = pages[e.key];
+    if (e.key === "/") {
+      const q = document.getElementById("fb-q");
+      if (q) { e.preventDefault(); q.focus(); }
+    }
+  });
+
+  const setTabsH = () => {
+    const t = document.querySelector(".tabs");
+    if (t) document.documentElement.style.setProperty("--tabs-h", t.offsetHeight + "px");
+  };
+  window.addEventListener("resize", setTabsH);
+  document.addEventListener("DOMContentLoaded", setTabsH);
+
+  const num = s => {
+    const v = parseFloat(s.replace(/[▮$,]/g, "").replace(/(bps|wks|sh|OB|OS|pp|[%x+])/g, ""));
+    return isNaN(v) ? null : v;
+  };
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("table").forEach(tb => {
+      const headers = [...tb.querySelectorAll("th")];
+      headers.forEach((th, i) => th.addEventListener("click", () => {
+        const desc = th.dataset.dir !== "desc";
+        headers.forEach(h => delete h.dataset.dir);
+        th.dataset.dir = desc ? "desc" : "asc";
+        const rows = [...tb.querySelectorAll("tr")].filter(r => r.querySelector("td"));
+        rows.sort((a, b) => {
+          const x = (a.cells[i]?.innerText ?? "").trim();
+          const y = (b.cells[i]?.innerText ?? "").trim();
+          const nx = num(x), ny = num(y);
+          const c = (nx !== null && ny !== null) ? nx - ny : x.localeCompare(y);
+          return desc ? -c : c;
+        });
+        rows.forEach(r => r.parentNode.appendChild(r));
+      }));
+    });
+  });
+})();
+</script>"""
+
 
 def page_shell(title: str, generated_at: str, active: str, body: str,
                tape_html: str = "") -> str:
@@ -188,9 +252,12 @@ def page_shell(title: str, generated_at: str, active: str, body: str,
 <nav class="tabs">{tabs}</nav>
 {tape_html}
 <div class="wrap">{body}</div>
-<footer>Research tooling output — signals from backtested models with modest,
+<footer><span class="muted">keys: <b>1–4</b> screens · <b>/</b> search ·
+click any column header to sort</span><br><br>
+Research tooling output — signals from backtested models with modest,
 documented edges (weekly IC ≈ 0.017; see RESEARCH_NOTES.md). Probabilities are
 calibrated conviction, not certainty. Not investment advice.</footer>
+{GLOBAL_JS}
 </body></html>"""
 
 
@@ -281,7 +348,7 @@ def _xsec_table(xsec: dict, k: int = 10) -> str:
             f'data-prob="{t.at[lo, "prob_outperform"]:.3f}">'
             f'<td><b>{lo}</b></td>'
             f'<td class="pos">{t.at[lo, "prob_outperform"]:.3f}</td>'
-            f'<td><b>{sh}</b></td>'
+            f'<td class="tl"><b>{sh}</b></td>'
             f'<td class="neg">{t.at[sh, "prob_outperform"]:.3f}</td></tr>'
         )
     return ("<table><tr><th>Long book</th><th>P(out)</th>"
@@ -389,7 +456,8 @@ def _positioning_panel(sectors: dict, tilts: dict, regime: dict) -> str:
             lbar = f'<div style="display:inline-block;height:8px;width:{ln / max_n * 70}px;background:#46ff9a"></div>'
             sbar = f'<div style="display:inline-block;height:8px;width:{sh / max_n * 70}px;background:#ff5d5d"></div>'
             sec_rows.append(
-                f'<tr><td>{s}</td><td>{lbar} {ln}</td><td>{sbar} {sh}</td>'
+                f'<tr><td>{s}</td><td class="tl">{lbar} {ln}</td>'
+                f'<td class="tl">{sbar} {sh}</td>'
                 f'<td class="{cls}">{net:+d}</td></tr>')
     tilt_rows = []
     for label, d in tilts.items():

@@ -128,7 +128,7 @@ def _heat_table(heat: list) -> str:
         else:
             desk, cls = "not covered", "muted"
         rows.append(f'<tr data-search="{tick}"><td><b>{tick}</b></td>'
-                    f'<td>{"▮" * min(h["n"], 8)} {h["n"]}</td>'
+                    f'<td class="tl">{"▮" * min(h["n"], 8)} {h["n"]}</td>'
                     f'<td class="{cls}">{desk}</td></tr>')
     return ("<table><tr><th>Instrument</th><th>Wire heat</th><th>Desk stance</th></tr>"
             + "".join(rows) + "</table>")
