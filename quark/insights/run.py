@@ -36,9 +36,10 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
     ma_volumes = load_prices(tickers=list(uni.index), field="volume")
     snapshot = multi_asset_snapshot(ma_prices, uni)
 
-    print("Computing the technical board...")
+    print("Computing the technical board (daily + 6-month modes)...")
     from quark.insights.technicals import build_board
-    board = build_board(ma_prices, ma_volumes, uni)
+    board = build_board(ma_prices, ma_volumes, uni, mode="tactical")
+    board_pos = build_board(ma_prices, ma_volumes, uni, mode="position")
 
     print("Scoring the equity cross-section...")
     eq_tickers = load_sp500_tickers()
@@ -147,6 +148,7 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
         "wire": wire_view,
         "desk_read": desk_read,
         "board": board,
+        "board_pos": board_pos,
         "commentary": commentary,
     }
 
@@ -184,7 +186,8 @@ def write_outputs(result: dict) -> dict:
     from quark.reports.analysis_page import render_analysis_page
     (dash_dir / "analysis.html").write_text(
         render_analysis_page(result["wire"], result["generated_at"],
-                             result.get("desk_read"), result.get("board")))
+                             result.get("desk_read"), result.get("board"),
+                             result.get("board_pos")))
 
     (dash_dir / "meta.json").write_text(json.dumps(
         {"generated_at": result["generated_at"],

@@ -28,6 +28,12 @@ def test_board_reads_trend_correctly():
     # sorted by consensus descending
     assert list(board.index) == ["UP", "DN"]
 
+    # 6-month mode: weekly bars, same verdict on a clean trend
+    pos = build_board(prices, volumes, uni, mode="position")
+    assert pos.loc["UP", "consensus"] == 6
+    assert pos.loc["DN", "consensus"] == -6
+    assert pos.loc["UP", "mom"] > 0 > pos.loc["DN", "mom"]  # 26w momentum
+
 
 def test_board_handles_missing_volume():
     idx = pd.bdate_range("2023-01-02", periods=400)

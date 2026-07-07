@@ -76,7 +76,16 @@ def _cards(articles: list[dict], group: str) -> str:
         '<p class="muted">nothing on this wire today</p>'
 
 
-def _board_table(board: pd.DataFrame) -> str:
+BOARD_HEADERS = {
+    "tactical": ("RSI14", "Boll %B (20d)", "MACD bps", "50/200d",
+                 "vs VWAP20d", "12m"),
+    "position": ("RSI14w", "Boll %B (20w)", "MACD bps (wkly)", "10/40w",
+                 "vs VWAP20w", "6m"),
+}
+
+
+def _board_table(board: pd.DataFrame, mode: str) -> str:
+    h = BOARD_HEADERS[mode]
     rows = []
     for tick, r in board.iterrows():
         c = int(r["consensus"])
@@ -87,9 +96,9 @@ def _board_table(board: pd.DataFrame) -> str:
         vwap = ("—" if pd.isna(r["vwap_dist"])
                 else f'<span class="{"pos" if r["vwap_dist"] > 0 else "neg"}">'
                      f'{r["vwap_dist"] * 100:+.1f}%</span>')
-        mom = ("—" if pd.isna(r["mom252"])
-               else f'<span class="{"pos" if r["mom252"] > 0 else "neg"}">'
-                    f'{r["mom252"] * 100:+.0f}%</span>')
+        mom = ("—" if pd.isna(r["mom"])
+               else f'<span class="{"pos" if r["mom"] > 0 else "neg"}">'
+                    f'{r["mom"] * 100:+.0f}%</span>')
         rows.append(
             f'<tr data-search="{tick}" data-class="{r["asset_class"]}" '
             f'data-side="{side_attr}">'
@@ -101,8 +110,8 @@ def _board_table(board: pd.DataFrame) -> str:
             f'{"GOLDEN" if r["golden"] else "DEATH"}</td>'
             f'<td>{vwap}</td><td>{mom}</td>'
             f'<td class="{ccls}"><b>{c:+d}</b></td></tr>')
-    return ("<table><tr><th>Instrument</th><th>RSI14</th><th>Boll %B</th>"
-            "<th>MACD bps</th><th>50/200</th><th>vs VWAP20</th><th>12m</th>"
+    return (f"<table><tr><th>Instrument</th><th>{h[0]}</th><th>{h[1]}</th>"
+            f"<th>{h[2]}</th><th>{h[3]}</th><th>{h[4]}</th><th>{h[5]}</th>"
             "<th>Consensus</th></tr>" + "".join(rows) + "</table>")
 
 
@@ -127,7 +136,8 @@ def _heat_table(heat: list) -> str:
 
 def render_analysis_page(wire: dict, generated_at: str,
                          desk_read: str | None = None,
-                         board: pd.DataFrame | None = None) -> str:
+                         board: pd.DataFrame | None = None,
+                         board_pos: pd.DataFrame | None = None) -> str:
     from quark.reports.dashboard import _commentary_html
     read_html = ""
     if desk_read:
@@ -147,14 +157,39 @@ def render_analysis_page(wire: dict, generated_at: str,
     fb_classes = ["macro", "picks"]
     if board is not None and not board.empty:
         fb_classes = sorted(board["asset_class"].unique()) + ["macro", "picks"]
+        pos_html = ""
+        toggle = ""
+        if board_pos is not None and not board_pos.empty:
+            toggle = """
+<div class="fbar" style="margin-bottom:12px">
+  <span class="bm-btn on" data-bm="tact">TACTICAL · DAILY</span>
+  <span class="bm-btn" data-bm="pos">POSITION · 6-MONTH</span>
+  <span class="muted" style="font-size:11px">same toolkit, weekly bars —
+  RSI14w, %B 20w, weekly MACD, 10/40w cross, VWAP20w, 6m momentum</span>
+</div>"""
+            pos_html = (f'<div id="board-pos" style="display:none">'
+                        f'{_board_table(board_pos, "position")}</div>')
         board_html = f"""
 <h2>Technical board <span class="dim">/ the original toolkit — RSI, Bollinger,
 MACD, golden cross, VWAP, momentum — as a read of the tape</span></h2>
-{_board_table(board)}
+{toggle}
+<div id="board-tact">{_board_table(board, "tactical")}</div>
+{pos_html}
 <div class="edgemath">HONESTY — these are the exact indicators Study 1
 backtested; net of costs none cleared the Deflated Sharpe bar as standalone
 strategies (best DSR 0.29). The board describes market state; the consensus
-column measures agreement, not edge.</div>"""
+column measures agreement, not edge.</div>
+<script>
+document.querySelectorAll(".bm-btn").forEach(b =>
+  b.addEventListener("click", () => {{
+    const pos = b.dataset.bm === "pos";
+    document.getElementById("board-tact").style.display = pos ? "none" : "";
+    const bp = document.getElementById("board-pos");
+    if (bp) bp.style.display = pos ? "" : "none";
+    document.querySelectorAll(".bm-btn").forEach(x =>
+      x.classList.toggle("on", x === b));
+  }}));
+</script>"""
 
     body = f"""{EXTRA_CSS}
 {filter_bar(fb_classes)}

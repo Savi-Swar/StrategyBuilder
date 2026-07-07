@@ -107,10 +107,12 @@ tr:last-child td { border-bottom: none; }
   color: #e6e2d8; font: 12.5px "SF Mono", ui-monospace, Menlo, monospace;
   padding: 8px 12px; width: 170px; }
 .fbar input[type=text]:focus { outline: none; border-color: #ffb000; }
-.fb-chip, .fb-side { border: 1px solid #2a2e35; color: #8a9199; font-size: 11px;
-  padding: 6px 11px; cursor: pointer; background: #0e1114; letter-spacing: .5px; }
-.fb-chip.on, .fb-side.on { border-color: #ffb000; color: #ffb000;
+.fb-chip, .fb-side, .bm-btn { border: 1px solid #2a2e35; color: #8a9199;
+  font-size: 11px; padding: 6px 11px; cursor: pointer; background: #0e1114;
+  letter-spacing: .5px; }
+.fb-chip.on, .fb-side.on, .bm-btn.on { border-color: #ffb000; color: #ffb000;
   background: rgba(255,176,0,.08); }
+.bm-btn.on { font-weight: 700; }
 .fb-prob { display: flex; align-items: center; gap: 8px; font-size: 11px;
   color: #8a9199; }
 .fb-prob input { accent-color: #ffb000; width: 110px; }
