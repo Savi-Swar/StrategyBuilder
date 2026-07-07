@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta http-equiv="refresh" content="900">
+<title>Vig — Analysis</title><style>
+:root { color-scheme: dark; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #060708; color: #e6e2d8;
+  font: 14px/1.6 "SF Mono", ui-monospace, "JetBrains Mono", Menlo, monospace;
+  padding: 0 0 70px;
+}
+body::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 9;
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 3px);
+}
+.wrap { padding: 26px 44px 0; }
+a { color: #ffb000; }
+
+/* ── masthead ─────────────────────────────────────────── */
+header { display: flex; align-items: flex-end; justify-content: space-between;
+         flex-wrap: wrap; gap: 12px; padding: 30px 44px 18px; }
+.wordmark { font-size: 58px; font-weight: 800; letter-spacing: -2px; line-height: 1; }
+.tagline { color: #8a9199; font-size: 12px; letter-spacing: 1px; margin-top: 6px; }
+.tagline b { color: #ffb000; font-weight: 600; }
+.stamp-date { color: #8a9199; font-size: 12px; text-align: right; }
+.btn {
+  display: inline-block; border: 1px solid #ffb000; color: #ffb000;
+  padding: 8px 18px; font-size: 12px; letter-spacing: 2px; text-decoration: none;
+  text-transform: uppercase; transition: all .12s;
+}
+.btn:hover { background: #ffb000; color: #060708; }
+
+/* ── tape ─────────────────────────────────────────────── */
+.tape { border-top: 1px dashed #2a2e35; border-bottom: 1px dashed #2a2e35;
+        overflow: hidden; white-space: nowrap; padding: 7px 0; margin: 8px 0 26px; }
+.tape-inner { display: inline-block; animation: tape 55s linear infinite; }
+@keyframes tape { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.tape span { margin: 0 18px; font-size: 12px; color: #8a9199; }
+.tape .up { color: #46ff9a; } .tape .dn { color: #ff5d5d; }
+
+/* ── sections ─────────────────────────────────────────── */
+h2 { font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+     color: #ffb000; margin: 40px 0 16px; font-weight: 600; }
+h2::before { content: "▚▚ "; }
+h2 .dim { color: #8a9199; }
+
+/* ── health tiles ─────────────────────────────────────── */
+.health { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.htile { background: #0b0d10; border: 1px solid #22262c; padding: 14px 18px; }
+.hlabel { font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+          color: #8a9199; margin-bottom: 7px; }
+.hval { font-size: 17px; }
+.led { display: inline-block; width: 9px; height: 9px; margin-right: 9px; }
+.led.green  { background: #46ff9a; box-shadow: 0 0 10px #46ff9a; }
+.led.yellow { background: #ffb000; box-shadow: 0 0 10px #ffb000; }
+.led.red    { background: #ff5d5d; box-shadow: 0 0 10px #ff5d5d; }
+.led.warming{ background: #6ea8fe; box-shadow: 0 0 10px #6ea8fe; }
+.hdetail { font-size: 11.5px; color: #8a9199; margin-top: 6px; }
+.edgemath { font-size: 11.5px; color: #6d747c; margin-top: 12px; max-width: 920px;
+            border-left: 2px solid #22262c; padding-left: 14px; }
+
+/* ── trade cards ──────────────────────────────────────── */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 16px; }
+.card { background: #0b0d10; border: 1px solid #22262c; padding: 20px 22px 16px; position: relative; }
+.card.long  { border-top: 3px solid #46ff9a; }
+.card.short { border-top: 3px solid #ff5d5d; }
+.cardtop { display: flex; justify-content: space-between; align-items: center; }
+.tick { font-size: 34px; font-weight: 800; letter-spacing: 1px; }
+.stamp { border: 2px double; padding: 3px 12px; font-weight: 700; font-size: 13px;
+         letter-spacing: 2px; transform: rotate(-4deg); }
+.stamp.long  { color: #46ff9a; border-color: #46ff9a; }
+.stamp.short { color: #ff5d5d; border-color: #ff5d5d; }
+.spark { margin: 12px 0 8px; display: block; }
+.probrow { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.probbar { flex: 1; height: 5px; background: #191d22; }
+.probfill { height: 100%; }
+.probtxt { font-size: 11.5px; color: #8a9199; white-space: nowrap; }
+ul.why { list-style: none; margin-bottom: 10px; }
+ul.why li { padding-left: 16px; position: relative; margin-bottom: 5px;
+            color: #c9c4b8; font-size: 12.5px; }
+ul.why li::before { content: ">"; position: absolute; left: 0; color: #ffb000; }
+.news a { font-size: 12px; text-decoration: none; }
+.news a:hover { text-decoration: underline; }
+.sizing { margin-top: 10px; font-size: 10.5px; color: #6d747c;
+          border-top: 1px dashed #22262c; padding-top: 8px; }
+
+/* ── tables ───────────────────────────────────────────── */
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 980px) { .cols { grid-template-columns: 1fr; } }
+table { width: 100%; border-collapse: collapse; background: #0b0d10; border: 1px solid #22262c; }
+th { text-align: left; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+     color: #ffb000; padding: 9px 13px; border-bottom: 1px double #2a2e35; font-weight: 600; }
+td { padding: 7px 13px; font-size: 12.5px; border-bottom: 1px solid #14171b; }
+tr:last-child td { border-bottom: none; }
+.pos { color: #46ff9a; } .neg { color: #ff5d5d; } .muted { color: #6d747c; }
+.win { color: #46ff9a; font-weight: 700; } .loss { color: #ff5d5d; font-weight: 700; }
+
+.commentary { background: #0b0d10; border: 1px solid #22262c;
+              border-left: 3px solid #ffb000; padding: 20px 26px; max-width: 880px; }
+.commentary p { margin-bottom: 11px; color: #c9c4b8; font-size: 13px; }
+.commentary strong { color: #e6e2d8; }
+footer { margin: 48px 44px 0; color: #565d64; font-size: 11px; max-width: 880px;
+         border-top: 1px dashed #2a2e35; padding-top: 14px; }
+.bigchart { background: #0b0d10; border: 1px solid #22262c; padding: 18px; }
+</style></head><body>
+<header>
+  <div>
+    <div class="wordmark">VIG</div>
+    <div class="tagline">the house takes its cut — <b>systematic daily desk</b></div>
+  </div>
+  <div class="stamp-date">2026-07-07 · 19:02:25<br><a class="btn" href="index.html">◈ desk</a> <a class="btn" href="past_trades.html">◈ past trades</a> <a class="btn" href="portfolio.html">◈ portfolio</a></div>
+</header>
+
+<div class="wrap">
+<style>
+.wiregrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+.art { background: #0b0d10; border: 1px solid #22262c; padding: 16px 18px;
+       display: flex; flex-direction: column; gap: 9px; }
+.art .meta { display: flex; justify-content: space-between; font-size: 10.5px;
+             color: #6d747c; letter-spacing: 1px; text-transform: uppercase; }
+.art a.t { color: #e6e2d8; text-decoration: none; font-size: 13.5px;
+           line-height: 1.55; font-weight: 600; }
+.art a.t:hover { color: #ffb000; }
+.art .foot { display: flex; gap: 8px; align-items: center; margin-top: auto; }
+.tickchip { border: 1px solid #2a2e35; padding: 2px 9px; font-size: 11px;
+            color: #ffb000; }
+.stance { font-size: 10.5px; letter-spacing: 1px; padding: 2px 8px; border: 1px solid; }
+.stance.l { color: #46ff9a; border-color: rgba(52,211,153,.4); }
+.stance.s { color: #ff5d5d; border-color: rgba(248,113,113,.4); }
+.stance.n { color: #6d747c; border-color: #2a2e35; }
+</style>
+<h2>Macro wire <span class="dim">/ indices, rates, energy, gold, crypto, fx</span></h2>
+<div class="wiregrid">
+<div class="art">
+  <div class="meta"><span>Yahoo Finance</span><span>12h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/live/stock-market-today-dow-sp-500-nasdaq-futures-slip-with-ai-trade-in-focus-223015294.html" target="_blank">Stock market today: Dow, S&amp;P 500, Nasdaq futures slip with AI trade in focus</a>
+  <div class="foot"><span class="tickchip">^GSPC</span><span class="stance l">LONG 0.78x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Yahoo Finance</span><span>23h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/article/this-surprising-wrinkle-in-the-2026-bull-market-could-drive-stocks-higher-120223653.html" target="_blank">This surprising wrinkle in the 2026 bull market could drive stocks higher</a>
+  <div class="foot"><span class="tickchip">^GSPC</span><span class="stance l">LONG 0.78x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>StockStory</span><span>20m ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/stocks/articles/2-industrials-stocks-long-term-104152688.html" target="_blank">2 Industrials Stocks for Long-Term Investors and 1 That Underwhelm</a>
+  <div class="foot"><span class="tickchip">^GSPC</span><span class="stance l">LONG 0.78x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>InvestorsHub</span><span>44m ago</span></div>
+  <a class="t" href="https://investorshub.advfn.com/market-news/article/31440/us-futures-edge-lower-as-investors-assess-samsung-results-and-fed-outlook-dow-jones-sp-nasdaq-wall-street" target="_blank">US futures edge lower as investors assess Samsung results and Fed outlook: Dow Jones, S&amp;P, Nasdaq, Wall Street</a>
+  <div class="foot"><span class="tickchip">^GSPC</span><span class="stance l">LONG 0.78x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Yahoo Finance</span><span>2h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/article/nyse-president-optimistic-about-forthcoming-ipos-says-economy-is-doing-extraordinarily-well-090000313.html" target="_blank">NYSE president optimistic about forthcoming IPOs, says economy is doing &#x27;extraordinarily well&#x27;</a>
+  <div class="foot"><span class="tickchip">^IXIC</span><span class="stance l">LONG 0.5x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Yahoo Finance</span><span>21h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/article/president-rings-opening-bell-from-oval-office-in-event-promoting-newly-launched-trump-accounts-134810560.html" target="_blank">President rings opening bell from Oval Office in event promoting newly launched Trump Accounts</a>
+  <div class="foot"><span class="tickchip">^IXIC</span><span class="stance l">LONG 0.5x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Reuters</span><span>1h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/news/stocks-ease-despite-upbeat-samsung-020825000.html" target="_blank">Stocks stumble as tech slides despite Samsung&#x27;s record profit; oil rises</a>
+  <div class="foot"><span class="tickchip">^IXIC</span><span class="stance l">LONG 0.5x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Reuters</span><span>1h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/stocks/articles/nasdaq-futures-fall-samsungs-record-092753715.html" target="_blank">Nasdaq futures fall after Samsung&#x27;s record profit fails to allay chip jitters</a>
+  <div class="foot"><span class="tickchip">^IXIC</span><span class="stance l">LONG 0.5x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Yahoo Personal Finance</span><span>22h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/personal-finance/investing/article/gold-prices-today-monday-july-6-higher-prices-following-thursdays-jobs-report-121321784.html" target="_blank">Gold prices today, Monday, July 6: Higher prices following Thursday&#x27;s jobs report</a>
+  <div class="foot"><span class="tickchip">GC=F</span><span class="stance l">LONG 0.44x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Mining Technology</span><span>9m ago</span></div>
+  <a class="t" href="https://www.mining-technology.com/news/dryden-gold-to-acquire-lost-lake-orebot/" target="_blank">Dryden Gold to acquire Lost Lake claims from Orebot</a>
+  <div class="foot"><span class="tickchip">GC=F</span><span class="stance l">LONG 0.44x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>InvestorsHub</span><span>39m ago</span></div>
+  <a class="t" href="https://investorshub.advfn.com/market-news/article/31442/gold-prices-weaken-as-investors-await-federal-reserve-meeting-minutes" target="_blank">Gold prices weaken as investors await Federal Reserve meeting minutes</a>
+  <div class="foot"><span class="tickchip">GC=F</span><span class="stance l">LONG 0.44x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Proactive</span><span>52m ago</span></div>
+  <a class="t" href="https://www.proactiveinvestors.com/companies/news/1095031/gold-traders-bet-on-rebound-stalling-near-4-300-after-sharp-first-half-slump-1095031.html" target="_blank">Gold traders bet on rebound stalling near $4,300 after sharp first-half slump</a>
+  <div class="foot"><span class="tickchip">GC=F</span><span class="stance l">LONG 0.44x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Yahoo Finance Video</span><span>15h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/video/what-the-stability-of-a-possible-us-iran-deal-means-for-markets-193950664.html" target="_blank">What the stability of a possible US-Iran deal means for markets</a>
+  <div class="foot"><span class="tickchip">CL=F</span><span class="stance l">LONG 0.17x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Yahoo Finance</span><span>17h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/article/why-the-us-iran-peace-deal-remains-the-key-market-risk-factor-for-the-rest-of-the-year-171351504.html" target="_blank">Why the US-Iran peace deal remains the key market risk factor for the rest of the year</a>
+  <div class="foot"><span class="tickchip">CL=F</span><span class="stance l">LONG 0.17x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Offshore Technology</span><span>29m ago</span></div>
+  <a class="t" href="https://www.offshore-technology.com/news/ontario-alberta-hardisty-to-sarnia-oil-pipeline/" target="_blank">Ontario, Alberta unveil proposed Hardisty-to-Sarnia oil pipeline route</a>
+  <div class="foot"><span class="tickchip">CL=F</span><span class="stance l">LONG 0.17x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>MT Newswires</span><span>54m ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/energy/articles/oil-supported-iran-missile-attacks-100816383.html" target="_blank">Oil Supported After Iran Missile Attacks; Treasuries Recover; Asian Tech Stocks Weaken, Commerzbank Says</a>
+  <div class="foot"><span class="tickchip">CL=F</span><span class="stance l">LONG 0.17x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>The Telegraph</span><span>1h ago</span></div>
+  <a class="t" href="https://uk.finance.yahoo.com/news/oil-gas-prices-rise-tanker-093851474.html" target="_blank">Oil and gas prices rise after tanker hit by missile in Strait of Hormuz</a>
+  <div class="foot"><span class="tickchip">NG=F</span><span class="stance s">SHORT 0.25x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Zacks</span><span>2h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/stocks/articles/strength-seen-alvopetro-energy-alvof-080500285.html" target="_blank">Strength Seen in Alvopetro Energy (ALVOF): Can Its 7.4% Jump Turn into More Strength?</a>
+  <div class="foot"><span class="tickchip">NG=F</span><span class="stance s">SHORT 0.25x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>MT Newswires</span><span>2h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/energy/articles/shell-q2-production-down-higher-080305458.html" target="_blank">Shell Q2 Production Down, Higher Margins on Persian Gulf Turmoils</a>
+  <div class="foot"><span class="tickchip">NG=F</span><span class="stance s">SHORT 0.25x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Proactive</span><span>4h ago</span></div>
+  <a class="t" href="https://www.proactiveinvestors.com/companies/news/1095024/shell-flags-significantly-higher-gas-trading-to-offset-lower-oil-and-gas-production-1095024.html" target="_blank">Shell flags &#x27;significantly higher&#x27; gas trading and sells South Africa business - UPDATE</a>
+  <div class="foot"><span class="tickchip">NG=F</span><span class="stance s">SHORT 0.25x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Yahoo Finance Video</span><span>15h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/video/micron-ford-chip-deal-terawulf-stock-gets-lift-private-equity-takes-over-easyjet-193058739.html" target="_blank">Micron-Ford chip deal, TeraWulf stock gets lift, private equity takes over easyJet</a>
+  <div class="foot"><span class="tickchip">BTC-USD</span><span class="stance s">SHORT 0.3x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Yahoo Finance Video</span><span>18h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/video/strategy-sells-216m-in-bitcoin-to-fund-its-shareholder-dividends-163230774.html" target="_blank">Strategy sells $216M in bitcoin to fund its shareholder dividends</a>
+  <div class="foot"><span class="tickchip">BTC-USD</span><span class="stance s">SHORT 0.3x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Simply Wall St.</span><span>43m ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/stocks/articles/strategy-mstr-bargain-following-cfo-101854223.html" target="_blank">Is Strategy (MSTR) A Bargain Following Its CFO Accounting Role Change?</a>
+  <div class="foot"><span class="tickchip">BTC-USD</span><span class="stance s">SHORT 0.3x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>CCN</span><span>45m ago</span></div>
+  <a class="t" href="https://www.ccn.com/news/crypto/strategy-bitcoin-sale-boost-price-says-grayscale-how-high/" target="_blank">Strategy $216M Bitcoin Sale May Boost Its Price, Says Grayscale — How High Could It Go?</a>
+  <div class="foot"><span class="tickchip">BTC-USD</span><span class="stance s">SHORT 0.3x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Reuters</span><span>10h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/currencies/articles/yen-pinned-near-40-low-003058388.html" target="_blank">Yen pinned near 40-year low in test of Tokyo&#x27;s intervention resolve</a>
+  <div class="foot"><span class="tickchip">EURUSD=X</span><span class="stance s">SHORT 2.11x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>The Wall Street Journal</span><span>13h ago</span></div>
+  <a class="t" href="https://www.wsj.com/finance/currencies/asian-currencies-consolidate-amid-possible-position-adjustments-a259ca37?siteid=yhoof2&amp;yptr=yahoo" target="_blank">WSJ Dollar Index Rises 0.04% to 97.26</a>
+  <div class="foot"><span class="tickchip">EURUSD=X</span><span class="stance s">SHORT 2.11x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Barchart</span><span>20h ago</span></div>
+  <a class="t" href="https://www.barchart.com/story/news/3143371/dollar-gains-on-strength-in-us-services-activity" target="_blank">Dollar Gains on Strength in US Services Activity</a>
+  <div class="foot"><span class="tickchip">EURUSD=X</span><span class="stance s">SHORT 2.11x</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Investing.com</span><span>3d ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/currencies/articles/bofa-highlights-fx-intervention-impact-084721714.html" target="_blank">BofA highlights FX intervention impact on reserves and central bank balance sheets</a>
+  <div class="foot"><span class="tickchip">EURUSD=X</span><span class="stance s">SHORT 2.11x</span></div>
+</div></div>
+<h2>Single names on the desk <span class="dim">/ today's picks in the news</span></h2>
+<div class="wiregrid">
+<div class="art">
+  <div class="meta"><span>Zacks</span><span>18h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/energy/articles/ai-driven-electricity-demand-fuel-164200415.html" target="_blank">Can AI-Driven Electricity Demand Fuel CEG&#x27;s Long-Term Growth?</a>
+  <div class="foot"><span class="tickchip">AES</span><span class="stance l">LONG BOOK · P 0.589</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Zacks</span><span>7d ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/energy/articles/constellations-long-term-nuclear-ppas-145400226.html" target="_blank">Will Constellation&#x27;s Long-Term Nuclear PPAs Drive Sustainable Growth?</a>
+  <div class="foot"><span class="tickchip">AES</span><span class="stance l">LONG BOOK · P 0.589</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Yahoo Finance Video</span><span>20h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/video/micron-bottleneck-within-bottleneck-memory-143000218.html" target="_blank">Micron is like the &#x27;bottleneck within the bottleneck&#x27; of memory trade</a>
+  <div class="foot"><span class="tickchip">MU</span><span class="stance l">LONG BOOK · P 0.574</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Simply Wall St.</span><span>11h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/technology/ai/articles/ciena-cien-trials-ai-automation-232058948.html" target="_blank">Ciena (CIEN) Trials AI Automation With Telefónica Deutschland For 5G Network Slicing</a>
+  <div class="foot"><span class="tickchip">CIEN</span><span class="stance l">LONG BOOK · P 0.573</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Zacks</span><span>19h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/stocks/articles/aaoi-surges-247-ytd-buy-155700727.html" target="_blank">AAOI Surges 247% YTD: Should You Buy, Sell, or Hold the Stock?</a>
+  <div class="foot"><span class="tickchip">CIEN</span><span class="stance l">LONG BOOK · P 0.573</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Barchart</span><span>3d ago</span></div>
+  <a class="t" href="https://www.barchart.com/story/news/3125121/nucor-corporations-quarterly-earnings-preview-what-you-need-to-know" target="_blank">Nucor Corporation’s Quarterly Earnings Preview: What You Need to Know</a>
+  <div class="foot"><span class="tickchip">NUE</span><span class="stance l">LONG BOOK · P 0.57</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Barrons.com</span><span>4d ago</span></div>
+  <a class="t" href="https://www.barrons.com/articles/tech-stock-volatility-materials-54f8fde9?siteid=yhoof2&amp;yptr=yahoo" target="_blank">Avoid Tech Stock Volatility. The Case for Owning a Materials ETF.</a>
+  <div class="foot"><span class="tickchip">NUE</span><span class="stance l">LONG BOOK · P 0.57</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Barchart</span><span>14h ago</span></div>
+  <a class="t" href="https://www.barchart.com/story/news/3149787/this-analyst-just-downgraded-datadog-stock-here-s-why" target="_blank">This Analyst Just Downgraded Datadog Stock. Here&#x27;s Why.</a>
+  <div class="foot"><span class="tickchip">DDOG</span><span class="stance l">LONG BOOK · P 0.569</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Stocktwits</span><span>18h ago</span></div>
+  <a class="t" href="https://stocktwits.com/news-articles/markets/equity/ddog-s-late-june-rally-failed-to-carry-the-stock-beyond-recently-hit-record-highs-interestingly-bernstein-now-flags-slowing-demand-signals/cZm1jakR7lo" target="_blank">DDOG&#x27;s Late-June Rally Failed To Carry The Stock Beyond Recently Hit Record Highs – Interestingly, Bernstein Now Flags Slowing Demand Signals</a>
+  <div class="foot"><span class="tickchip">DDOG</span><span class="stance l">LONG BOOK · P 0.569</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Yahoo Finance</span><span>16h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/article/trump-accounts-could-be-a-boon-for-the-stock-market-and-retail-investors-strategist-181731169.html" target="_blank">Trump Accounts could be a boon for the stock market and retail investors: Strategist</a>
+  <div class="foot"><span class="tickchip">DELL</span><span class="stance l">LONG BOOK · P 0.568</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>The Wall Street Journal</span><span>13h ago</span></div>
+  <a class="t" href="https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-07-06-2026/card/stocks-to-watch-strategy-intel-easyjet-HuI3TTD99KRGZ6U3xsd0?siteid=yhoof2&amp;yptr=yahoo" target="_blank">Stocks to Watch Recap: Walmart, Strategy, easyJet, Micron</a>
+  <div class="foot"><span class="tickchip">DELL</span><span class="stance l">LONG BOOK · P 0.568</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Simply Wall St.</span><span>3d ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/media-advertising/articles/fox-foxa-buying-roku-22-191536704.html" target="_blank">Fox (FOXA) Is Buying Roku For $22 Billion To Expand Its Streaming Reach</a>
+  <div class="foot"><span class="tickchip">FOXA</span><span class="stance s">SHORT BOOK · P 0.442</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Simply Wall St.</span><span>3d ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/stocks/articles/fox-foxa-fallen-far-enough-151047089.html" target="_blank">Has Fox (FOXA) Fallen Far Enough to Trade at a Discount?</a>
+  <div class="foot"><span class="tickchip">FOXA</span><span class="stance s">SHORT BOOK · P 0.442</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Insider Monkey</span><span>3d ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/stocks/articles/trimble-inc-trmb-good-stock-182448543.html" target="_blank">Is Trimble Inc. (TRMB) A Good Stock To Buy Now?</a>
+  <div class="foot"><span class="tickchip">TRMB</span><span class="stance s">SHORT BOOK · P 0.441</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Insider Monkey</span><span>13d ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/technology/ai/articles/trimble-inc-trmb-subsidiary-launches-150646943.html" target="_blank">Trimble Inc.’s (TRMB) Subsidiary Launches Advanced Risk Intelligence Platform</a>
+  <div class="foot"><span class="tickchip">TRMB</span><span class="stance s">SHORT BOOK · P 0.441</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Barchart</span><span>21h ago</span></div>
+  <a class="t" href="https://www.barchart.com/story/news/3142405/tyler-technologies-quarterly-earnings-preview-what-you-need-to-know" target="_blank">Tyler Technologies&#x27; Quarterly Earnings Preview: What You Need to Know</a>
+  <div class="foot"><span class="tickchip">TYL</span><span class="stance s">SHORT BOOK · P 0.441</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Insider Monkey</span><span>1d ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/technology/ai/articles/tyler-technologies-tyl-deploys-resident-220917123.html" target="_blank">Tyler Technologies (TYL) Deploys Resident AI Assistant Across South Carolina Government Services</a>
+  <div class="foot"><span class="tickchip">TYL</span><span class="stance s">SHORT BOOK · P 0.441</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>MT Newswires</span><span>19h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/stocks/articles/general-mills-investors-seek-greater-151220504.html" target="_blank">General Mills Investors Will Seek Greater Evidence Supporting Top-Line Acceleration, UBS Says</a>
+  <div class="foot"><span class="tickchip">GIS</span><span class="stance s">SHORT BOOK · P 0.441</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Motley Fool</span><span>1d ago</span></div>
+  <a class="t" href="https://www.fool.com/investing/2026/07/05/3-dividend-stocks-that-recently-hit-52-week-lows-t/" target="_blank">3 Dividend Stocks That Recently Hit 52-Week Lows to Buy in July</a>
+  <div class="foot"><span class="tickchip">GIS</span><span class="stance s">SHORT BOOK · P 0.441</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Zacks</span><span>13h ago</span></div>
+  <a class="t" href="https://finance.yahoo.com/markets/stocks/articles/workday-wday-outpaces-stock-market-215003049.html" target="_blank">Workday (WDAY) Outpaces Stock Market Gains: What You Should Know</a>
+  <div class="foot"><span class="tickchip">WDAY</span><span class="stance s">SHORT BOOK · P 0.422</span></div>
+</div>
+<div class="art">
+  <div class="meta"><span>Motley Fool</span><span>22h ago</span></div>
+  <a class="t" href="https://www.fool.com/investing/2026/07/06/these-3-stocks-were-the-worst-performers-on-the-na/" target="_blank">These 3 Stocks Were the Worst Performers on the Nasdaq-100 in the First Half of 2026. Can They Rebound in the Second Half?</a>
+  <div class="foot"><span class="tickchip">WDAY</span><span class="stance s">SHORT BOOK · P 0.422</span></div>
+</div></div>
+<h2>Wire vs desk <span class="dim">/ what's loud vs where the book stands</span></h2>
+<table><tr><th>Instrument</th><th>Wire heat</th><th>Desk stance</th></tr><tr data-search="^GSPC"><td><b>^GSPC</b></td><td>▮▮▮▮ 4</td><td class="pos">LONG 0.78x</td></tr><tr data-search="^IXIC"><td><b>^IXIC</b></td><td>▮▮▮▮ 4</td><td class="pos">LONG 0.5x</td></tr><tr data-search="GC=F"><td><b>GC=F</b></td><td>▮▮▮▮ 4</td><td class="pos">LONG 0.44x</td></tr><tr data-search="CL=F"><td><b>CL=F</b></td><td>▮▮▮▮ 4</td><td class="pos">LONG 0.17x</td></tr><tr data-search="NG=F"><td><b>NG=F</b></td><td>▮▮▮▮ 4</td><td class="neg">SHORT 0.25x</td></tr><tr data-search="BTC-USD"><td><b>BTC-USD</b></td><td>▮▮▮▮ 4</td><td class="neg">SHORT 0.3x</td></tr><tr data-search="EURUSD=X"><td><b>EURUSD=X</b></td><td>▮▮▮▮ 4</td><td class="neg">SHORT 2.11x</td></tr><tr data-search="AES"><td><b>AES</b></td><td>▮▮ 2</td><td class="pos">LONG BOOK · P 0.589</td></tr><tr data-search="CIEN"><td><b>CIEN</b></td><td>▮▮ 2</td><td class="pos">LONG BOOK · P 0.573</td></tr><tr data-search="NUE"><td><b>NUE</b></td><td>▮▮ 2</td><td class="pos">LONG BOOK · P 0.57</td></tr><tr data-search="DDOG"><td><b>DDOG</b></td><td>▮▮ 2</td><td class="pos">LONG BOOK · P 0.569</td></tr><tr data-search="DELL"><td><b>DELL</b></td><td>▮▮ 2</td><td class="pos">LONG BOOK · P 0.568</td></tr></table>
+<h2>Desk read <span class="dim">/ computed — the written synthesis activates with an API key</span></h2><div class="commentary"><ul class="why"><li>^GSPC: 4 on the wire — desk is LONG 0.78x</li><li>^IXIC: 4 on the wire — desk is LONG 0.5x</li><li>GC=F: 4 on the wire — desk is LONG 0.44x</li><li>CL=F: 4 on the wire — desk is LONG 0.17x</li><li>NG=F: 4 on the wire — desk is SHORT 0.25x</li><li>BTC-USD: 4 on the wire — desk is SHORT 0.3x</li><li>EURUSD=X: 4 on the wire — desk is SHORT 2.11x</li><li>AES: 2 on the wire — long book at P(out) 0.589</li></ul><p class="muted" style="margin-top:10px;font-size:11.5px">Vig trades prices, not narratives: headlines here are context for the human, never inputs to the model.</p></div></div>
+<footer>Research tooling output — signals from backtested models with modest,
+documented edges (weekly IC ≈ 0.017; see RESEARCH_NOTES.md). Probabilities are
+calibrated conviction, not certainty. Not investment advice.</footer>
+<style>
+#vc-toggle { position: fixed; right: 26px; bottom: 24px; z-index: 60;
+  background: #0b0d10; border: 1px solid #ffb000; color: #ffb000;
+  font: 12px "SF Mono", ui-monospace, Menlo, monospace; letter-spacing: 2px;
+  padding: 12px 20px; cursor: pointer; box-shadow: 0 6px 24px rgba(0,0,0,.5); }
+#vc-toggle:hover { background: #ffb000; color: #060708; }
+#vc-panel { position: fixed; right: 0; top: 0; bottom: 0; z-index: 70;
+  width: 470px; max-width: 94vw; display: flex; flex-direction: column;
+  background: #0a0c0f; border-left: 1px solid #2a2e35;
+  box-shadow: -30px 0 60px rgba(0,0,0,.55);
+  transform: translateX(102%); transition: transform .22s ease; }
+#vc-panel.open { transform: translateX(0); }
+#vc-head { padding: 16px 20px; border-bottom: 1px solid #22262c;
+  display: flex; justify-content: space-between; align-items: center; }
+#vc-head .t { font-size: 13px; letter-spacing: 3px; color: #ffb000; font-weight: 700; }
+#vc-head .s { font-size: 10px; color: #6d747c; letter-spacing: 1px; margin-top: 3px; }
+#vc-close { cursor: pointer; color: #8a9199; font-size: 18px; padding: 4px 8px;
+  border: 1px solid transparent; }
+#vc-close:hover { color: #e6e2d8; border-color: #2a2e35; }
+#vc-msgs { flex: 1; overflow-y: auto; padding: 18px 20px; }
+.vc-m { margin-bottom: 18px; }
+.vc-tag { font-size: 10px; letter-spacing: 2px; margin-bottom: 5px; font-weight: 700; }
+.vc-m.you .vc-tag { color: #46ff9a; }
+.vc-m.vig .vc-tag { color: #ffb000; }
+.vc-body { font-size: 13px; line-height: 1.7; color: #d9d4c8; }
+.vc-m.you .vc-body { color: #9fa8b2; }
+.vc-body b { color: #ffffff; }
+.vc-body code { background: #14171b; border: 1px solid #22262c; padding: 1px 5px;
+  font-size: 12px; }
+.vc-body ul { margin: 6px 0 6px 18px; }
+.vc-body li { margin-bottom: 3px; }
+.vc-act { font-size: 11px; color: #46ff9a; background: rgba(52,211,153,.06);
+  border-left: 2px solid #46ff9a; padding: 6px 10px; margin: 8px 0; }
+.vc-err { font-size: 11.5px; color: #ff5d5d; background: rgba(248,113,113,.06);
+  border-left: 2px solid #ff5d5d; padding: 6px 10px; margin: 8px 0; }
+#vc-think { display: none; padding: 0 20px 12px; color: #ffb000; font-size: 12px;
+  letter-spacing: 2px; }
+#vc-think.on { display: block; }
+#vc-think span { animation: vcpulse 1.2s infinite; display: inline-block; }
+#vc-think span:nth-child(2) { animation-delay: .2s; }
+#vc-think span:nth-child(3) { animation-delay: .4s; }
+@keyframes vcpulse { 0%,100% { opacity: .2; } 50% { opacity: 1; } }
+#vc-chips { padding: 0 20px 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+.vc-chip { border: 1px solid #2a2e35; color: #9fa8b2; font-size: 11px;
+  padding: 7px 12px; cursor: pointer; background: #0e1114; }
+.vc-chip:hover { border-color: #ffb000; color: #ffb000; }
+#vc-inrow { display: flex; border-top: 1px solid #22262c; }
+#vc-in { flex: 1; background: #0a0c0f; border: none; color: #e6e2d8;
+  font: 13.5px "SF Mono", ui-monospace, Menlo, monospace; padding: 17px 20px; }
+#vc-in:focus { outline: none; }
+#vc-in:disabled { opacity: .4; }
+#vc-send { background: none; border: none; border-left: 1px solid #22262c;
+  color: #ffb000; font: 700 13px "SF Mono", ui-monospace, Menlo, monospace;
+  padding: 0 22px; cursor: pointer; letter-spacing: 1px; }
+#vc-send:hover { background: #ffb000; color: #060708; }
+#vc-send:disabled { opacity: .3; pointer-events: none; }
+#vc-foot { padding: 8px 20px 12px; font-size: 10px; color: #565d64;
+  display: flex; justify-content: space-between; }
+#vc-forget { cursor: pointer; color: #565d64; text-decoration: underline; }
+#vc-keywrap { padding: 26px 22px; }
+#vc-keywrap h3 { font-size: 13px; letter-spacing: 2px; color: #ffb000; margin-bottom: 12px; }
+#vc-keywrap p { font-size: 12px; line-height: 1.7; color: #9fa8b2; margin-bottom: 16px; }
+#vc-keywrap a { color: #ffb000; }
+#vc-keyrow { display: flex; border: 1px solid #2a2e35; }
+#vc-key { flex: 1; background: #060708; border: none; color: #e6e2d8;
+  font: 13px "SF Mono", ui-monospace, Menlo, monospace; padding: 13px 14px; }
+#vc-key:focus { outline: none; }
+#vc-savekey { background: #ffb000; border: none; color: #060708;
+  font: 700 12px "SF Mono", ui-monospace, Menlo, monospace; padding: 0 18px;
+  cursor: pointer; }
+</style>
+<button id="vc-toggle">▣ ASK VIG</button>
+<div id="vc-panel">
+  <div id="vc-head">
+    <div><div class="t">ASK VIG</div>
+    <div class="s">grounded in this page · can filter &amp; drive the UI · not investment advice</div></div>
+    <span id="vc-close">✕</span>
+  </div>
+  <div id="vc-keywrap" hidden>
+    <h3>ONE-TIME SETUP</h3>
+    <p>Vig's assistant talks to the Anthropic API straight from this browser —
+    no server, nothing running. Paste an API key from
+    <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>.
+    It is stored only in this browser's localStorage and sent only to
+    api.anthropic.com. A conversation costs a few cents.</p>
+    <div id="vc-keyrow">
+      <input id="vc-key" type="password" placeholder="sk-ant-…">
+      <button id="vc-savekey">START</button>
+    </div>
+  </div>
+  <div id="vc-msgs"></div>
+  <div id="vc-think">thinking<span>.</span><span>.</span><span>.</span></div>
+  <div id="vc-chips"></div>
+  <div id="vc-inrow">
+    <input id="vc-in" placeholder="ask, or tell me what to show…">
+    <button id="vc-send">SEND</button>
+  </div>
+  <div id="vc-foot"><span>claude-opus-4-8 · serverless</span>
+    <span id="vc-forget">forget key</span></div>
+</div>
+
+<script>
+(() => {
+const CTX = {"articles": [{"ticker": "^GSPC", "title": "Stock market today: Dow, S&P 500, Nasdaq futures slip with AI trade in focus", "stance": {"kind": "trend", "side": "LONG", "size": 0.78, "ret_5d": 0.0051}}, {"ticker": "^GSPC", "title": "This surprising wrinkle in the 2026 bull market could drive stocks higher", "stance": {"kind": "trend", "side": "LONG", "size": 0.78, "ret_5d": 0.0051}}, {"ticker": "^GSPC", "title": "2 Industrials Stocks for Long-Term Investors and 1 That Underwhelm", "stance": {"kind": "trend", "side": "LONG", "size": 0.78, "ret_5d": 0.0051}}, {"ticker": "^GSPC", "title": "US futures edge lower as investors assess Samsung results and Fed outlook: Dow Jones, S&P, Nasdaq, Wall Street", "stance": {"kind": "trend", "side": "LONG", "size": 0.78, "ret_5d": 0.0051}}, {"ticker": "^IXIC", "title": "NYSE president optimistic about forthcoming IPOs, says economy is doing 'extraordinarily well'", "stance": {"kind": "trend", "side": "LONG", "size": 0.5, "ret_5d": -0.0035}}, {"ticker": "^IXIC", "title": "President rings opening bell from Oval Office in event promoting newly launched Trump Accounts", "stance": {"kind": "trend", "side": "LONG", "size": 0.5, "ret_5d": -0.0035}}, {"ticker": "^IXIC", "title": "Stocks stumble as tech slides despite Samsung's record profit; oil rises", "stance": {"kind": "trend", "side": "LONG", "size": 0.5, "ret_5d": -0.0035}}, {"ticker": "^IXIC", "title": "Nasdaq futures fall after Samsung's record profit fails to allay chip jitters", "stance": {"kind": "trend", "side": "LONG", "size": 0.5, "ret_5d": -0.0035}}, {"ticker": "GC=F", "title": "Gold prices today, Monday, July 6: Higher prices following Thursday's jobs report", "stance": {"kind": "trend", "side": "LONG", "size": 0.44, "ret_5d": 0.0289}}, {"ticker": "GC=F", "title": "Dryden Gold to acquire Lost Lake claims from Orebot", "stance": {"kind": "trend", "side": "LONG", "size": 0.44, "ret_5d": 0.0289}}, {"ticker": "GC=F", "title": "Gold prices weaken as investors await Federal Reserve meeting minutes", "stance": {"kind": "trend", "side": "LONG", "size": 0.44, "ret_5d": 0.0289}}, {"ticker": "GC=F", "title": "Gold traders bet on rebound stalling near $4,300 after sharp first-half slump", "stance": {"kind": "trend", "side": "LONG", "size": 0.44, "ret_5d": 0.0289}}, {"ticker": "CL=F", "title": "What the stability of a possible US-Iran deal means for markets", "stance": {"kind": "trend", "side": "LONG", "size": 0.17, "ret_5d": 0.003}}, {"ticker": "CL=F", "title": "Why the US-Iran peace deal remains the key market risk factor for the rest of the year", "stance": {"kind": "trend", "side": "LONG", "size": 0.17, "ret_5d": 0.003}}, {"ticker": "CL=F", "title": "Ontario, Alberta unveil proposed Hardisty-to-Sarnia oil pipeline route", "stance": {"kind": "trend", "side": "LONG", "size": 0.17, "ret_5d": 0.003}}, {"ticker": "CL=F", "title": "Oil Supported After Iran Missile Attacks; Treasuries Recover; Asian Tech Stocks Weaken, Commerzbank Says", "stance": {"kind": "trend", "side": "LONG", "size": 0.17, "ret_5d": 0.003}}, {"ticker": "NG=F", "title": "Oil and gas prices rise after tanker hit by missile in Strait of Hormuz", "stance": {"kind": "trend", "side": "SHORT", "size": 0.25, "ret_5d": 0.0049}}, {"ticker": "NG=F", "title": "Strength Seen in Alvopetro Energy (ALVOF): Can Its 7.4% Jump Turn into More Strength?", "stance": {"kind": "trend", "side": "SHORT", "size": 0.25, "ret_5d": 0.0049}}, {"ticker": "NG=F", "title": "Shell Q2 Production Down, Higher Margins on Persian Gulf Turmoils", "stance": {"kind": "trend", "side": "SHORT", "size": 0.25, "ret_5d": 0.0049}}, {"ticker": "NG=F", "title": "Shell flags 'significantly higher' gas trading and sells South Africa business - UPDATE", "stance": {"kind": "trend", "side": "SHORT", "size": 0.25, "ret_5d": 0.0049}}, {"ticker": "BTC-USD", "title": "Micron-Ford chip deal, TeraWulf stock gets lift, private equity takes over easyJet", "stance": {"kind": "trend", "side": "SHORT", "size": 0.3, "ret_5d": 0.0785}}, {"ticker": "BTC-USD", "title": "Strategy sells $216M in bitcoin to fund its shareholder dividends", "stance": {"kind": "trend", "side": "SHORT", "size": 0.3, "ret_5d": 0.0785}}, {"ticker": "BTC-USD", "title": "Is Strategy (MSTR) A Bargain Following Its CFO Accounting Role Change?", "stance": {"kind": "trend", "side": "SHORT", "size": 0.3, "ret_5d": 0.0785}}, {"ticker": "BTC-USD", "title": "Strategy $216M Bitcoin Sale May Boost Its Price, Says Grayscale \u2014 How High Could It Go?", "stance": {"kind": "trend", "side": "SHORT", "size": 0.3, "ret_5d": 0.0785}}, {"ticker": "EURUSD=X", "title": "Yen pinned near 40-year low in test of Tokyo's intervention resolve", "stance": {"kind": "trend", "side": "SHORT", "size": 2.11, "ret_5d": 0.0008}}, {"ticker": "EURUSD=X", "title": "WSJ Dollar Index Rises 0.04% to 97.26", "stance": {"kind": "trend", "side": "SHORT", "size": 2.11, "ret_5d": 0.0008}}, {"ticker": "EURUSD=X", "title": "Dollar Gains on Strength in US Services Activity", "stance": {"kind": "trend", "side": "SHORT", "size": 2.11, "ret_5d": 0.0008}}, {"ticker": "EURUSD=X", "title": "BofA highlights FX intervention impact on reserves and central bank balance sheets", "stance": {"kind": "trend", "side": "SHORT", "size": 2.11, "ret_5d": 0.0008}}, {"ticker": "AES", "title": "Can AI-Driven Electricity Demand Fuel CEG's Long-Term Growth?", "stance": {"kind": "xsec", "side": "LONG BOOK", "prob": 0.589}}, {"ticker": "AES", "title": "Will Constellation's Long-Term Nuclear PPAs Drive Sustainable Growth?", "stance": {"kind": "xsec", "side": "LONG BOOK", "prob": 0.589}}, {"ticker": "MU", "title": "Micron is like the 'bottleneck within the bottleneck' of memory trade", "stance": {"kind": "xsec", "side": "LONG BOOK", "prob": 0.574}}, {"ticker": "CIEN", "title": "Ciena (CIEN) Trials AI Automation With Telef\u00f3nica Deutschland For 5G Network Slicing", "stance": {"kind": "xsec", "side": "LONG BOOK", "prob": 0.573}}, {"ticker": "CIEN", "title": "AAOI Surges 247% YTD: Should You Buy, Sell, or Hold the Stock?", "stance": {"kind": "xsec", "side": "LONG BOOK", "prob": 0.573}}, {"ticker": "NUE", "title": "Nucor Corporation\u2019s Quarterly Earnings Preview: What You Need to Know", "stance": {"kind": "xsec", "side": "LONG BOOK", "prob": 0.57}}, {"ticker": "NUE", "title": "Avoid Tech Stock Volatility. The Case for Owning a Materials ETF.", "stance": {"kind": "xsec", "side": "LONG BOOK", "prob": 0.57}}, {"ticker": "DDOG", "title": "This Analyst Just Downgraded Datadog Stock. Here's Why.", "stance": {"kind": "xsec", "side": "LONG BOOK", "prob": 0.569}}, {"ticker": "DDOG", "title": "DDOG's Late-June Rally Failed To Carry The Stock Beyond Recently Hit Record Highs \u2013 Interestingly, Bernstein Now Flags Slowing Demand Signals", "stance": {"kind": "xsec", "side": "LONG BOOK", "prob": 0.569}}, {"ticker": "DELL", "title": "Trump Accounts could be a boon for the stock market and retail investors: Strategist", "stance": {"kind": "xsec", "side": "LONG BOOK", "prob": 0.568}}, {"ticker": "DELL", "title": "Stocks to Watch Recap: Walmart, Strategy, easyJet, Micron", "stance": {"kind": "xsec", "side": "LONG BOOK", "prob": 0.568}}, {"ticker": "FOXA", "title": "Fox (FOXA) Is Buying Roku For $22 Billion To Expand Its Streaming Reach", "stance": {"kind": "xsec", "side": "SHORT BOOK", "prob": 0.442}}, {"ticker": "FOXA", "title": "Has Fox (FOXA) Fallen Far Enough to Trade at a Discount?", "stance": {"kind": "xsec", "side": "SHORT BOOK", "prob": 0.442}}, {"ticker": "TRMB", "title": "Is Trimble Inc. (TRMB) A Good Stock To Buy Now?", "stance": {"kind": "xsec", "side": "SHORT BOOK", "prob": 0.441}}, {"ticker": "TRMB", "title": "Trimble Inc.\u2019s (TRMB) Subsidiary Launches Advanced Risk Intelligence Platform", "stance": {"kind": "xsec", "side": "SHORT BOOK", "prob": 0.441}}, {"ticker": "TYL", "title": "Tyler Technologies' Quarterly Earnings Preview: What You Need to Know", "stance": {"kind": "xsec", "side": "SHORT BOOK", "prob": 0.441}}, {"ticker": "TYL", "title": "Tyler Technologies (TYL) Deploys Resident AI Assistant Across South Carolina Government Services", "stance": {"kind": "xsec", "side": "SHORT BOOK", "prob": 0.441}}, {"ticker": "GIS", "title": "General Mills Investors Will Seek Greater Evidence Supporting Top-Line Acceleration, UBS Says", "stance": {"kind": "xsec", "side": "SHORT BOOK", "prob": 0.441}}, {"ticker": "GIS", "title": "3 Dividend Stocks That Recently Hit 52-Week Lows to Buy in July", "stance": {"kind": "xsec", "side": "SHORT BOOK", "prob": 0.441}}, {"ticker": "WDAY", "title": "Workday (WDAY) Outpaces Stock Market Gains: What You Should Know", "stance": {"kind": "xsec", "side": "SHORT BOOK", "prob": 0.422}}, {"ticker": "WDAY", "title": "These 3 Stocks Were the Worst Performers on the Nasdaq-100 in the First Half of 2026. Can They Rebound in the Second Half?", "stance": {"kind": "xsec", "side": "SHORT BOOK", "prob": 0.422}}], "wire_vs_desk": ["^GSPC: 4 on the wire \u2014 desk is LONG 0.78x", "^IXIC: 4 on the wire \u2014 desk is LONG 0.5x", "GC=F: 4 on the wire \u2014 desk is LONG 0.44x", "CL=F: 4 on the wire \u2014 desk is LONG 0.17x", "NG=F: 4 on the wire \u2014 desk is SHORT 0.25x", "BTC-USD: 4 on the wire \u2014 desk is SHORT 0.3x", "EURUSD=X: 4 on the wire \u2014 desk is SHORT 2.11x", "AES: 2 on the wire \u2014 long book at P(out) 0.589"]};
+const PAGE = "analysis";
+const CHIPS = ["what's the theme on the wire today?", "where does the news disagree with the book?", "anything on my picks?", "does news ever change the model?"];
+const MODEL = "claude-opus-4-8";
+const SYS = `You are Vig's in-page desk assistant on the "${PAGE}" page of a
+personal systematic-trading dashboard. Be terse and quantitative; markdown is
+rendered (bold, bullets, inline code). Ground every claim in PAGE CONTEXT; if
+it isn't there, say so rather than guessing. The desk's edge is real but thin
+(weekly IC ~0.017): never oversell, never imply certainty. Use tools whenever
+the user wants to change what they see (filters, portfolio inputs,
+navigation); after filtering, summarize what remains in one line.
+PAGE CONTEXT: ` + JSON.stringify(CTX);
+
+const TOOLS = [
+  { name: "filter_view",
+    description: "Hide table rows on the current page that do not match. " +
+      "Args (optional, AND-combined): query = ticker substring; asset_class " +
+      "(commodity, fx_g10, fx_cross, fx_em, equity_index, bond_fut, crypto, stock); " +
+      "side = LONG|SHORT; min_prob = 0-1 on the row's model probability. " +
+      "Returns visible-row count.",
+    input_schema: { type: "object", properties: {
+      query: { type: "string" }, asset_class: { type: "string" },
+      side: { type: "string" }, min_prob: { type: "number" } },
+      additionalProperties: false } },
+  { name: "reset_view", description: "Clear all filters; show every row.",
+    input_schema: { type: "object", properties: {}, additionalProperties: false } },
+  { name: "set_portfolio",
+    description: "Portfolio page only: set capital (USD) and/or profile " +
+      "(conservative|balanced|aggressive).",
+    input_schema: { type: "object", properties: {
+      capital: { type: "number" }, profile: { type: "string" } },
+      additionalProperties: false } },
+  { name: "open_page",
+    description: "Navigate after replying: desk | past_trades | portfolio | analysis.",
+    input_schema: { type: "object", properties: { page: { type: "string" } },
+      required: ["page"], additionalProperties: false } },
+];
+
+let navTarget = null;
+const msgs = [];
+const $ = id => document.getElementById(id);
+
+function runTool(name, input) {
+  if (name === "reset_view") {
+    document.querySelectorAll("tr[data-search]").forEach(r => r.style.display = "");
+    return "all rows visible";
+  }
+  if (name === "filter_view") {
+    let shown = 0;
+    document.querySelectorAll("tr[data-search]").forEach(r => {
+      let ok = true;
+      if (input.query) ok = ok && r.dataset.search.toLowerCase()
+        .includes(input.query.toLowerCase());
+      if (input.asset_class) ok = ok && (r.dataset.class || "")
+        .includes(input.asset_class.toLowerCase());
+      if (input.side) ok = ok && (r.dataset.side || "") === input.side.toUpperCase();
+      if (input.min_prob != null && r.dataset.prob)
+        ok = ok && parseFloat(r.dataset.prob) >= input.min_prob;
+      r.style.display = ok ? "" : "none";
+      if (ok) shown++;
+    });
+    return shown + " rows visible after filter";
+  }
+  if (name === "set_portfolio") {
+    const cap = $("cap");
+    if (!cap) return "error: not on the portfolio page — call open_page first";
+    if (input.capital != null) {
+      cap.value = Math.round(input.capital).toLocaleString("en-US");
+      cap.dispatchEvent(new Event("input"));
+    }
+    if (input.profile) {
+      const b = document.querySelector(`.seg button[data-p="${input.profile}"]`);
+      if (!b) return "error: unknown profile " + input.profile;
+      b.click();
+    }
+    return "portfolio set";
+  }
+  if (name === "open_page") {
+    const map = { desk: "index.html", past_trades: "past_trades.html",
+                  portfolio: "portfolio.html", analysis: "analysis.html" };
+    if (!map[input.page]) return "error: unknown page";
+    navTarget = map[input.page];
+    return "navigating to " + input.page + " after this reply";
+  }
+  return "error: unknown tool";
+}
+
+function esc(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function md(text) {  // markdown-lite: bold, code, bullets, paragraphs
+  const blocks = esc(text).split(/\n\n+/).map(b => {
+    const lines = b.split("\n");
+    if (lines.every(l => /^\s*[-•]\s+/.test(l)))
+      return "<ul>" + lines.map(l =>
+        "<li>" + l.replace(/^\s*[-•]\s+/, "") + "</li>").join("") + "</ul>";
+    return "<p>" + b.replace(/\n/g, "<br>") + "</p>";
+  }).join("");
+  return blocks
+    .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>");
+}
+
+function addMsg(cls, html, tag) {
+  const d = document.createElement("div");
+  d.className = "vc-m " + cls;
+  d.innerHTML = (tag ? `<div class="vc-tag">${tag}</div>` : "") +
+                `<div class="vc-body">${html}</div>`;
+  $("vc-msgs").appendChild(d);
+  $("vc-msgs").scrollTop = 1e9;
+}
+const addNote = (cls, text) => {
+  const d = document.createElement("div");
+  d.className = cls;
+  d.textContent = text;
+  $("vc-msgs").appendChild(d);
+  $("vc-msgs").scrollTop = 1e9;
+};
+
+function busy(on) {
+  $("vc-think").classList.toggle("on", on);
+  $("vc-in").disabled = on;
+  $("vc-send").disabled = on;
+  if (!on) $("vc-in").focus();
+}
+
+async function callClaude() {
+  const resp = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "x-api-key": localStorage.getItem("vig_key"),
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ model: MODEL, max_tokens: 1500, system: SYS,
+                           tools: TOOLS, messages: msgs }),
+  });
+  if (!resp.ok) throw new Error("API " + resp.status + " — " +
+    (await resp.text()).slice(0, 200));
+  return resp.json();
+}
+
+async function send(text) {
+  text = (text ?? $("vc-in").value).trim();
+  if (!text || $("vc-send").disabled) return;
+  $("vc-in").value = "";
+  $("vc-chips").innerHTML = "";
+  addMsg("you", md(text), "YOU");
+  msgs.push({ role: "user", content: text });
+  busy(true);
+  try {
+    for (let hop = 0; hop < 6; hop++) {
+      const r = await callClaude();
+      msgs.push({ role: "assistant", content: r.content });
+      r.content.filter(b => b.type === "text")
+        .forEach(b => addMsg("vig", md(b.text), "VIG"));
+      if (r.stop_reason !== "tool_use") break;
+      const tools = r.content.filter(b => b.type === "tool_use");
+      const results = tools.map(t => {
+        const out = runTool(t.name, t.input);
+        addNote(out.startsWith("error") ? "vc-err" : "vc-act",
+                `${t.name} → ${out}`);
+        return { type: "tool_result", tool_use_id: t.id, content: out };
+      });
+      msgs.push({ role: "user", content: results });
+    }
+  } catch (e) {
+    addNote("vc-err", e.message);
+  }
+  busy(false);
+  if (navTarget) { const t = navTarget; navTarget = null;
+    setTimeout(() => location.href = t, 700); }
+}
+
+function showChips() {
+  $("vc-chips").innerHTML = CHIPS.map(c =>
+    `<span class="vc-chip">${esc(c)}</span>`).join("");
+  document.querySelectorAll(".vc-chip").forEach(el =>
+    el.addEventListener("click", () => send(el.textContent)));
+}
+
+function keyState() {
+  const has = !!localStorage.getItem("vig_key");
+  $("vc-keywrap").hidden = has;
+  $("vc-inrow").style.display = has ? "" : "none";
+  $("vc-chips").style.display = has ? "" : "none";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  $("vc-toggle").addEventListener("click", () => {
+    const p = $("vc-panel");
+    p.classList.toggle("open");
+    keyState();
+    if (p.classList.contains("open") && !$("vc-msgs").hasChildNodes()) showChips();
+    if (p.classList.contains("open")) $("vc-in").focus();
+  });
+  $("vc-close").addEventListener("click", () => $("vc-panel").classList.remove("open"));
+  $("vc-savekey").addEventListener("click", () => {
+    const k = $("vc-key").value.trim();
+    if (!k) return;
+    localStorage.setItem("vig_key", k);
+    keyState(); showChips(); $("vc-in").focus();
+  });
+  $("vc-key").addEventListener("keydown", e => {
+    if (e.key === "Enter") $("vc-savekey").click(); });
+  $("vc-forget").addEventListener("click", () => {
+    localStorage.removeItem("vig_key"); keyState(); });
+  $("vc-send").addEventListener("click", () => send());
+  $("vc-in").addEventListener("keydown", e => { if (e.key === "Enter") send(); });
+});
+})();
+</script>
+</body></html>

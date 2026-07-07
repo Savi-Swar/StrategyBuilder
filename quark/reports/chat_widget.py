@@ -146,7 +146,7 @@ const TOOLS = [
       capital: { type: "number" }, profile: { type: "string" } },
       additionalProperties: false } },
   { name: "open_page",
-    description: "Navigate after replying: desk | past_trades | portfolio.",
+    description: "Navigate after replying: desk | past_trades | portfolio | analysis.",
     input_schema: { type: "object", properties: { page: { type: "string" } },
       required: ["page"], additionalProperties: false } },
 ];
@@ -192,7 +192,7 @@ function runTool(name, input) {
   }
   if (name === "open_page") {
     const map = { desk: "index.html", past_trades: "past_trades.html",
-                  portfolio: "portfolio.html" };
+                  portfolio: "portfolio.html", analysis: "analysis.html" };
     if (!map[input.page]) return "error: unknown page";
     navTarget = map[input.page];
     return "navigating to " + input.page + " after this reply";
@@ -338,6 +338,10 @@ DEFAULT_CHIPS = {
                   "set it to $25k aggressive",
                   "how bad can conservative get?",
                   "why so much in bonds?"],
+    "analysis": ["what's the theme on the wire today?",
+                 "where does the news disagree with the book?",
+                 "anything on my picks?",
+                 "does news ever change the model?"],
 }
 
 

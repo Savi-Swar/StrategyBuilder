@@ -171,6 +171,7 @@ long-only top decile, equal weight; treat as equity risk with a thin tilt</span>
     return page_shell(
         "Vig — Portfolio Builder", generated_at,
         '<a class="btn" href="index.html">◈ desk</a> '
+        '<a class="btn" href="analysis.html">◈ analysis</a> '
         '<a class="btn" href="past_trades.html">◈ past trades</a>',
         body,
         chat_html=chat_widget(

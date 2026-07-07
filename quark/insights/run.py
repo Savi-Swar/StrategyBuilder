@@ -87,10 +87,19 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
             regime["stock_bond_corr63"] = round(float(corr.iloc[-1]), 2)
 
     headlines: dict = {}
+    wire_view: dict = {"articles": [], "heat": [], "bullets": []}
     if news:
-        picks = xsec["longs"][:6] + xsec["shorts"][:6]
-        print(f"Fetching headlines for {len(picks)} picks...")
-        headlines = get_headlines(picks)
+        from quark.insights.news import get_wire
+        from quark.insights.wire import build_wire_view
+        picks = xsec["longs"][:6] + xsec["shorts"][-6:]
+        print("Fetching the wire (macro + picks)...")
+        items = get_wire(picks)
+        wire_view = build_wire_view(items, snapshot, xsec)
+        print(f"  {len(items)} unique stories")
+        for a in items:
+            if a["group"] == "picks":
+                headlines.setdefault(a["ticker"], []).append(
+                    {k: a[k] for k in ("title", "provider", "url", "published")})
 
     trades = top_trades(xsec, headlines, n=3)
 
@@ -102,6 +111,7 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
 
     commentary = None
     self_review = None
+    desk_read = None
     if llm:
         print("Requesting Vig's commentary...")
         commentary = llm_commentary(
@@ -110,6 +120,9 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
         )
         if review["summary"]:
             self_review = llm_self_review(review["summary"], review["lessons"])
+        if wire_view["articles"]:
+            from quark.insights.wire import llm_wire_analysis
+            desk_read = llm_wire_analysis(wire_view, health)
 
     return {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
@@ -126,6 +139,8 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
         "sectors": sectors,
         "factor_tilts": factor_tilts,
         "regime": regime,
+        "wire": wire_view,
+        "desk_read": desk_read,
         "commentary": commentary,
     }
 
@@ -159,6 +174,11 @@ def write_outputs(result: dict) -> dict:
     from quark.reports.portfolio_page import render_portfolio_page
     (dash_dir / "portfolio.html").write_text(
         render_portfolio_page(result["portfolio"], result["generated_at"]))
+
+    from quark.reports.analysis_page import render_analysis_page
+    (dash_dir / "analysis.html").write_text(
+        render_analysis_page(result["wire"], result["generated_at"],
+                             result.get("desk_read")))
 
     (dash_dir / "meta.json").write_text(json.dumps(
         {"generated_at": result["generated_at"],

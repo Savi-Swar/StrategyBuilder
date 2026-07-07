@@ -30,3 +30,24 @@ def get_headlines(tickers: list[str], max_per: int = 3) -> dict[str, list[dict]]
         if parsed:
             out[t] = parsed[:max_per]
     return out
+
+
+MACRO_WIRE = ["^GSPC", "^IXIC", "GC=F", "CL=F", "NG=F", "BTC-USD",
+              "EURUSD=X", "ZN=F"]
+
+
+def get_wire(pick_tickers: list[str], max_macro: int = 4,
+             max_pick: int = 2) -> list[dict]:
+    """Broad daily wire: macro instruments + current picks, deduped by
+    title. Each item carries its associated ticker."""
+    seen, items = set(), []
+    for group, ticks, cap in (("macro", MACRO_WIRE, max_macro),
+                              ("picks", pick_tickers, max_pick)):
+        for t, arts in get_headlines(ticks, max_per=cap).items():
+            for a in arts:
+                key = a["title"].strip().lower()
+                if key in seen:
+                    continue
+                seen.add(key)
+                items.append({**a, "ticker": t, "group": group})
+    return items

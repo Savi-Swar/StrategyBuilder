@@ -74,6 +74,7 @@ def render_review_page(review: dict, generated_at: str,
                 'run scripts/backfill_ledger.py.</p>')
         return page_shell("Vig — Past Trades", generated_at,
                           '<a class="btn" href="index.html">◈ desk</a> '
+                      '<a class="btn" href="analysis.html">◈ analysis</a> '
                       '<a class="btn" href="portfolio.html">◈ portfolio</a>', body)
 
     curve = _spark_svg(s["cum_rel"], width=920, height=140, color="#ffb000",
@@ -103,5 +104,6 @@ def render_review_page(review: dict, generated_at: str,
 
     return page_shell("Vig — Past Trades", generated_at,
                       '<a class="btn" href="index.html">◈ desk</a> '
+                      '<a class="btn" href="analysis.html">◈ analysis</a> '
                       '<a class="btn" href="portfolio.html">◈ portfolio</a>', body,
                       chat_html=chat)

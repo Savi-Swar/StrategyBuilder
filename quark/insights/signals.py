@@ -24,7 +24,11 @@ def multi_asset_snapshot(prices: pd.DataFrame, universe: pd.DataFrame) -> pd.Dat
     vol-targeted position tsmom_252 would hold at today's close."""
     tradable = [t for t in prices.columns
                 if t in universe.index and universe.at[t, "tradable"]]
-    px = prices[tradable]
+    # Display snapshot only: 24/7 markets (crypto, FX) extend the panel past
+    # the last close of 5-day markets, whose final row is then NaN — without
+    # a bounded ffill every index vanishes from the snapshot on those days.
+    # Backtests never see this panel.
+    px = prices[tradable].ffill(limit=3)
     rets = compute_returns(px)
     signal = STRATEGIES["tsmom_252"](px)
     positions = vol_target_positions(signal, rets)
