@@ -4,8 +4,9 @@ against the desk's live positioning, with a grounded desk read."""
 import html as html_mod
 from datetime import datetime, timezone
 
-from quark.reports.chat_widget import chat_widget
-from quark.reports.dashboard import page_shell
+import pandas as pd
+
+from quark.reports.dashboard import filter_bar, page_shell
 
 EXTRA_CSS = """
 <style>
@@ -60,14 +61,49 @@ def _cards(articles: list[dict], group: str) -> str:
         if a["group"] != group:
             continue
         provider = html_mod.escape(a.get("provider") or "wire")
+        side = a["stance"].get("side", "")
+        side_attr = "LONG" if "LONG" in side else ("SHORT" if "SHORT" in side else "")
+        prob = a["stance"].get("prob")
         cards.append(f"""
-<div class="art">
+<div class="art" data-search="{a["ticker"]} {html_mod.escape(a["title"].lower())}"
+     data-class="{a["group"]}" data-side="{side_attr}"
+     {f'data-prob="{prob}"' if prob is not None else ""}>
   <div class="meta"><span>{provider}</span><span>{_ago(a.get("published", ""))}</span></div>
   <a class="t" href="{html_mod.escape(a["url"])}" target="_blank">{html_mod.escape(a["title"])}</a>
   <div class="foot"><span class="tickchip">{a["ticker"]}</span>{_stance_chip(a["stance"])}</div>
 </div>""")
     return f'<div class="wiregrid">{"".join(cards)}</div>' if cards else \
         '<p class="muted">nothing on this wire today</p>'
+
+
+def _board_table(board: pd.DataFrame) -> str:
+    rows = []
+    for tick, r in board.iterrows():
+        c = int(r["consensus"])
+        ccls = "pos" if c >= 3 else ("neg" if c <= -3 else "muted")
+        side_attr = "LONG" if c > 0 else ("SHORT" if c < 0 else "")
+        rsi_cls = "pos" if r["rsi14"] > 50 else "neg"
+        rsi_note = " OB" if r["rsi14"] > 70 else (" OS" if r["rsi14"] < 30 else "")
+        vwap = ("—" if pd.isna(r["vwap_dist"])
+                else f'<span class="{"pos" if r["vwap_dist"] > 0 else "neg"}">'
+                     f'{r["vwap_dist"] * 100:+.1f}%</span>')
+        mom = ("—" if pd.isna(r["mom252"])
+               else f'<span class="{"pos" if r["mom252"] > 0 else "neg"}">'
+                    f'{r["mom252"] * 100:+.0f}%</span>')
+        rows.append(
+            f'<tr data-search="{tick}" data-class="{r["asset_class"]}" '
+            f'data-side="{side_attr}">'
+            f'<td><b>{tick}</b> <span class="muted">{r["asset_class"]}</span></td>'
+            f'<td class="{rsi_cls}">{r["rsi14"]:.0f}{rsi_note}</td>'
+            f'<td class="{"pos" if r["pctb"] > 0.5 else "neg"}">{r["pctb"]:.2f}</td>'
+            f'<td class="{"pos" if r["macd_bps"] > 0 else "neg"}">{r["macd_bps"]:+.1f}</td>'
+            f'<td class="{"pos" if r["golden"] else "neg"}">'
+            f'{"GOLDEN" if r["golden"] else "DEATH"}</td>'
+            f'<td>{vwap}</td><td>{mom}</td>'
+            f'<td class="{ccls}"><b>{c:+d}</b></td></tr>')
+    return ("<table><tr><th>Instrument</th><th>RSI14</th><th>Boll %B</th>"
+            "<th>MACD bps</th><th>50/200</th><th>vs VWAP20</th><th>12m</th>"
+            "<th>Consensus</th></tr>" + "".join(rows) + "</table>")
 
 
 def _heat_table(heat: list) -> str:
@@ -90,7 +126,8 @@ def _heat_table(heat: list) -> str:
 
 
 def render_analysis_page(wire: dict, generated_at: str,
-                         desk_read: str | None = None) -> str:
+                         desk_read: str | None = None,
+                         board: pd.DataFrame | None = None) -> str:
     from quark.reports.dashboard import _commentary_html
     read_html = ""
     if desk_read:
@@ -106,7 +143,22 @@ def render_analysis_page(wire: dict, generated_at: str,
                      f'Vig trades prices, not narratives: headlines here are context '
                      f'for the human, never inputs to the model.</p></div>')
 
+    board_html = ""
+    fb_classes = ["macro", "picks"]
+    if board is not None and not board.empty:
+        fb_classes = sorted(board["asset_class"].unique()) + ["macro", "picks"]
+        board_html = f"""
+<h2>Technical board <span class="dim">/ the original toolkit — RSI, Bollinger,
+MACD, golden cross, VWAP, momentum — as a read of the tape</span></h2>
+{_board_table(board)}
+<div class="edgemath">HONESTY — these are the exact indicators Study 1
+backtested; net of costs none cleared the Deflated Sharpe bar as standalone
+strategies (best DSR 0.29). The board describes market state; the consensus
+column measures agreement, not edge.</div>"""
+
     body = f"""{EXTRA_CSS}
+{filter_bar(fb_classes)}
+{board_html}
 <h2>Macro wire <span class="dim">/ indices, rates, energy, gold, crypto, fx</span></h2>
 {_cards(wire["articles"], "macro")}
 <h2>Single names on the desk <span class="dim">/ today's picks in the news</span></h2>
@@ -115,12 +167,9 @@ def render_analysis_page(wire: dict, generated_at: str,
 {_heat_table(wire["heat"])}
 {read_html}"""
 
-    ctx = {"articles": [{"ticker": a["ticker"], "title": a["title"],
-                         "stance": a["stance"]} for a in wire["articles"]],
-           "wire_vs_desk": wire["bullets"]}
     return page_shell(
         "Vig — Analysis", generated_at,
         '<a class="btn" href="index.html">◈ desk</a> '
         '<a class="btn" href="past_trades.html">◈ past trades</a> '
         '<a class="btn" href="portfolio.html">◈ portfolio</a>',
-        body, chat_html=chat_widget(ctx, "analysis"))
+        body)

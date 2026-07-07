@@ -99,6 +99,25 @@ tr:last-child td { border-bottom: none; }
 .pos { color: #46ff9a; } .neg { color: #ff5d5d; } .muted { color: #6d747c; }
 .win { color: #46ff9a; font-weight: 700; } .loss { color: #ff5d5d; font-weight: 700; }
 
+/* ── filter bar ───────────────────────────────────────── */
+.fbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  background: #0b0d10; border: 1px solid #22262c; padding: 12px 16px;
+  margin: 6px 0 18px; }
+.fbar input[type=text] { background: #060708; border: 1px solid #2a2e35;
+  color: #e6e2d8; font: 12.5px "SF Mono", ui-monospace, Menlo, monospace;
+  padding: 8px 12px; width: 170px; }
+.fbar input[type=text]:focus { outline: none; border-color: #ffb000; }
+.fb-chip, .fb-side { border: 1px solid #2a2e35; color: #8a9199; font-size: 11px;
+  padding: 6px 11px; cursor: pointer; background: #0e1114; letter-spacing: .5px; }
+.fb-chip.on, .fb-side.on { border-color: #ffb000; color: #ffb000;
+  background: rgba(255,176,0,.08); }
+.fb-prob { display: flex; align-items: center; gap: 8px; font-size: 11px;
+  color: #8a9199; }
+.fb-prob input { accent-color: #ffb000; width: 110px; }
+.fb-reset { color: #6d747c; font-size: 11px; cursor: pointer;
+  text-decoration: underline; margin-left: auto; }
+.fb-count { color: #ffb000; font-size: 11px; }
+
 .commentary { background: #0b0d10; border: 1px solid #22262c;
               border-left: 3px solid #ffb000; padding: 20px 26px; max-width: 880px; }
 .commentary p { margin-bottom: 11px; color: #c9c4b8; font-size: 13px; }
@@ -129,7 +148,7 @@ def _spark_svg(values: list[float], width: int = 270, height: int = 52,
 
 
 def page_shell(title: str, generated_at: str, nav_html: str, body: str,
-               tape_html: str = "", chat_html: str = "") -> str:
+               tape_html: str = "") -> str:
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta http-equiv="refresh" content="900">
@@ -146,7 +165,6 @@ def page_shell(title: str, generated_at: str, nav_html: str, body: str,
 <footer>Research tooling output — signals from backtested models with modest,
 documented edges (weekly IC ≈ 0.017; see RESEARCH_NOTES.md). Probabilities are
 calibrated conviction, not certainty. Not investment advice.</footer>
-{chat_html}
 </body></html>"""
 
 
@@ -263,6 +281,72 @@ def _trend_table(snapshot: pd.DataFrame, k: int = 18) -> str:
             "<th>Trend position</th></tr>" + "".join(rows) + "</table>")
 
 
+def filter_bar(classes: list[str] | None = None, show_prob: bool = True,
+               show_side: bool = True) -> str:
+    """Manual pick-and-choose filters. Pure client-side JS operating on every
+    element carrying data-search (table rows and article cards alike)."""
+    chips = "".join(f'<span class="fb-chip" data-c="{c}">{c}</span>'
+                    for c in (classes or []))
+    side = ('<span class="fb-side" data-s="LONG">LONG</span>'
+            '<span class="fb-side" data-s="SHORT">SHORT</span>') if show_side else ""
+    prob = ('<span class="fb-prob">P(out) ≥ <b id="fb-pv">0.00</b>'
+            '<input type="range" id="fb-prob" min="0" max="0.65" step="0.01" value="0">'
+            '</span>') if show_prob else ""
+    return f"""
+<div class="fbar">
+  <input type="text" id="fb-q" placeholder="search ticker…">
+  {chips}{side}{prob}
+  <span class="fb-count" id="fb-n"></span>
+  <span class="fb-reset" id="fb-reset">reset</span>
+</div>
+<script>
+(() => {{
+  const st = {{ q: "", cls: new Set(), side: null, minp: 0 }};
+  const $ = id => document.getElementById(id);
+  function apply() {{
+    let n = 0, total = 0;
+    document.querySelectorAll("[data-search]").forEach(el => {{
+      total++;
+      let ok = true;
+      if (st.q) ok = ok && el.dataset.search.toLowerCase().includes(st.q);
+      if (st.cls.size) ok = ok && [...st.cls].some(c =>
+        (el.dataset.class || "").includes(c));
+      if (st.side) ok = ok && (el.dataset.side || "") === st.side;
+      if (st.minp > 0) ok = ok && el.dataset.prob != null &&
+        parseFloat(el.dataset.prob) >= st.minp;
+      el.style.display = ok ? "" : "none";
+      if (ok) n++;
+    }});
+    $("fb-n").textContent = (st.q || st.cls.size || st.side || st.minp > 0)
+      ? n + "/" + total + " shown" : "";
+  }}
+  $("fb-q").addEventListener("input", e => {{
+    st.q = e.target.value.trim().toLowerCase(); apply(); }});
+  document.querySelectorAll(".fb-chip").forEach(ch =>
+    ch.addEventListener("click", () => {{
+      const c = ch.dataset.c;
+      st.cls.has(c) ? st.cls.delete(c) : st.cls.add(c);
+      ch.classList.toggle("on"); apply(); }}));
+  document.querySelectorAll(".fb-side").forEach(b =>
+    b.addEventListener("click", () => {{
+      st.side = st.side === b.dataset.s ? null : b.dataset.s;
+      document.querySelectorAll(".fb-side").forEach(x =>
+        x.classList.toggle("on", st.side === x.dataset.s));
+      apply(); }}));
+  const pr = $("fb-prob");
+  if (pr) pr.addEventListener("input", e => {{
+    st.minp = parseFloat(e.target.value);
+    $("fb-pv").textContent = st.minp.toFixed(2); apply(); }});
+  $("fb-reset").addEventListener("click", () => {{
+    st.q = ""; st.cls.clear(); st.side = null; st.minp = 0;
+    $("fb-q").value = ""; if (pr) {{ pr.value = 0; $("fb-pv").textContent = "0.00"; }}
+    document.querySelectorAll(".fb-chip.on,.fb-side.on").forEach(x =>
+      x.classList.remove("on"));
+    apply(); }});
+}})();
+</script>"""
+
+
 def _positioning_panel(sectors: dict, tilts: dict, regime: dict) -> str:
     if not sectors and not tilts:
         return ""
@@ -323,36 +407,7 @@ def _commentary_html(text: str) -> str:
     return "".join(paras)
 
 
-def _desk_context(result: dict) -> dict:
-    t = result["xsec"]["table"]
-    snap = result["snapshot"]
-    top_trend = snap.reindex(
-        snap["target_position"].abs().sort_values(ascending=False).index).head(12)
-    return {
-        "data_through": result["data_through"],
-        "health": result.get("health", {}),
-        "top_trades": [{k: tr[k] for k in ("ticker", "side", "prob", "drivers")}
-                       for tr in result["trades"]],
-        "long_book": {x: round(float(t.at[x, "prob_outperform"]), 3)
-                      for x in result["xsec"]["longs"][:10]},
-        "short_book": {x: round(float(t.at[x, "prob_outperform"]), 3)
-                       for x in result["xsec"]["shorts"][-10:]},
-        "trend_book": {i: {"class": r["asset_class"],
-                           "position": round(float(r["target_position"]), 2),
-                           "ret_21d": None if pd.isna(r["ret_21d"])
-                           else round(float(r["ret_21d"]), 4)}
-                       for i, r in top_trend.iterrows()},
-        "n_instruments_trend": int(snap.shape[0]),
-        "sectors": result.get("sectors", {}),
-        "factor_tilts": result.get("factor_tilts", {}),
-        "regime": result.get("regime", {}),
-        "backtest": "xsec weekly IC 0.0165 (t=3.22); trend/timing do not "
-                    "clear costs decisively; see RESEARCH_NOTES",
-    }
-
-
 def render_dashboard(result: dict) -> str:
-    from quark.reports.chat_widget import chat_widget
     trades_html = "".join(
         _trade_card(t, result["sparks"].get(t["ticker"], []))
         for t in result["trades"]
@@ -373,6 +428,7 @@ as-of rebalance <b>{result["xsec"]["as_of"].date()}</b> · horizon <b>5 trading 
                     result.get("regime", {}))}
 {commentary}
 <h2>The books</h2>
+{filter_bar(sorted(result["snapshot"]["asset_class"].unique()) + ["stock"])}
 <div class="cols">
   <div>{_xsec_table(result["xsec"])}</div>
   <div>{_trend_table(result["snapshot"])}</div>
@@ -384,5 +440,4 @@ as-of rebalance <b>{result["xsec"]["as_of"].date()}</b> · horizon <b>5 trading 
         '<a class="btn" href="portfolio.html">◈ portfolio</a> '
         '<a class="btn" href="past_trades.html">◈ past trades</a>',
         body, tape_html=_tape(result["snapshot"]),
-        chat_html=chat_widget(_desk_context(result), "desk"),
     )

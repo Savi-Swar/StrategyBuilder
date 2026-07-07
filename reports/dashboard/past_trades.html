@@ -95,6 +95,25 @@ tr:last-child td { border-bottom: none; }
 .pos { color: #46ff9a; } .neg { color: #ff5d5d; } .muted { color: #6d747c; }
 .win { color: #46ff9a; font-weight: 700; } .loss { color: #ff5d5d; font-weight: 700; }
 
+/* ── filter bar ───────────────────────────────────────── */
+.fbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  background: #0b0d10; border: 1px solid #22262c; padding: 12px 16px;
+  margin: 6px 0 18px; }
+.fbar input[type=text] { background: #060708; border: 1px solid #2a2e35;
+  color: #e6e2d8; font: 12.5px "SF Mono", ui-monospace, Menlo, monospace;
+  padding: 8px 12px; width: 170px; }
+.fbar input[type=text]:focus { outline: none; border-color: #ffb000; }
+.fb-chip, .fb-side { border: 1px solid #2a2e35; color: #8a9199; font-size: 11px;
+  padding: 6px 11px; cursor: pointer; background: #0e1114; letter-spacing: .5px; }
+.fb-chip.on, .fb-side.on { border-color: #ffb000; color: #ffb000;
+  background: rgba(255,176,0,.08); }
+.fb-prob { display: flex; align-items: center; gap: 8px; font-size: 11px;
+  color: #8a9199; }
+.fb-prob input { accent-color: #ffb000; width: 110px; }
+.fb-reset { color: #6d747c; font-size: 11px; cursor: pointer;
+  text-decoration: underline; margin-left: auto; }
+.fb-count { color: #ffb000; font-size: 11px; }
+
 .commentary { background: #0b0d10; border: 1px solid #22262c;
               border-left: 3px solid #ffb000; padding: 20px 26px; max-width: 880px; }
 .commentary p { margin-bottom: 11px; color: #c9c4b8; font-size: 13px; }
@@ -108,7 +127,7 @@ footer { margin: 48px 44px 0; color: #565d64; font-size: 11px; max-width: 880px;
     <div class="wordmark">VIG</div>
     <div class="tagline">the house takes its cut — <b>systematic daily desk</b></div>
   </div>
-  <div class="stamp-date">2026-07-07 · 19:02:25<br><a class="btn" href="index.html">◈ desk</a> <a class="btn" href="analysis.html">◈ analysis</a> <a class="btn" href="portfolio.html">◈ portfolio</a></div>
+  <div class="stamp-date">2026-07-07 · 19:11:10<br><a class="btn" href="index.html">◈ desk</a> <a class="btn" href="analysis.html">◈ analysis</a> <a class="btn" href="portfolio.html">◈ portfolio</a></div>
 </header>
 
 <div class="wrap">
@@ -139,325 +158,61 @@ footer { margin: 48px 44px 0; color: #565d64; font-size: 11px; max-width: 880px;
 <div class="commentary"><ul class="why"><li>Relative hit rate 48% over 153 calls is not distinguishable from 50/50 (t≈-0.4) — judge the process, not short-run outcomes.</li><li>Context: over the full 156-week record the same rule averages +28 bps/call (hit 51%); this window runs -14 bps vs that baseline — consistent with the longer record. Four alternative selection rules were tested on the full record (2026-07, see RESEARCH_NOTES): none separable from noise, none adopted.</li><li>Longs hit 51% vs shorts 43% — matches the backtest&#x27;s long-side-driven edge. Improvement candidate: tilt long (e.g. 2 longs + 1 short is already the natural output; consider grading shorts as hedges, not alpha).</li><li>High-conviction calls do NOT hit more often than low-conviction ones in this window — treat the probability as a ranking device, size picks equally.</li><li>Longest weekly losing streak: 4 weeks. An edge this size guarantees streaks like this — the failure mode to avoid is abandoning the process inside one.</li></ul></div>
 
 <h2>Every call <span class="dim">/ most recent first</span></h2>
+
+<div class="fbar">
+  <input type="text" id="fb-q" placeholder="search ticker…">
+  <span class="fb-side" data-s="LONG">LONG</span><span class="fb-side" data-s="SHORT">SHORT</span><span class="fb-prob">P(out) ≥ <b id="fb-pv">0.00</b><input type="range" id="fb-prob" min="0" max="0.65" step="0.01" value="0"></span>
+  <span class="fb-count" id="fb-n"></span>
+  <span class="fb-reset" id="fb-reset">reset</span>
+</div>
+<script>
+(() => {
+  const st = { q: "", cls: new Set(), side: null, minp: 0 };
+  const $ = id => document.getElementById(id);
+  function apply() {
+    let n = 0, total = 0;
+    document.querySelectorAll("[data-search]").forEach(el => {
+      total++;
+      let ok = true;
+      if (st.q) ok = ok && el.dataset.search.toLowerCase().includes(st.q);
+      if (st.cls.size) ok = ok && [...st.cls].some(c =>
+        (el.dataset.class || "").includes(c));
+      if (st.side) ok = ok && (el.dataset.side || "") === st.side;
+      if (st.minp > 0) ok = ok && el.dataset.prob != null &&
+        parseFloat(el.dataset.prob) >= st.minp;
+      el.style.display = ok ? "" : "none";
+      if (ok) n++;
+    });
+    $("fb-n").textContent = (st.q || st.cls.size || st.side || st.minp > 0)
+      ? n + "/" + total + " shown" : "";
+  }
+  $("fb-q").addEventListener("input", e => {
+    st.q = e.target.value.trim().toLowerCase(); apply(); });
+  document.querySelectorAll(".fb-chip").forEach(ch =>
+    ch.addEventListener("click", () => {
+      const c = ch.dataset.c;
+      st.cls.has(c) ? st.cls.delete(c) : st.cls.add(c);
+      ch.classList.toggle("on"); apply(); }));
+  document.querySelectorAll(".fb-side").forEach(b =>
+    b.addEventListener("click", () => {
+      st.side = st.side === b.dataset.s ? null : b.dataset.s;
+      document.querySelectorAll(".fb-side").forEach(x =>
+        x.classList.toggle("on", st.side === x.dataset.s));
+      apply(); }));
+  const pr = $("fb-prob");
+  if (pr) pr.addEventListener("input", e => {
+    st.minp = parseFloat(e.target.value);
+    $("fb-pv").textContent = st.minp.toFixed(2); apply(); });
+  $("fb-reset").addEventListener("click", () => {
+    st.q = ""; st.cls.clear(); st.side = null; st.minp = 0;
+    $("fb-q").value = ""; if (pr) { pr.value = 0; $("fb-pv").textContent = "0.00"; }
+    document.querySelectorAll(".fb-chip.on,.fb-side.on").forEach(x =>
+      x.classList.remove("on"));
+    apply(); });
+})();
+</script>
 <table><tr><th>Week</th><th>Ticker</th><th>Side</th><th>P(out)</th><th>5d return</th><th>vs median</th><th>Grade</th></tr><tr data-search="GOOGL" data-side="LONG" data-prob="0.559"><td class="muted">2026-06-26</td><td><b>GOOGL</b></td><td class="pos">LONG</td><td>0.559</td><td class="pos">+8.62%</td><td class="pos">+7.43%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="AES" data-side="LONG" data-prob="0.558"><td class="muted">2026-06-26</td><td><b>AES</b></td><td class="pos">LONG</td><td>0.558</td><td class="neg">-0.68%</td><td class="neg">-1.87%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="TECH" data-side="SHORT" data-prob="0.450"><td class="muted">2026-06-26</td><td><b>TECH</b></td><td class="neg">SHORT</td><td>0.450</td><td class="neg">-0.11%</td><td class="pos">+1.30%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="APA" data-side="LONG" data-prob="0.576"><td class="muted">2026-06-18</td><td><b>APA</b></td><td class="pos">LONG</td><td>0.576</td><td class="neg">-0.06%</td><td class="neg">-2.57%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="MU" data-side="SHORT" data-prob="0.426"><td class="muted">2026-06-18</td><td><b>MU</b></td><td class="neg">SHORT</td><td>0.426</td><td class="neg">-0.15%</td><td class="pos">+2.66%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="CIEN" data-side="LONG" data-prob="0.572"><td class="muted">2026-06-18</td><td><b>CIEN</b></td><td class="pos">LONG</td><td>0.572</td><td class="pos">+11.98%</td><td class="pos">+9.46%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="GOOGL" data-side="LONG" data-prob="0.563"><td class="muted">2026-06-12</td><td><b>GOOGL</b></td><td class="pos">LONG</td><td>0.563</td><td class="neg">-2.78%</td><td class="neg">-1.54%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="GOOG" data-side="LONG" data-prob="0.562"><td class="muted">2026-06-12</td><td><b>GOOG</b></td><td class="pos">LONG</td><td>0.562</td><td class="neg">-2.62%</td><td class="neg">-1.38%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="DPZ" data-side="SHORT" data-prob="0.460"><td class="muted">2026-06-12</td><td><b>DPZ</b></td><td class="neg">SHORT</td><td>0.460</td><td class="neg">-8.32%</td><td class="pos">+7.08%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="EME" data-side="LONG" data-prob="0.590"><td class="muted">2026-06-05</td><td><b>EME</b></td><td class="pos">LONG</td><td>0.590</td><td class="pos">+0.69%</td><td class="neg">-0.61%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="GEN" data-side="SHORT" data-prob="0.435"><td class="muted">2026-06-05</td><td><b>GEN</b></td><td class="neg">SHORT</td><td>0.435</td><td class="neg">-7.46%</td><td class="pos">+8.76%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="ALB" data-side="LONG" data-prob="0.563"><td class="muted">2026-06-05</td><td><b>ALB</b></td><td class="pos">LONG</td><td>0.563</td><td class="pos">+9.92%</td><td class="pos">+8.62%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="AES" data-side="SHORT" data-prob="0.426"><td class="muted">2026-05-29</td><td><b>AES</b></td><td class="neg">SHORT</td><td>0.426</td><td class="pos">+0.00%</td><td class="pos">+0.53%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="UHS" data-side="LONG" data-prob="0.557"><td class="muted">2026-05-29</td><td><b>UHS</b></td><td class="pos">LONG</td><td>0.557</td><td class="neg">-0.64%</td><td class="neg">-1.17%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="HCA" data-side="LONG" data-prob="0.540"><td class="muted">2026-05-29</td><td><b>HCA</b></td><td class="pos">LONG</td><td>0.540</td><td class="neg">-1.69%</td><td class="neg">-2.22%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="GEN" data-side="SHORT" data-prob="0.429"><td class="muted">2026-05-22</td><td><b>GEN</b></td><td class="neg">SHORT</td><td>0.429</td><td class="pos">+11.85%</td><td class="neg">-12.73%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="EA" data-side="LONG" data-prob="0.543"><td class="muted">2026-05-22</td><td><b>EA</b></td><td class="pos">LONG</td><td>0.543</td><td class="pos">+0.61%</td><td class="pos">+1.49%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="ECHO" data-side="LONG" data-prob="0.539"><td class="muted">2026-05-22</td><td><b>ECHO</b></td><td class="pos">LONG</td><td>0.539</td><td class="pos">+2.59%</td><td class="pos">+3.48%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="AES" data-side="SHORT" data-prob="0.440"><td class="muted">2026-05-15</td><td><b>AES</b></td><td class="neg">SHORT</td><td>0.440</td><td class="pos">+1.45%</td><td class="pos">+1.06%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="SNDK" data-side="LONG" data-prob="0.538"><td class="muted">2026-05-15</td><td><b>SNDK</b></td><td class="pos">LONG</td><td>0.538</td><td class="pos">+5.05%</td><td class="pos">+2.53%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="WBD" data-side="LONG" data-prob="0.537"><td class="muted">2026-05-15</td><td><b>WBD</b></td><td class="pos">LONG</td><td>0.537</td><td class="pos">+0.19%</td><td class="neg">-2.33%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="QCOM" data-side="SHORT" data-prob="0.429"><td class="muted">2026-05-08</td><td><b>QCOM</b></td><td class="neg">SHORT</td><td>0.429</td><td class="neg">-8.03%</td><td class="pos">+6.47%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="WBD" data-side="LONG" data-prob="0.557"><td class="muted">2026-05-08</td><td><b>WBD</b></td><td class="pos">LONG</td><td>0.557</td><td class="neg">-0.48%</td><td class="pos">+1.09%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="LITE" data-side="LONG" data-prob="0.545"><td class="muted">2026-05-08</td><td><b>LITE</b></td><td class="pos">LONG</td><td>0.545</td><td class="pos">+7.40%</td><td class="pos">+8.97%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="LITE" data-side="LONG" data-prob="0.553"><td class="muted">2026-05-01</td><td><b>LITE</b></td><td class="pos">LONG</td><td>0.553</td><td class="neg">-4.86%</td><td class="neg">-4.21%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="WBD" data-side="LONG" data-prob="0.548"><td class="muted">2026-05-01</td><td><b>WBD</b></td><td class="pos">LONG</td><td>0.548</td><td class="pos">+0.52%</td><td class="pos">+1.17%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="ADP" data-side="SHORT" data-prob="0.456"><td class="muted">2026-05-01</td><td><b>ADP</b></td><td class="neg">SHORT</td><td>0.456</td><td class="neg">-0.56%</td><td class="neg">-0.08%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="PODD" data-side="LONG" data-prob="0.564"><td class="muted">2026-04-24</td><td><b>PODD</b></td><td class="pos">LONG</td><td>0.564</td><td class="neg">-7.66%</td><td class="neg">-7.93%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="WBD" data-side="LONG" data-prob="0.555"><td class="muted">2026-04-24</td><td><b>WBD</b></td><td class="pos">LONG</td><td>0.555</td><td class="neg">-0.37%</td><td class="neg">-0.64%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="INTC" data-side="SHORT" data-prob="0.466"><td class="muted">2026-04-24</td><td><b>INTC</b></td><td class="neg">SHORT</td><td>0.466</td><td class="pos">+20.69%</td><td class="neg">-20.43%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="KMI" data-side="LONG" data-prob="0.552"><td class="muted">2026-04-17</td><td><b>KMI</b></td><td class="pos">LONG</td><td>0.552</td><td class="neg">-0.87%</td><td class="pos">+0.22%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="WBD" data-side="LONG" data-prob="0.547"><td class="muted">2026-04-17</td><td><b>WBD</b></td><td class="pos">LONG</td><td>0.547</td><td class="neg">-1.46%</td><td class="neg">-0.36%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="EIX" data-side="SHORT" data-prob="0.454"><td class="muted">2026-04-17</td><td><b>EIX</b></td><td class="neg">SHORT</td><td>0.454</td><td class="neg">-2.67%</td><td class="pos">+1.58%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="TYL" data-side="LONG" data-prob="0.570"><td class="muted">2026-04-10</td><td><b>TYL</b></td><td class="pos">LONG</td><td>0.570</td><td class="pos">+7.98%</td><td class="pos">+5.06%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="WBD" data-side="LONG" data-prob="0.563"><td class="muted">2026-04-10</td><td><b>WBD</b></td><td class="pos">LONG</td><td>0.563</td><td class="pos">+0.11%</td><td class="neg">-2.81%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="ETN" data-side="SHORT" data-prob="0.460"><td class="muted">2026-04-10</td><td><b>ETN</b></td><td class="neg">SHORT</td><td>0.460</td><td class="pos">+0.80%</td><td class="pos">+2.12%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="HCA" data-side="LONG" data-prob="0.582"><td class="muted">2026-04-02</td><td><b>HCA</b></td><td class="pos">LONG</td><td>0.582</td><td class="pos">+5.01%</td><td class="pos">+3.28%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="MU" data-side="LONG" data-prob="0.573"><td class="muted">2026-04-02</td><td><b>MU</b></td><td class="pos">LONG</td><td>0.573</td><td class="pos">+14.84%</td><td class="pos">+13.11%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="FDS" data-side="SHORT" data-prob="0.433"><td class="muted">2026-04-02</td><td><b>FDS</b></td><td class="neg">SHORT</td><td>0.433</td><td class="neg">-7.06%</td><td class="pos">+8.79%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="CF" data-side="SHORT" data-prob="0.400"><td class="muted">2026-03-27</td><td><b>CF</b></td><td class="neg">SHORT</td><td>0.400</td><td class="neg">-4.01%</td><td class="pos">+7.18%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="VLTO" data-side="LONG" data-prob="0.556"><td class="muted">2026-03-27</td><td><b>VLTO</b></td><td class="pos">LONG</td><td>0.556</td><td class="pos">+4.51%</td><td class="pos">+1.34%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="MSFT" data-side="LONG" data-prob="0.552"><td class="muted">2026-03-27</td><td><b>MSFT</b></td><td class="pos">LONG</td><td>0.552</td><td class="pos">+4.52%</td><td class="pos">+1.34%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="OXY" data-side="SHORT" data-prob="0.429"><td class="muted">2026-03-20</td><td><b>OXY</b></td><td class="neg">SHORT</td><td>0.429</td><td class="pos">+7.59%</td><td class="neg">-8.20%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="GPC" data-side="LONG" data-prob="0.561"><td class="muted">2026-03-20</td><td><b>GPC</b></td><td class="pos">LONG</td><td>0.561</td><td class="pos">+8.96%</td><td class="pos">+9.57%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="WBD" data-side="LONG" data-prob="0.546"><td class="muted">2026-03-20</td><td><b>WBD</b></td><td class="pos">LONG</td><td>0.546</td><td class="neg">-1.28%</td><td class="neg">-0.67%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="CF" data-side="SHORT" data-prob="0.441"><td class="muted">2026-03-13</td><td><b>CF</b></td><td class="neg">SHORT</td><td>0.441</td><td class="neg">-3.60%</td><td class="pos">+1.95%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="MCHP" data-side="LONG" data-prob="0.556"><td class="muted">2026-03-13</td><td><b>MCHP</b></td><td class="pos">LONG</td><td>0.556</td><td class="pos">+1.66%</td><td class="pos">+3.32%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="CAT" data-side="LONG" data-prob="0.541"><td class="muted">2026-03-13</td><td><b>CAT</b></td><td class="pos">LONG</td><td>0.541</td><td class="neg">-1.89%</td><td class="neg">-0.24%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="EXC" data-side="SHORT" data-prob="0.396"><td class="muted">2026-03-06</td><td><b>EXC</b></td><td class="neg">SHORT</td><td>0.396</td><td class="pos">+0.93%</td><td class="neg">-3.83%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="MU" data-side="LONG" data-prob="0.553"><td class="muted">2026-03-06</td><td><b>MU</b></td><td class="pos">LONG</td><td>0.553</td><td class="pos">+15.08%</td><td class="pos">+17.97%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="WDC" data-side="LONG" data-prob="0.545"><td class="muted">2026-03-06</td><td><b>WDC</b></td><td class="pos">LONG</td><td>0.545</td><td class="pos">+11.03%</td><td class="pos">+13.92%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="FDS" data-side="SHORT" data-prob="0.446"><td class="muted">2026-02-27</td><td><b>FDS</b></td><td class="neg">SHORT</td><td>0.446</td><td class="pos">+4.18%</td><td class="neg">-7.43%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="TTD" data-side="LONG" data-prob="0.553"><td class="muted">2026-02-27</td><td><b>TTD</b></td><td class="pos">LONG</td><td>0.553</td><td class="pos">+22.92%</td><td class="pos">+26.17%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="MU" data-side="LONG" data-prob="0.552"><td class="muted">2026-02-27</td><td><b>MU</b></td><td class="pos">LONG</td><td>0.552</td><td class="neg">-10.20%</td><td class="neg">-6.96%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="ECHO" data-side="LONG" data-prob="0.561"><td class="muted">2026-02-20</td><td><b>ECHO</b></td><td class="pos">LONG</td><td>0.561</td><td class="pos">+4.68%</td><td class="pos">+4.08%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="ORCL" data-side="LONG" data-prob="0.546"><td class="muted">2026-02-20</td><td><b>ORCL</b></td><td class="pos">LONG</td><td>0.546</td><td class="neg">-1.81%</td><td class="neg">-2.41%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="TYL" data-side="SHORT" data-prob="0.462"><td class="muted">2026-02-20</td><td><b>TYL</b></td><td class="neg">SHORT</td><td>0.462</td><td class="pos">+11.89%</td><td class="neg">-11.28%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="ECHO" data-side="LONG" data-prob="0.560"><td class="muted">2026-02-13</td><td><b>ECHO</b></td><td class="pos">LONG</td><td>0.560</td><td class="neg">-5.06%</td><td class="neg">-4.67%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="HOOD" data-side="LONG" data-prob="0.550"><td class="muted">2026-02-13</td><td><b>HOOD</b></td><td class="pos">LONG</td><td>0.550</td><td class="neg">-5.52%</td><td class="neg">-5.12%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="CLX" data-side="SHORT" data-prob="0.463"><td class="muted">2026-02-13</td><td><b>CLX</b></td><td class="neg">SHORT</td><td>0.463</td><td class="pos">+0.65%</td><td class="neg">-1.04%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="WBD" data-side="LONG" data-prob="0.556"><td class="muted">2026-02-06</td><td><b>WBD</b></td><td class="pos">LONG</td><td>0.556</td><td class="pos">+2.30%</td><td class="pos">+1.90%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="DASH" data-side="LONG" data-prob="0.554"><td class="muted">2026-02-06</td><td><b>DASH</b></td><td class="pos">LONG</td><td>0.554</td><td class="neg">-12.13%</td><td class="neg">-12.53%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="CLX" data-side="SHORT" data-prob="0.448"><td class="muted">2026-02-06</td><td><b>CLX</b></td><td class="neg">SHORT</td><td>0.448</td><td class="pos">+5.51%</td><td class="neg">-5.11%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="HON" data-side="SHORT" data-prob="0.430"><td class="muted">2026-01-30</td><td><b>HON</b></td><td class="neg">SHORT</td><td>0.430</td><td class="pos">+4.77%</td><td class="neg">-2.13%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="CHTR" data-side="LONG" data-prob="0.546"><td class="muted">2026-01-30</td><td><b>CHTR</b></td><td class="pos">LONG</td><td>0.546</td><td class="pos">+12.14%</td><td class="pos">+9.50%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="PSKY" data-side="LONG" data-prob="0.543"><td class="muted">2026-01-30</td><td><b>PSKY</b></td><td class="pos">LONG</td><td>0.543</td><td class="neg">-5.80%</td><td class="neg">-8.44%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="ARE" data-side="SHORT" data-prob="0.409"><td class="muted">2026-01-23</td><td><b>ARE</b></td><td class="neg">SHORT</td><td>0.409</td><td class="neg">-8.46%</td><td class="pos">+8.50%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="PSKY" data-side="LONG" data-prob="0.580"><td class="muted">2026-01-23</td><td><b>PSKY</b></td><td class="pos">LONG</td><td>0.580</td><td class="neg">-4.19%</td><td class="neg">-4.23%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="BAX" data-side="LONG" data-prob="0.547"><td class="muted">2026-01-23</td><td><b>BAX</b></td><td class="pos">LONG</td><td>0.547</td><td class="pos">+1.16%</td><td class="pos">+1.12%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="ARE" data-side="SHORT" data-prob="0.409"><td class="muted">2026-01-16</td><td><b>ARE</b></td><td class="neg">SHORT</td><td>0.409</td><td class="neg">-1.26%</td><td class="pos">+1.13%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="SMCI" data-side="LONG" data-prob="0.557"><td class="muted">2026-01-16</td><td><b>SMCI</b></td><td class="pos">LONG</td><td>0.557</td><td class="neg">-5.64%</td><td class="neg">-5.51%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="COIN" data-side="LONG" data-prob="0.556"><td class="muted">2026-01-16</td><td><b>COIN</b></td><td class="pos">LONG</td><td>0.556</td><td class="neg">-11.47%</td><td class="neg">-11.34%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="ARE" data-side="SHORT" data-prob="0.434"><td class="muted">2026-01-09</td><td><b>ARE</b></td><td class="neg">SHORT</td><td>0.434</td><td class="pos">+7.26%</td><td class="neg">-6.65%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="KMB" data-side="LONG" data-prob="0.550"><td class="muted">2026-01-09</td><td><b>KMB</b></td><td class="pos">LONG</td><td>0.550</td><td class="pos">+1.43%</td><td class="pos">+0.82%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="COIN" data-side="LONG" data-prob="0.549"><td class="muted">2026-01-09</td><td><b>COIN</b></td><td class="pos">LONG</td><td>0.549</td><td class="pos">+0.15%</td><td class="neg">-0.46%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="KMB" data-side="LONG" data-prob="0.563"><td class="muted">2026-01-02</td><td><b>KMB</b></td><td class="pos">LONG</td><td>0.563</td><td class="neg">-3.43%</td><td class="neg">-5.81%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="VRSK" data-side="LONG" data-prob="0.555"><td class="muted">2026-01-02</td><td><b>VRSK</b></td><td class="pos">LONG</td><td>0.555</td><td class="pos">+1.74%</td><td class="neg">-0.63%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="CIEN" data-side="SHORT" data-prob="0.446"><td class="muted">2026-01-02</td><td><b>CIEN</b></td><td class="neg">SHORT</td><td>0.446</td><td class="neg">-6.30%</td><td class="pos">+8.67%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="VRSK" data-side="LONG" data-prob="0.569"><td class="muted">2025-12-26</td><td><b>VRSK</b></td><td class="pos">LONG</td><td>0.569</td><td class="pos">+0.16%</td><td class="neg">-0.00%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="GDDY" data-side="LONG" data-prob="0.563"><td class="muted">2025-12-26</td><td><b>GDDY</b></td><td class="pos">LONG</td><td>0.563</td><td class="neg">-6.67%</td><td class="neg">-6.84%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="FOXA" data-side="SHORT" data-prob="0.452"><td class="muted">2025-12-26</td><td><b>FOXA</b></td><td class="neg">SHORT</td><td>0.452</td><td class="pos">+1.84%</td><td class="neg">-1.68%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="VRSK" data-side="LONG" data-prob="0.572"><td class="muted">2025-12-19</td><td><b>VRSK</b></td><td class="pos">LONG</td><td>0.572</td><td class="pos">+3.08%</td><td class="pos">+2.18%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="KMB" data-side="LONG" data-prob="0.559"><td class="muted">2025-12-19</td><td><b>KMB</b></td><td class="pos">LONG</td><td>0.559</td><td class="pos">+0.38%</td><td class="neg">-0.52%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="CIEN" data-side="SHORT" data-prob="0.451"><td class="muted">2025-12-19</td><td><b>CIEN</b></td><td class="neg">SHORT</td><td>0.451</td><td class="pos">+3.76%</td><td class="neg">-2.86%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="ECHO" data-side="SHORT" data-prob="0.311"><td class="muted">2025-12-12</td><td><b>ECHO</b></td><td class="neg">SHORT</td><td>0.311</td><td class="neg">-3.22%</td><td class="pos">+2.73%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="IT" data-side="LONG" data-prob="0.560"><td class="muted">2025-12-12</td><td><b>IT</b></td><td class="pos">LONG</td><td>0.560</td><td class="pos">+7.21%</td><td class="pos">+7.70%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="VRSK" data-side="LONG" data-prob="0.560"><td class="muted">2025-12-12</td><td><b>VRSK</b></td><td class="pos">LONG</td><td>0.560</td><td class="pos">+0.62%</td><td class="pos">+1.11%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="JKHY" data-side="SHORT" data-prob="0.430"><td class="muted">2025-12-05</td><td><b>JKHY</b></td><td class="neg">SHORT</td><td>0.430</td><td class="pos">+3.19%</td><td class="neg">-2.31%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="BRO" data-side="LONG" data-prob="0.569"><td class="muted">2025-12-05</td><td><b>BRO</b></td><td class="pos">LONG</td><td>0.569</td><td class="pos">+4.15%</td><td class="pos">+3.27%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="FISV" data-side="LONG" data-prob="0.567"><td class="muted">2025-12-05</td><td><b>FISV</b></td><td class="pos">LONG</td><td>0.567</td><td class="pos">+3.73%</td><td class="pos">+2.85%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="TTD" data-side="SHORT" data-prob="0.427"><td class="muted">2025-11-28</td><td><b>TTD</b></td><td class="neg">SHORT</td><td>0.427</td><td class="pos">+1.24%</td><td class="neg">-1.33%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="ECHO" data-side="LONG" data-prob="0.544"><td class="muted">2025-11-28</td><td><b>ECHO</b></td><td class="pos">LONG</td><td>0.544</td><td class="pos">+11.88%</td><td class="pos">+11.98%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="CAT" data-side="LONG" data-prob="0.533"><td class="muted">2025-11-28</td><td><b>CAT</b></td><td class="pos">LONG</td><td>0.533</td><td class="pos">+4.76%</td><td class="pos">+4.85%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="REGN" data-side="SHORT" data-prob="0.454"><td class="muted">2025-11-21</td><td><b>REGN</b></td><td class="neg">SHORT</td><td>0.454</td><td class="neg">-0.77%</td><td class="pos">+2.61%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="ORCL" data-side="LONG" data-prob="0.543"><td class="muted">2025-11-21</td><td><b>ORCL</b></td><td class="pos">LONG</td><td>0.543</td><td class="pos">+1.10%</td><td class="neg">-0.74%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="KLAC" data-side="LONG" data-prob="0.536"><td class="muted">2025-11-21</td><td><b>KLAC</b></td><td class="pos">LONG</td><td>0.536</td><td class="pos">+5.47%</td><td class="pos">+3.63%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="TTD" data-side="SHORT" data-prob="0.447"><td class="muted">2025-11-14</td><td><b>TTD</b></td><td class="neg">SHORT</td><td>0.447</td><td class="neg">-5.44%</td><td class="pos">+5.06%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="SMCI" data-side="LONG" data-prob="0.545"><td class="muted">2025-11-14</td><td><b>SMCI</b></td><td class="pos">LONG</td><td>0.545</td><td class="neg">-11.61%</td><td class="neg">-11.24%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="ECHO" data-side="LONG" data-prob="0.545"><td class="muted">2025-11-14</td><td><b>ECHO</b></td><td class="pos">LONG</td><td>0.545</td><td class="pos">+1.82%</td><td class="pos">+2.20%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="DECK" data-side="SHORT" data-prob="0.450"><td class="muted">2025-11-07</td><td><b>DECK</b></td><td class="neg">SHORT</td><td>0.450</td><td class="pos">+1.28%</td><td class="neg">-1.35%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="DXCM" data-side="LONG" data-prob="0.542"><td class="muted">2025-11-07</td><td><b>DXCM</b></td><td class="pos">LONG</td><td>0.542</td><td class="pos">+5.56%</td><td class="pos">+5.63%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="ORCL" data-side="LONG" data-prob="0.538"><td class="muted">2025-11-07</td><td><b>ORCL</b></td><td class="pos">LONG</td><td>0.538</td><td class="neg">-6.86%</td><td class="neg">-6.79%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="HII" data-side="SHORT" data-prob="0.425"><td class="muted">2025-10-31</td><td><b>HII</b></td><td class="neg">SHORT</td><td>0.425</td><td class="neg">-3.87%</td><td class="pos">+4.07%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="CASY" data-side="LONG" data-prob="0.542"><td class="muted">2025-10-31</td><td><b>CASY</b></td><td class="pos">LONG</td><td>0.542</td><td class="pos">+3.97%</td><td class="pos">+3.77%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="AZO" data-side="LONG" data-prob="0.538"><td class="muted">2025-10-31</td><td><b>AZO</b></td><td class="pos">LONG</td><td>0.538</td><td class="pos">+1.19%</td><td class="pos">+0.99%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="VRSN" data-side="LONG" data-prob="0.566"><td class="muted">2025-10-24</td><td><b>VRSN</b></td><td class="pos">LONG</td><td>0.566</td><td class="neg">-2.95%</td><td class="neg">-1.26%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="WAT" data-side="SHORT" data-prob="0.446"><td class="muted">2025-10-24</td><td><b>WAT</b></td><td class="neg">SHORT</td><td>0.446</td><td class="neg">-2.75%</td><td class="pos">+1.07%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="KVUE" data-side="LONG" data-prob="0.535"><td class="muted">2025-10-24</td><td><b>KVUE</b></td><td class="pos">LONG</td><td>0.535</td><td class="neg">-4.20%</td><td class="neg">-2.51%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="TTD" data-side="SHORT" data-prob="0.432"><td class="muted">2025-10-17</td><td><b>TTD</b></td><td class="neg">SHORT</td><td>0.432</td><td class="pos">+4.04%</td><td class="neg">-2.54%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="CHRW" data-side="LONG" data-prob="0.549"><td class="muted">2025-10-17</td><td><b>CHRW</b></td><td class="pos">LONG</td><td>0.549</td><td class="neg">-1.04%</td><td class="neg">-2.54%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="GDDY" data-side="LONG" data-prob="0.540"><td class="muted">2025-10-17</td><td><b>GDDY</b></td><td class="pos">LONG</td><td>0.540</td><td class="pos">+1.71%</td><td class="pos">+0.21%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="EXC" data-side="SHORT" data-prob="0.401"><td class="muted">2025-10-10</td><td><b>EXC</b></td><td class="neg">SHORT</td><td>0.401</td><td class="pos">+1.51%</td><td class="neg">-0.09%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="VRSN" data-side="LONG" data-prob="0.551"><td class="muted">2025-10-10</td><td><b>VRSN</b></td><td class="pos">LONG</td><td>0.551</td><td class="pos">+1.52%</td><td class="pos">+0.11%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="RCL" data-side="LONG" data-prob="0.539"><td class="muted">2025-10-10</td><td><b>RCL</b></td><td class="pos">LONG</td><td>0.539</td><td class="neg">-1.41%</td><td class="neg">-2.83%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="LMT" data-side="SHORT" data-prob="0.433"><td class="muted">2025-10-03</td><td><b>LMT</b></td><td class="neg">SHORT</td><td>0.433</td><td class="pos">+0.11%</td><td class="neg">-3.25%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="UAL" data-side="LONG" data-prob="0.552"><td class="muted">2025-10-03</td><td><b>UAL</b></td><td class="pos">LONG</td><td>0.552</td><td class="pos">+1.41%</td><td class="pos">+4.54%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="NFLX" data-side="LONG" data-prob="0.550"><td class="muted">2025-10-03</td><td><b>NFLX</b></td><td class="pos">LONG</td><td>0.550</td><td class="pos">+5.79%</td><td class="pos">+8.93%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="CNC" data-side="SHORT" data-prob="0.434"><td class="muted">2025-09-26</td><td><b>CNC</b></td><td class="neg">SHORT</td><td>0.434</td><td class="pos">+11.02%</td><td class="neg">-10.08%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="DE" data-side="LONG" data-prob="0.530"><td class="muted">2025-09-26</td><td><b>DE</b></td><td class="pos">LONG</td><td>0.530</td><td class="pos">+0.11%</td><td class="neg">-0.82%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="PTC" data-side="LONG" data-prob="0.528"><td class="muted">2025-09-26</td><td><b>PTC</b></td><td class="pos">LONG</td><td>0.528</td><td class="pos">+0.02%</td><td class="neg">-0.91%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="ECHO" data-side="SHORT" data-prob="0.437"><td class="muted">2025-09-19</td><td><b>ECHO</b></td><td class="neg">SHORT</td><td>0.437</td><td class="pos">+1.35%</td><td class="neg">-1.29%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="BRO" data-side="LONG" data-prob="0.548"><td class="muted">2025-09-19</td><td><b>BRO</b></td><td class="pos">LONG</td><td>0.548</td><td class="pos">+2.23%</td><td class="pos">+2.17%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="VRSK" data-side="LONG" data-prob="0.539"><td class="muted">2025-09-19</td><td><b>VRSK</b></td><td class="pos">LONG</td><td>0.539</td><td class="pos">+1.48%</td><td class="pos">+1.41%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="WBD" data-side="SHORT" data-prob="0.412"><td class="muted">2025-09-12</td><td><b>WBD</b></td><td class="neg">SHORT</td><td>0.412</td><td class="pos">+2.44%</td><td class="neg">-2.67%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="BRO" data-side="LONG" data-prob="0.551"><td class="muted">2025-09-12</td><td><b>BRO</b></td><td class="pos">LONG</td><td>0.551</td><td class="neg">-1.93%</td><td class="neg">-1.71%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="EBAY" data-side="LONG" data-prob="0.546"><td class="muted">2025-09-12</td><td><b>EBAY</b></td><td class="pos">LONG</td><td>0.546</td><td class="pos">+0.34%</td><td class="pos">+0.57%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="ECHO" data-side="SHORT" data-prob="0.409"><td class="muted">2025-09-05</td><td><b>ECHO</b></td><td class="neg">SHORT</td><td>0.409</td><td class="pos">+11.38%</td><td class="neg">-11.23%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="CEG" data-side="LONG" data-prob="0.553"><td class="muted">2025-09-05</td><td><b>CEG</b></td><td class="pos">LONG</td><td>0.553</td><td class="pos">+7.26%</td><td class="pos">+7.11%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="AXON" data-side="LONG" data-prob="0.548"><td class="muted">2025-09-05</td><td><b>AXON</b></td><td class="pos">LONG</td><td>0.548</td><td class="pos">+3.81%</td><td class="pos">+3.66%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="ECHO" data-side="SHORT" data-prob="0.334"><td class="muted">2025-08-29</td><td><b>ECHO</b></td><td class="neg">SHORT</td><td>0.334</td><td class="pos">+30.49%</td><td class="neg">-30.80%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="JBL" data-side="LONG" data-prob="0.553"><td class="muted">2025-08-29</td><td><b>JBL</b></td><td class="pos">LONG</td><td>0.553</td><td class="pos">+2.12%</td><td class="pos">+2.43%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="CASY" data-side="LONG" data-prob="0.547"><td class="muted">2025-08-29</td><td><b>CASY</b></td><td class="pos">LONG</td><td>0.547</td><td class="pos">+5.46%</td><td class="pos">+5.77%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="ELV" data-side="SHORT" data-prob="0.419"><td class="muted">2025-08-22</td><td><b>ELV</b></td><td class="neg">SHORT</td><td>0.419</td><td class="pos">+0.66%</td><td class="neg">-1.16%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="ORCL" data-side="LONG" data-prob="0.560"><td class="muted">2025-08-22</td><td><b>ORCL</b></td><td class="pos">LONG</td><td>0.560</td><td class="neg">-4.33%</td><td class="neg">-3.84%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="PWR" data-side="LONG" data-prob="0.552"><td class="muted">2025-08-22</td><td><b>PWR</b></td><td class="pos">LONG</td><td>0.552</td><td class="neg">-0.49%</td><td class="neg">-0.00%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="INCY" data-side="SHORT" data-prob="0.412"><td class="muted">2025-08-15</td><td><b>INCY</b></td><td class="neg">SHORT</td><td>0.412</td><td class="neg">-2.16%</td><td class="pos">+4.07%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="CRWD" data-side="LONG" data-prob="0.546"><td class="muted">2025-08-15</td><td><b>CRWD</b></td><td class="pos">LONG</td><td>0.546</td><td class="neg">-1.72%</td><td class="neg">-3.62%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="RCL" data-side="LONG" data-prob="0.543"><td class="muted">2025-08-15</td><td><b>RCL</b></td><td class="pos">LONG</td><td>0.543</td><td class="pos">+9.78%</td><td class="pos">+7.88%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="RCL" data-side="LONG" data-prob="0.552"><td class="muted">2025-08-08</td><td><b>RCL</b></td><td class="pos">LONG</td><td>0.552</td><td class="pos">+4.15%</td><td class="pos">+2.90%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="CRWD" data-side="LONG" data-prob="0.551"><td class="muted">2025-08-08</td><td><b>CRWD</b></td><td class="pos">LONG</td><td>0.551</td><td class="pos">+0.80%</td><td class="neg">-0.45%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="MSI" data-side="SHORT" data-prob="0.453"><td class="muted">2025-08-08</td><td><b>MSI</b></td><td class="neg">SHORT</td><td>0.453</td><td class="pos">+1.52%</td><td class="neg">-0.27%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="FICO" data-side="LONG" data-prob="0.560"><td class="muted">2025-08-01</td><td><b>FICO</b></td><td class="pos">LONG</td><td>0.560</td><td class="neg">-4.36%</td><td class="neg">-5.56%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="LULU" data-side="LONG" data-prob="0.545"><td class="muted">2025-08-01</td><td><b>LULU</b></td><td class="pos">LONG</td><td>0.545</td><td class="neg">-2.02%</td><td class="neg">-3.22%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="MRNA" data-side="SHORT" data-prob="0.459"><td class="muted">2025-08-01</td><td><b>MRNA</b></td><td class="neg">SHORT</td><td>0.459</td><td class="neg">-5.38%</td><td class="pos">+6.58%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="FICO" data-side="LONG" data-prob="0.560"><td class="muted">2025-07-25</td><td><b>FICO</b></td><td class="pos">LONG</td><td>0.560</td><td class="neg">-9.88%</td><td class="neg">-6.98%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="RMD" data-side="SHORT" data-prob="0.442"><td class="muted">2025-07-25</td><td><b>RMD</b></td><td class="neg">SHORT</td><td>0.442</td><td class="pos">+1.47%</td><td class="neg">-4.38%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="CAH" data-side="LONG" data-prob="0.553"><td class="muted">2025-07-25</td><td><b>CAH</b></td><td class="pos">LONG</td><td>0.553</td><td class="neg">-0.73%</td><td class="pos">+2.18%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="UNH" data-side="LONG" data-prob="0.560"><td class="muted">2025-07-18</td><td><b>UNH</b></td><td class="pos">LONG</td><td>0.560</td><td class="neg">-0.56%</td><td class="neg">-2.44%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="GRMN" data-side="SHORT" data-prob="0.443"><td class="muted">2025-07-18</td><td><b>GRMN</b></td><td class="neg">SHORT</td><td>0.443</td><td class="pos">+3.40%</td><td class="neg">-1.52%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="LULU" data-side="LONG" data-prob="0.552"><td class="muted">2025-07-18</td><td><b>LULU</b></td><td class="pos">LONG</td><td>0.552</td><td class="neg">-4.50%</td><td class="neg">-6.38%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="BNY" data-side="SHORT" data-prob="0.408"><td class="muted">2025-07-11</td><td><b>BNY</b></td><td class="neg">SHORT</td><td>0.408</td><td class="pos">+5.46%</td><td class="neg">-5.34%</td><td><span class="loss">✗ LOSS</span></td></tr><tr data-search="APP" data-side="LONG" data-prob="0.567"><td class="muted">2025-07-11</td><td><b>APP</b></td><td class="pos">LONG</td><td>0.567</td><td class="pos">+8.76%</td><td class="pos">+8.64%</td><td><span class="win">✓ WIN</span></td></tr><tr data-search="TPL" data-side="LONG" data-prob="0.543"><td class="muted">2025-07-11</td><td><b>TPL</b></td><td class="pos">LONG</td><td>0.543</td><td class="neg">-4.75%</td><td class="neg">-4.87%</td><td><span class="loss">✗ LOSS</span></td></tr></table></div>
 <footer>Research tooling output — signals from backtested models with modest,
 documented edges (weekly IC ≈ 0.017; see RESEARCH_NOTES.md). Probabilities are
 calibrated conviction, not certainty. Not investment advice.</footer>
-<style>
-#vc-toggle { position: fixed; right: 26px; bottom: 24px; z-index: 60;
-  background: #0b0d10; border: 1px solid #ffb000; color: #ffb000;
-  font: 12px "SF Mono", ui-monospace, Menlo, monospace; letter-spacing: 2px;
-  padding: 12px 20px; cursor: pointer; box-shadow: 0 6px 24px rgba(0,0,0,.5); }
-#vc-toggle:hover { background: #ffb000; color: #060708; }
-#vc-panel { position: fixed; right: 0; top: 0; bottom: 0; z-index: 70;
-  width: 470px; max-width: 94vw; display: flex; flex-direction: column;
-  background: #0a0c0f; border-left: 1px solid #2a2e35;
-  box-shadow: -30px 0 60px rgba(0,0,0,.55);
-  transform: translateX(102%); transition: transform .22s ease; }
-#vc-panel.open { transform: translateX(0); }
-#vc-head { padding: 16px 20px; border-bottom: 1px solid #22262c;
-  display: flex; justify-content: space-between; align-items: center; }
-#vc-head .t { font-size: 13px; letter-spacing: 3px; color: #ffb000; font-weight: 700; }
-#vc-head .s { font-size: 10px; color: #6d747c; letter-spacing: 1px; margin-top: 3px; }
-#vc-close { cursor: pointer; color: #8a9199; font-size: 18px; padding: 4px 8px;
-  border: 1px solid transparent; }
-#vc-close:hover { color: #e6e2d8; border-color: #2a2e35; }
-#vc-msgs { flex: 1; overflow-y: auto; padding: 18px 20px; }
-.vc-m { margin-bottom: 18px; }
-.vc-tag { font-size: 10px; letter-spacing: 2px; margin-bottom: 5px; font-weight: 700; }
-.vc-m.you .vc-tag { color: #46ff9a; }
-.vc-m.vig .vc-tag { color: #ffb000; }
-.vc-body { font-size: 13px; line-height: 1.7; color: #d9d4c8; }
-.vc-m.you .vc-body { color: #9fa8b2; }
-.vc-body b { color: #ffffff; }
-.vc-body code { background: #14171b; border: 1px solid #22262c; padding: 1px 5px;
-  font-size: 12px; }
-.vc-body ul { margin: 6px 0 6px 18px; }
-.vc-body li { margin-bottom: 3px; }
-.vc-act { font-size: 11px; color: #46ff9a; background: rgba(52,211,153,.06);
-  border-left: 2px solid #46ff9a; padding: 6px 10px; margin: 8px 0; }
-.vc-err { font-size: 11.5px; color: #ff5d5d; background: rgba(248,113,113,.06);
-  border-left: 2px solid #ff5d5d; padding: 6px 10px; margin: 8px 0; }
-#vc-think { display: none; padding: 0 20px 12px; color: #ffb000; font-size: 12px;
-  letter-spacing: 2px; }
-#vc-think.on { display: block; }
-#vc-think span { animation: vcpulse 1.2s infinite; display: inline-block; }
-#vc-think span:nth-child(2) { animation-delay: .2s; }
-#vc-think span:nth-child(3) { animation-delay: .4s; }
-@keyframes vcpulse { 0%,100% { opacity: .2; } 50% { opacity: 1; } }
-#vc-chips { padding: 0 20px 12px; display: flex; flex-wrap: wrap; gap: 8px; }
-.vc-chip { border: 1px solid #2a2e35; color: #9fa8b2; font-size: 11px;
-  padding: 7px 12px; cursor: pointer; background: #0e1114; }
-.vc-chip:hover { border-color: #ffb000; color: #ffb000; }
-#vc-inrow { display: flex; border-top: 1px solid #22262c; }
-#vc-in { flex: 1; background: #0a0c0f; border: none; color: #e6e2d8;
-  font: 13.5px "SF Mono", ui-monospace, Menlo, monospace; padding: 17px 20px; }
-#vc-in:focus { outline: none; }
-#vc-in:disabled { opacity: .4; }
-#vc-send { background: none; border: none; border-left: 1px solid #22262c;
-  color: #ffb000; font: 700 13px "SF Mono", ui-monospace, Menlo, monospace;
-  padding: 0 22px; cursor: pointer; letter-spacing: 1px; }
-#vc-send:hover { background: #ffb000; color: #060708; }
-#vc-send:disabled { opacity: .3; pointer-events: none; }
-#vc-foot { padding: 8px 20px 12px; font-size: 10px; color: #565d64;
-  display: flex; justify-content: space-between; }
-#vc-forget { cursor: pointer; color: #565d64; text-decoration: underline; }
-#vc-keywrap { padding: 26px 22px; }
-#vc-keywrap h3 { font-size: 13px; letter-spacing: 2px; color: #ffb000; margin-bottom: 12px; }
-#vc-keywrap p { font-size: 12px; line-height: 1.7; color: #9fa8b2; margin-bottom: 16px; }
-#vc-keywrap a { color: #ffb000; }
-#vc-keyrow { display: flex; border: 1px solid #2a2e35; }
-#vc-key { flex: 1; background: #060708; border: none; color: #e6e2d8;
-  font: 13px "SF Mono", ui-monospace, Menlo, monospace; padding: 13px 14px; }
-#vc-key:focus { outline: none; }
-#vc-savekey { background: #ffb000; border: none; color: #060708;
-  font: 700 12px "SF Mono", ui-monospace, Menlo, monospace; padding: 0 18px;
-  cursor: pointer; }
-</style>
-<button id="vc-toggle">▣ ASK VIG</button>
-<div id="vc-panel">
-  <div id="vc-head">
-    <div><div class="t">ASK VIG</div>
-    <div class="s">grounded in this page · can filter &amp; drive the UI · not investment advice</div></div>
-    <span id="vc-close">✕</span>
-  </div>
-  <div id="vc-keywrap" hidden>
-    <h3>ONE-TIME SETUP</h3>
-    <p>Vig's assistant talks to the Anthropic API straight from this browser —
-    no server, nothing running. Paste an API key from
-    <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>.
-    It is stored only in this browser's localStorage and sent only to
-    api.anthropic.com. A conversation costs a few cents.</p>
-    <div id="vc-keyrow">
-      <input id="vc-key" type="password" placeholder="sk-ant-…">
-      <button id="vc-savekey">START</button>
-    </div>
-  </div>
-  <div id="vc-msgs"></div>
-  <div id="vc-think">thinking<span>.</span><span>.</span><span>.</span></div>
-  <div id="vc-chips"></div>
-  <div id="vc-inrow">
-    <input id="vc-in" placeholder="ask, or tell me what to show…">
-    <button id="vc-send">SEND</button>
-  </div>
-  <div id="vc-foot"><span>claude-opus-4-8 · serverless</span>
-    <span id="vc-forget">forget key</span></div>
-</div>
-
-<script>
-(() => {
-const CTX = {"record_summary": {"n_trades": 153, "n_weeks": 51, "hit_rel": 0.48366013071895425, "hit_abs": 0.5228758169934641, "avg_rel_bps": 14.238833647908626, "avg_pnl_bps": 22.785418574890326, "cum_rel": [-0.00523, -0.03969, -0.07026, -0.07759, -0.07032, -0.04258, -0.05923, -0.13457, -0.1361, -0.14878, -0.14113, -0.18052, -0.14645, -0.15584, -0.1721, -0.18112, -0.15168, -0.16005, -0.17329, -0.15497, -0.10331, -0.09062, -0.05214, -0.05616, -0.08456, -0.0771, -0.09808, -0.15047, -0.13249, -0.13608, -0.18856, -0.22469, -0.25674, -0.21745, -0.12389, -0.10712, -0.1048, -0.07193, 0.012, 0.02658, 0.03136, -0.06527, -0.07568, -0.02061, -0.01638, -0.04225, -0.0518, 0.00407, 0.01793, 0.04976, 0.07262], "by_side": {"LONG": {"n": 102, "hit_rel": 0.5098039215686274, "avg_rel_bps": 89.06983420882857}, "SHORT": {"n": 51, "hit_rel": 0.43137254901960786, "avg_rel_bps": -135.42316747393122}}, "by_conviction": [{"bucket": "low", "n": 51, "hit_rel": 0.5294117647058824, "avg_rel_bps": 48.984197562781375}, {"bucket": "mid", "n": 51, "hit_rel": 0.49019607843137253, "avg_rel_bps": 29.10473704186276}, {"bucket": "high", "n": 51, "hit_rel": 0.43137254901960786, "avg_rel_bps": -35.37243366091825}], "max_losing_streak": 4, "full_history": {"n": 468, "weeks": 156, "hit_rel": 0.5149572649572649, "avg_rel_bps": 27.82414619537784}}, "lessons": ["Relative hit rate 48% over 153 calls is not distinguishable from 50/50 (t\u2248-0.4) \u2014 judge the process, not short-run outcomes.", "Context: over the full 156-week record the same rule averages +28 bps/call (hit 51%); this window runs -14 bps vs that baseline \u2014 consistent with the longer record. Four alternative selection rules were tested on the full record (2026-07, see RESEARCH_NOTES): none separable from noise, none adopted.", "Longs hit 51% vs shorts 43% \u2014 matches the backtest's long-side-driven edge. Improvement candidate: tilt long (e.g. 2 longs + 1 short is already the natural output; consider grading shorts as hedges, not alpha).", "High-conviction calls do NOT hit more often than low-conviction ones in this window \u2014 treat the probability as a ranking device, size picks equally.", "Longest weekly losing streak: 4 weeks. An edge this size guarantees streaks like this \u2014 the failure mode to avoid is abandoning the process inside one."]};
-const PAGE = "past_trades";
-const CHIPS = ["what should I learn from the record?", "show only losses", "shorts only", "is the losing streak normal?"];
-const MODEL = "claude-opus-4-8";
-const SYS = `You are Vig's in-page desk assistant on the "${PAGE}" page of a
-personal systematic-trading dashboard. Be terse and quantitative; markdown is
-rendered (bold, bullets, inline code). Ground every claim in PAGE CONTEXT; if
-it isn't there, say so rather than guessing. The desk's edge is real but thin
-(weekly IC ~0.017): never oversell, never imply certainty. Use tools whenever
-the user wants to change what they see (filters, portfolio inputs,
-navigation); after filtering, summarize what remains in one line.
-PAGE CONTEXT: ` + JSON.stringify(CTX);
-
-const TOOLS = [
-  { name: "filter_view",
-    description: "Hide table rows on the current page that do not match. " +
-      "Args (optional, AND-combined): query = ticker substring; asset_class " +
-      "(commodity, fx_g10, fx_cross, fx_em, equity_index, bond_fut, crypto, stock); " +
-      "side = LONG|SHORT; min_prob = 0-1 on the row's model probability. " +
-      "Returns visible-row count.",
-    input_schema: { type: "object", properties: {
-      query: { type: "string" }, asset_class: { type: "string" },
-      side: { type: "string" }, min_prob: { type: "number" } },
-      additionalProperties: false } },
-  { name: "reset_view", description: "Clear all filters; show every row.",
-    input_schema: { type: "object", properties: {}, additionalProperties: false } },
-  { name: "set_portfolio",
-    description: "Portfolio page only: set capital (USD) and/or profile " +
-      "(conservative|balanced|aggressive).",
-    input_schema: { type: "object", properties: {
-      capital: { type: "number" }, profile: { type: "string" } },
-      additionalProperties: false } },
-  { name: "open_page",
-    description: "Navigate after replying: desk | past_trades | portfolio | analysis.",
-    input_schema: { type: "object", properties: { page: { type: "string" } },
-      required: ["page"], additionalProperties: false } },
-];
-
-let navTarget = null;
-const msgs = [];
-const $ = id => document.getElementById(id);
-
-function runTool(name, input) {
-  if (name === "reset_view") {
-    document.querySelectorAll("tr[data-search]").forEach(r => r.style.display = "");
-    return "all rows visible";
-  }
-  if (name === "filter_view") {
-    let shown = 0;
-    document.querySelectorAll("tr[data-search]").forEach(r => {
-      let ok = true;
-      if (input.query) ok = ok && r.dataset.search.toLowerCase()
-        .includes(input.query.toLowerCase());
-      if (input.asset_class) ok = ok && (r.dataset.class || "")
-        .includes(input.asset_class.toLowerCase());
-      if (input.side) ok = ok && (r.dataset.side || "") === input.side.toUpperCase();
-      if (input.min_prob != null && r.dataset.prob)
-        ok = ok && parseFloat(r.dataset.prob) >= input.min_prob;
-      r.style.display = ok ? "" : "none";
-      if (ok) shown++;
-    });
-    return shown + " rows visible after filter";
-  }
-  if (name === "set_portfolio") {
-    const cap = $("cap");
-    if (!cap) return "error: not on the portfolio page — call open_page first";
-    if (input.capital != null) {
-      cap.value = Math.round(input.capital).toLocaleString("en-US");
-      cap.dispatchEvent(new Event("input"));
-    }
-    if (input.profile) {
-      const b = document.querySelector(`.seg button[data-p="${input.profile}"]`);
-      if (!b) return "error: unknown profile " + input.profile;
-      b.click();
-    }
-    return "portfolio set";
-  }
-  if (name === "open_page") {
-    const map = { desk: "index.html", past_trades: "past_trades.html",
-                  portfolio: "portfolio.html", analysis: "analysis.html" };
-    if (!map[input.page]) return "error: unknown page";
-    navTarget = map[input.page];
-    return "navigating to " + input.page + " after this reply";
-  }
-  return "error: unknown tool";
-}
-
-function esc(s) {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
-function md(text) {  // markdown-lite: bold, code, bullets, paragraphs
-  const blocks = esc(text).split(/\n\n+/).map(b => {
-    const lines = b.split("\n");
-    if (lines.every(l => /^\s*[-•]\s+/.test(l)))
-      return "<ul>" + lines.map(l =>
-        "<li>" + l.replace(/^\s*[-•]\s+/, "") + "</li>").join("") + "</ul>";
-    return "<p>" + b.replace(/\n/g, "<br>") + "</p>";
-  }).join("");
-  return blocks
-    .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
-    .replace(/`([^`]+)`/g, "<code>$1</code>");
-}
-
-function addMsg(cls, html, tag) {
-  const d = document.createElement("div");
-  d.className = "vc-m " + cls;
-  d.innerHTML = (tag ? `<div class="vc-tag">${tag}</div>` : "") +
-                `<div class="vc-body">${html}</div>`;
-  $("vc-msgs").appendChild(d);
-  $("vc-msgs").scrollTop = 1e9;
-}
-const addNote = (cls, text) => {
-  const d = document.createElement("div");
-  d.className = cls;
-  d.textContent = text;
-  $("vc-msgs").appendChild(d);
-  $("vc-msgs").scrollTop = 1e9;
-};
-
-function busy(on) {
-  $("vc-think").classList.toggle("on", on);
-  $("vc-in").disabled = on;
-  $("vc-send").disabled = on;
-  if (!on) $("vc-in").focus();
-}
-
-async function callClaude() {
-  const resp = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": localStorage.getItem("vig_key"),
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({ model: MODEL, max_tokens: 1500, system: SYS,
-                           tools: TOOLS, messages: msgs }),
-  });
-  if (!resp.ok) throw new Error("API " + resp.status + " — " +
-    (await resp.text()).slice(0, 200));
-  return resp.json();
-}
-
-async function send(text) {
-  text = (text ?? $("vc-in").value).trim();
-  if (!text || $("vc-send").disabled) return;
-  $("vc-in").value = "";
-  $("vc-chips").innerHTML = "";
-  addMsg("you", md(text), "YOU");
-  msgs.push({ role: "user", content: text });
-  busy(true);
-  try {
-    for (let hop = 0; hop < 6; hop++) {
-      const r = await callClaude();
-      msgs.push({ role: "assistant", content: r.content });
-      r.content.filter(b => b.type === "text")
-        .forEach(b => addMsg("vig", md(b.text), "VIG"));
-      if (r.stop_reason !== "tool_use") break;
-      const tools = r.content.filter(b => b.type === "tool_use");
-      const results = tools.map(t => {
-        const out = runTool(t.name, t.input);
-        addNote(out.startsWith("error") ? "vc-err" : "vc-act",
-                `${t.name} → ${out}`);
-        return { type: "tool_result", tool_use_id: t.id, content: out };
-      });
-      msgs.push({ role: "user", content: results });
-    }
-  } catch (e) {
-    addNote("vc-err", e.message);
-  }
-  busy(false);
-  if (navTarget) { const t = navTarget; navTarget = null;
-    setTimeout(() => location.href = t, 700); }
-}
-
-function showChips() {
-  $("vc-chips").innerHTML = CHIPS.map(c =>
-    `<span class="vc-chip">${esc(c)}</span>`).join("");
-  document.querySelectorAll(".vc-chip").forEach(el =>
-    el.addEventListener("click", () => send(el.textContent)));
-}
-
-function keyState() {
-  const has = !!localStorage.getItem("vig_key");
-  $("vc-keywrap").hidden = has;
-  $("vc-inrow").style.display = has ? "" : "none";
-  $("vc-chips").style.display = has ? "" : "none";
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  $("vc-toggle").addEventListener("click", () => {
-    const p = $("vc-panel");
-    p.classList.toggle("open");
-    keyState();
-    if (p.classList.contains("open") && !$("vc-msgs").hasChildNodes()) showChips();
-    if (p.classList.contains("open")) $("vc-in").focus();
-  });
-  $("vc-close").addEventListener("click", () => $("vc-panel").classList.remove("open"));
-  $("vc-savekey").addEventListener("click", () => {
-    const k = $("vc-key").value.trim();
-    if (!k) return;
-    localStorage.setItem("vig_key", k);
-    keyState(); showChips(); $("vc-in").focus();
-  });
-  $("vc-key").addEventListener("keydown", e => {
-    if (e.key === "Enter") $("vc-savekey").click(); });
-  $("vc-forget").addEventListener("click", () => {
-    localStorage.removeItem("vig_key"); keyState(); });
-  $("vc-send").addEventListener("click", () => send());
-  $("vc-in").addEventListener("keydown", e => { if (e.key === "Enter") send(); });
-});
-})();
-</script>
 </body></html>

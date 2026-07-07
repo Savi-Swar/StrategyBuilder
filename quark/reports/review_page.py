@@ -65,10 +65,8 @@ def _log_table(trades) -> str:
 
 def render_review_page(review: dict, generated_at: str,
                        self_review: str | None = None) -> str:
-    from quark.reports.chat_widget import chat_widget
+    from quark.reports.dashboard import filter_bar
     trades, s = review["trades"], review["summary"]
-    chat = chat_widget({"record_summary": s, "lessons": review["lessons"]},
-                       "past_trades")
     if trades is None or trades.empty:
         body = ('<h2>Past trades</h2><p class="muted">No scored history yet — '
                 'run scripts/backfill_ledger.py.</p>')
@@ -100,10 +98,10 @@ def render_review_page(review: dict, generated_at: str,
 <div class="commentary"><ul class="why">{lessons}</ul></div>
 {self_html}
 <h2>Every call <span class="dim">/ most recent first</span></h2>
+{filter_bar(classes=None, show_prob=True, show_side=True)}
 {_log_table(trades)}"""
 
     return page_shell("Vig — Past Trades", generated_at,
                       '<a class="btn" href="index.html">◈ desk</a> '
                       '<a class="btn" href="analysis.html">◈ analysis</a> '
-                      '<a class="btn" href="portfolio.html">◈ portfolio</a>', body,
-                      chat_html=chat)
+                      '<a class="btn" href="portfolio.html">◈ portfolio</a>', body)
