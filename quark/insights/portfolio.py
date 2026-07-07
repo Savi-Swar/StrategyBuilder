@@ -114,6 +114,33 @@ def _profile_weights(sleeve_rets: pd.DataFrame, profile: dict) -> dict:
     }
 
 
+def _drawdown_episodes(port: pd.Series, top: int = 3) -> list[dict]:
+    """The worst peak-to-trough episodes with recovery times — the numbers
+    an allocator actually asks for."""
+    eq = (1 + port).cumprod()
+    peak = eq.cummax()
+    dd = eq / peak - 1.0
+    episodes, start = [], None
+    for i, (dt, v) in enumerate(dd.items()):
+        if v < 0 and start is None:
+            start = i - 1 if i else 0
+        elif v >= 0 and start is not None:
+            seg = dd.iloc[start:i]
+            episodes.append({"depth": float(seg.min()),
+                             "peak": str(dd.index[start].date()),
+                             "trough": str(seg.idxmin().date()),
+                             "recovered": str(dt.date())})
+            start = None
+    if start is not None:  # still underwater
+        seg = dd.iloc[start:]
+        episodes.append({"depth": float(seg.min()),
+                         "peak": str(dd.index[start].date()),
+                         "trough": str(seg.idxmin().date()),
+                         "recovered": "not yet"})
+    episodes.sort(key=lambda e: e["depth"])
+    return [{**e, "depth": round(e["depth"], 4)} for e in episodes[:top]]
+
+
 def _mix_history(sleeve_rets: pd.DataFrame, weights: dict,
                  alpha_w: float) -> dict:
     """Run today's weights through the full history. The alpha sleeve is
@@ -131,6 +158,7 @@ def _mix_history(sleeve_rets: pd.DataFrame, weights: dict,
         "hist_max_dd": round(max_drawdown((1 + port).cumprod()), 4),
         "worst_year": {"year": int(yearly.idxmin()), "ret": round(float(yearly.min()), 4)},
         "n_years": round(len(port) / ANN, 1),
+        "top_dd": _drawdown_episodes(port),
     }
 
 

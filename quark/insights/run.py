@@ -56,6 +56,36 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
     from quark.insights.portfolio import build_portfolio_config
     portfolio = build_portfolio_config(ma_prices, xsec, eq_prices)
 
+    # Industry-style positioning intelligence: sector tilts of the books,
+    # factor loadings, and the stock-bond correlation regime.
+    from collections import Counter
+    from quark.data.refresh import load_sp500_sectors
+    sec = load_sp500_sectors()
+    sectors = {
+        "long": dict(Counter(sec.get(t, "Unknown") for t in xsec["longs"])),
+        "short": dict(Counter(sec.get(t, "Unknown") for t in xsec["shorts"])),
+    }
+    tilt_feats = {"mom_252": "12m momentum", "mom_21": "1m momentum",
+                  "vol_ratio_21_63": "short-term vol", "dist_52w_high": "52w-high proximity"}
+    f = xsec["features"]
+    factor_tilts = {
+        label: {
+            "long": round(float((f.loc[[t for t in xsec["longs"] if t in f.index],
+                                       col] + 0.5).mean() * 100), 1),
+            "short": round(float((f.loc[[t for t in xsec["shorts"] if t in f.index],
+                                        col] + 0.5).mean() * 100), 1),
+        }
+        for col, label in tilt_feats.items() if col in f.columns
+    }
+    ma_rets = ma_prices.pct_change(fill_method=None)
+    regime = {}
+    if "^GSPC" in ma_rets.columns and "ZN=F" in ma_rets.columns:
+        # pairwise-complete days only: holiday NaNs would void every window
+        pair = ma_rets[["^GSPC", "ZN=F"]].dropna()
+        corr = pair["^GSPC"].rolling(63).corr(pair["ZN=F"]).dropna()
+        if not corr.empty:
+            regime["stock_bond_corr63"] = round(float(corr.iloc[-1]), 2)
+
     headlines: dict = {}
     if news:
         picks = xsec["longs"][:6] + xsec["shorts"][:6]
@@ -93,6 +123,9 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
         "review": review,
         "self_review": self_review,
         "portfolio": portfolio,
+        "sectors": sectors,
+        "factor_tilts": factor_tilts,
+        "regime": regime,
         "commentary": commentary,
     }
 

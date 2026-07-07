@@ -263,6 +263,54 @@ def _trend_table(snapshot: pd.DataFrame, k: int = 18) -> str:
             "<th>Trend position</th></tr>" + "".join(rows) + "</table>")
 
 
+def _positioning_panel(sectors: dict, tilts: dict, regime: dict) -> str:
+    if not sectors and not tilts:
+        return ""
+    sec_rows = []
+    if sectors:
+        all_secs = sorted(set(sectors["long"]) | set(sectors["short"]),
+                          key=lambda s: -(sectors["long"].get(s, 0)
+                                          - sectors["short"].get(s, 0)))
+        max_n = max([*sectors["long"].values(), *sectors["short"].values(), 1])
+        for s in all_secs:
+            ln, sh = sectors["long"].get(s, 0), sectors["short"].get(s, 0)
+            net = ln - sh
+            cls = "pos" if net > 0 else ("neg" if net < 0 else "muted")
+            lbar = f'<div style="display:inline-block;height:8px;width:{ln / max_n * 70}px;background:#46ff9a"></div>'
+            sbar = f'<div style="display:inline-block;height:8px;width:{sh / max_n * 70}px;background:#ff5d5d"></div>'
+            sec_rows.append(
+                f'<tr><td>{s}</td><td>{lbar} {ln}</td><td>{sbar} {sh}</td>'
+                f'<td class="{cls}">{net:+d}</td></tr>')
+    tilt_rows = []
+    for label, d in tilts.items():
+        spread = d["long"] - d["short"]
+        cls = "pos" if spread > 0 else "neg"
+        tilt_rows.append(
+            f'<tr><td>{label}</td><td class="pos">{d["long"]:.0f}th</td>'
+            f'<td class="neg">{d["short"]:.0f}th</td>'
+            f'<td class="{cls}">{spread:+.0f}pp</td></tr>')
+    corr = regime.get("stock_bond_corr63")
+    if corr is None:
+        regime_line = ""
+    else:
+        verdict = ("bonds are hedging equities — diversification working"
+                   if corr < -0.2 else
+                   "stocks and bonds moving TOGETHER — diversification weak, "
+                   "risk-parity style books run hotter than their vol suggests"
+                   if corr > 0.2 else "neutral coupling")
+        regime_line = (f'<div class="edgemath">REGIME — 63d stock-bond correlation '
+                       f'<b>{corr:+.2f}</b>: {verdict}.</div>')
+    return f"""
+<h2>Positioning intelligence <span class="dim">/ what the books are actually made of</span></h2>
+<div class="cols">
+  <div><table><tr><th>Sector</th><th>Longs</th><th>Shorts</th><th>Net</th></tr>
+  {"".join(sec_rows)}</table></div>
+  <div><table><tr><th>Factor (avg xsec percentile)</th><th>Long book</th><th>Short book</th><th>Spread</th></tr>
+  {"".join(tilt_rows)}</table>
+  {regime_line}</div>
+</div>"""
+
+
 def _commentary_html(text: str) -> str:
     paras = []
     for block in text.split("\n\n"):
@@ -295,6 +343,9 @@ def _desk_context(result: dict) -> dict:
                            else round(float(r["ret_21d"]), 4)}
                        for i, r in top_trend.iterrows()},
         "n_instruments_trend": int(snap.shape[0]),
+        "sectors": result.get("sectors", {}),
+        "factor_tilts": result.get("factor_tilts", {}),
+        "regime": result.get("regime", {}),
         "backtest": "xsec weekly IC 0.0165 (t=3.22); trend/timing do not "
                     "clear costs decisively; see RESEARCH_NOTES",
     }
@@ -318,6 +369,8 @@ as-of rebalance <b>{result["xsec"]["as_of"].date()}</b> · horizon <b>5 trading 
 {_health_panel(result.get("health"))}
 <h2>Top trades <span class="dim">/ today</span></h2>
 <div class="cards">{trades_html}</div>
+{_positioning_panel(result.get("sectors", {}), result.get("factor_tilts", {}),
+                    result.get("regime", {}))}
 {commentary}
 <h2>The books</h2>
 <div class="cols">

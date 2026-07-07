@@ -140,3 +140,10 @@ def load_sp500_tickers(db_path=None) -> list[str]:
     db_path = str(db_path or config.DB_PATH)
     with sqlite3.connect(db_path) as conn:
         return [t for (t,) in conn.execute("SELECT ticker FROM sp500_members ORDER BY ticker")]
+
+
+def load_sp500_sectors(db_path=None) -> dict[str, str]:
+    """ticker -> GICS sector, from the stored membership table."""
+    db_path = str(db_path or config.DB_PATH)
+    with sqlite3.connect(db_path) as conn:
+        return dict(conn.execute("SELECT ticker, sector FROM sp500_members"))

@@ -82,15 +82,23 @@ function render() {
       <td>${pct(w)}</td><td><b>${fmt$(cap * w)}</b></td></tr>`;
   }).join("");
 
+  const var95d = 1.645 * p.est_vol / Math.sqrt(252) * cap;
+  const var95m = 1.645 * p.est_vol / Math.sqrt(12) * cap;
   const stats = [
     ["Target vol", pct(p.est_vol) + "/yr"],
     ["Hist. CAGR (2004-now, this mix)", pct(p.hist_cagr) + "/yr"],
     ["Worst drawdown (incl. 2008)", pct(p.hist_max_dd)],
     ["Worst year", `${p.worst_year.year}: ${pct(p.worst_year.ret)}`],
+    ["VaR 95% (parametric)", `${fmt$(var95d)} / day · ${fmt$(var95m)} / month`],
     ["Expected on your capital", `${fmt$(cap * p.hist_cagr)} avg/yr · swing of ${fmt$(Math.abs(cap * p.hist_max_dd))} at the historical worst`],
   ];
   document.getElementById("stats").innerHTML = stats.map(([k, v]) =>
     `<div class="htile"><div class="hlabel">${k}</div><div class="hval">${v}</div></div>`).join("");
+
+  document.getElementById("ddrows").innerHTML = (p.top_dd || []).map(d =>
+    `<tr><td class="neg">${pct(d.depth)}</td><td class="muted">${d.peak}</td>
+     <td class="muted">${d.trough}</td><td>${d.recovered}</td>
+     <td>${fmt$(Math.abs(cap * d.depth))}</td></tr>`).join("");
 
   const an = document.getElementById("alpharows");
   if (p.alpha_w > 0 && DATA.alpha_names.length) {
@@ -145,6 +153,11 @@ vol-targeted, Vig alpha capped</span></h2>
 short rate — conservative profiles are understated here). Historical CAGR is
 what this mix DID, not what it will do. Rebalance quarterly; more often just
 pays your broker.</div>
+
+<h2>Worst episodes for this mix <span class="dim">/ peak → trough → recovery,
+2004-present — know the pain before you size</span></h2>
+<table><tr><th>Depth</th><th>Peak</th><th>Trough</th><th>Recovered</th><th>On your capital</th></tr>
+<tbody id="ddrows"></tbody></table>
 
 <div id="alphasec">
 <h2>Alpha sleeve <span class="dim">/ Vig long book as of {pconf["as_of"]} —
