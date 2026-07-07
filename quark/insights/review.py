@@ -55,6 +55,8 @@ def _grade_dates(preds: pd.DataFrame, fwd: pd.DataFrame,
 def build_review(prices: pd.DataFrame, weeks: int = 52,
                  horizon: int = config.TARGET_HORIZON) -> dict:
     preds = _load(PRED_PATH)
+    if not preds.empty and "horizon" in preds.columns:
+        preds = preds[preds["horizon"] == 5]  # the record grades the 1W model
     if preds.empty:
         return {"trades": pd.DataFrame(), "summary": {}, "lessons": []}
 

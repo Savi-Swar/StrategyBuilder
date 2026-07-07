@@ -37,20 +37,26 @@ def test_realized_ic_positive_for_correct_predictions(tmp_ledger):
     probs = pd.Series([0.7] * 30 + [0.3] * 30, index=prices.columns)
     ledger.record_predictions(as_of, probs)
 
-    ic = ledger.update_realized(prices, horizon=5)
+    ic = ledger.update_realized(prices)
     assert len(ic) == 1
     assert ic.iloc[0]["ic"] > 0.3
     assert ic.iloc[0]["decile_spread"] > 0
+    assert ic.iloc[0]["horizon"] == 5
 
-    ic2 = ledger.update_realized(prices, horizon=5)  # idempotent
+    ic2 = ledger.update_realized(prices)  # idempotent
     assert len(ic2) == 1
+
+    # a second horizon on the same date is its own ledger entry
+    ledger.record_predictions(as_of, probs, horizon=21)
+    ic3 = ledger.update_realized(prices)
+    assert len(ic3) == 2 and set(ic3["horizon"]) == {5, 21}
 
 
 def test_unscoreable_recent_date_waits(tmp_ledger):
     prices = panel_with_predictable_winners()
     probs = pd.Series(0.5, index=prices.columns)
     ledger.record_predictions(prices.index[-2], probs)  # horizon incomplete
-    ic = ledger.update_realized(prices, horizon=5)
+    ic = ledger.update_realized(prices)
     assert ic.empty
 
 

@@ -98,6 +98,22 @@ improvement, t=+2.06. Rules B–D are not separable from A and were not
 adopted. The review page contextualizes any display window against the full
 record automatically, so a single bad year can't drive rule churn again.
 
+## Multi-horizon desk (2026-07-08)
+
+The desk gained a horizon setting: 1D / 1W / 3M / 6M / 2Y, each a separately
+retrained cross-sectional model (same features, label = beat-the-median over
+h days; training labels always end h days before today, so causality holds
+at every horizon). **Trial accounting: the four new horizons are four new
+trials.** Each was walk-forward validated once (scripts/validate_horizons.py)
+with purge scaled to the horizon and scoring at a non-overlapping cadence
+(h/5 weeks); results live in reports/xsec_horizons.csv and are quoted next
+to each horizon's picks in the UI. 1W remains the desk default: it has the
+longest validation, the live ledger history, and the graded record. Live
+predictions for ALL horizons are recorded daily (ledger `horizon` column),
+so per-horizon live ICs accrue with time — long horizons will take months
+to score their first entries, which the UI should treat as "unproven", not
+"clean".
+
 ## Future work (ordered by expected value)
 
 1. Point-in-time S&P universe from Wikipedia change history (kills the main

@@ -111,7 +111,11 @@ def run_xsec_strategy(
     rng = np.random.default_rng(seed)
 
     fold_rows, pred_parts = [], []
-    for train_dates, test_dates in PurgedWalkForward(prices.index).split():
+    # purge must scale with the label horizon or long-horizon labels leak
+    wf = PurgedWalkForward(prices.index,
+                           purge=max(config.PURGE_DAYS, horizon),
+                           embargo=config.EMBARGO_DAYS)
+    for train_dates, test_dates in wf.split():
         tr = df[fold_dates.isin(train_dates)]
         te = df[fold_dates.isin(test_dates)]
         if tr.empty or te.empty:

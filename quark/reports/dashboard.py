@@ -501,11 +501,68 @@ def _commentary_html(text: str) -> str:
     return "".join(paras)
 
 
-def render_dashboard(result: dict) -> str:
-    trades_html = "".join(
-        _trade_card(t, result["sparks"].get(t["ticker"], []))
-        for t in result["trades"]
+def _validation_line(label: str, validation: dict) -> str:
+    v = validation.get(label)
+    if not v:
+        return ('<span class="muted">walk-forward validation pending for this '
+                'horizon — treat picks as unproven</span>')
+    tone = "pos" if v["ic_t"] > 2 else ("muted" if v["ic_t"] > 1 else "neg")
+    return (f'walk-forward IC <b class="{tone}">{v["ic_mean"]:+.4f}</b> '
+            f'(t={v["ic_t"]:+.1f}, n={v["n_periods"]} non-overlapping periods) '
+            f'— every horizon is a counted trial')
+
+
+def _horizon_views(result: dict) -> str:
+    horizons = result.get("horizons") or {}
+    if not horizons:  # fallback: single-horizon desk
+        cards = "".join(_trade_card(t, result["sparks"].get(t["ticker"], []))
+                        for t in result["trades"])
+        return (f'<h2>Top trades <span class="dim">/ today</span></h2>'
+                f'<div class="cards">{cards}</div>')
+
+    strip = "".join(
+        f'<span class="bm-btn hz" data-hz="{label}">{label}</span>'
+        for label in horizons
     )
+    views = []
+    for label, hv in horizons.items():
+        cards = "".join(_trade_card(t, hv["sparks"].get(t["ticker"], []))
+                        for t in hv["trades"])
+        views.append(f"""
+<div data-hzview="{label}" style="display:none">
+  <div class="tagline" style="margin:4px 0 14px">as-of
+  <b>{hv["xsec"]["as_of"].date()}</b> · {hv["h"]} trading-day horizon ·
+  {_validation_line(label, result.get("horizon_validation", {}))}</div>
+  <div class="cards">{cards}</div>
+  <h2>The equity book <span class="dim">/ at this horizon</span></h2>
+  {_xsec_table(hv["xsec"])}
+</div>""")
+
+    return f"""
+<h2>Top trades <span class="dim">/ pick your horizon — the whole desk view follows</span></h2>
+<div class="fbar" style="margin-bottom:14px">
+  <span class="hlabel" style="margin:0">HORIZON</span>{strip}
+  <span class="muted" style="font-size:11px">each horizon is its own retrained
+  model; 1W is the desk default and carries the live track record</span>
+</div>
+{"".join(views)}
+<script>
+(() => {{
+  const btns = document.querySelectorAll(".hz");
+  const views = document.querySelectorAll("[data-hzview]");
+  const set = k => {{
+    views.forEach(v => v.style.display = v.dataset.hzview === k ? "" : "none");
+    btns.forEach(b => b.classList.toggle("on", b.dataset.hz === k));
+    localStorage.setItem("vig_hz", k);
+  }};
+  btns.forEach(b => b.addEventListener("click", () => set(b.dataset.hz)));
+  const saved = localStorage.getItem("vig_hz");
+  set([...btns].some(b => b.dataset.hz === saved) ? saved : "1W");
+}})();
+</script>"""
+
+
+def render_dashboard(result: dict) -> str:
     commentary = ""
     if result["commentary"]:
         commentary = (f'<h2>Vig&rsquo;s commentary</h2>'
@@ -513,20 +570,15 @@ def render_dashboard(result: dict) -> str:
 
     body = f"""
 <div class="tagline" style="margin-bottom:6px">data through
-<b>{result["data_through"]}</b> · universe <b>{result["xsec"]["n_universe"]}</b> names ·
-as-of rebalance <b>{result["xsec"]["as_of"].date()}</b> · horizon <b>5 trading days</b></div>
+<b>{result["data_through"]}</b> · universe <b>{result["xsec"]["n_universe"]}</b> names</div>
 {_health_panel(result.get("health"))}
-<h2>Top trades <span class="dim">/ today</span></h2>
-<div class="cards">{trades_html}</div>
+{_horizon_views(result)}
 {_positioning_panel(result.get("sectors", {}), result.get("factor_tilts", {}),
                     result.get("regime", {}))}
 {commentary}
-<h2>The books</h2>
+<h2>The trend book <span class="dim">/ multi-asset, 12m trend, vol-targeted</span></h2>
 {filter_bar(sorted(result["snapshot"]["asset_class"].unique()) + ["stock"])}
-<div class="cols">
-  <div>{_xsec_table(result["xsec"])}</div>
-  <div>{_trend_table(result["snapshot"])}</div>
-</div>"""
+{_trend_table(result["snapshot"])}"""
 
     return page_shell(
         "Vig — Daily Desk", result["generated_at"], "desk",

@@ -37,6 +37,7 @@ def top_trades(
     xsec: dict,
     headlines: dict[str, list[dict]] | None = None,
     n: int = 3,
+    horizon_days: int = 5,
 ) -> list[dict]:
     """The n highest-conviction trades across both legs, with drivers."""
     headlines = headlines or {}
@@ -65,7 +66,8 @@ def top_trades(
                 "drivers": _drivers(feats.loc[ticker]),
                 "headline": news[0] if news else None,
                 "sizing": "equal-weight within the decile of a dollar-neutral "
-                          "book (backtested convention); horizon 5 trading days",
+                          f"book (backtested convention); horizon {horizon_days} "
+                          "trading days",
             }
         )
     return trades

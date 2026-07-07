@@ -22,47 +22,60 @@ IC_PATH = LEDGER_DIR / "ic_history.csv"
 def _load(path, parse=("as_of",)) -> pd.DataFrame:
     if not path.exists():
         return pd.DataFrame()
-    return pd.read_csv(path, parse_dates=list(parse))
+    df = pd.read_csv(path, parse_dates=list(parse))
+    if not df.empty and "horizon" not in df.columns:
+        df["horizon"] = 5  # rows written before the multi-horizon desk
+    return df
 
 
 def record_predictions(as_of: pd.Timestamp, probs: pd.Series,
-                       source: str = "live") -> bool:
-    """Append one rebalance date's full cross-section of predictions.
-    Returns False (no-op) if this date is already recorded."""
+                       source: str = "live", horizon: int = 5) -> bool:
+    """Append one rebalance date's full cross-section of predictions for one
+    horizon. Returns False (no-op) if (date, horizon) is already recorded."""
     LEDGER_DIR.mkdir(parents=True, exist_ok=True)
     existing = _load(PRED_PATH)
-    if not existing.empty and (existing["as_of"] == as_of).any():
+    if not existing.empty and (
+            (existing["as_of"] == as_of) & (existing["horizon"] == horizon)).any():
         return False
     rows = pd.DataFrame({
         "as_of": as_of,
         "ticker": probs.index,
         "prob": probs.values,
         "source": source,
+        "horizon": horizon,
     })
-    rows.to_csv(PRED_PATH, mode="a", header=not PRED_PATH.exists(), index=False)
+    header = not PRED_PATH.exists()
+    if not header and "horizon" not in pd.read_csv(PRED_PATH, nrows=0).columns:
+        existing.to_csv(PRED_PATH, index=False)  # upgrade file in place
+    rows.to_csv(PRED_PATH, mode="a", header=header, index=False)
     return True
 
 
-def update_realized(prices: pd.DataFrame,
-                    horizon: int = config.TARGET_HORIZON) -> pd.DataFrame:
-    """Score every recorded prediction date whose horizon has completed:
+def update_realized(prices: pd.DataFrame) -> pd.DataFrame:
+    """Score every recorded (date, horizon) whose window has completed:
     Spearman IC and top-vs-bottom decile realized spread. Idempotent."""
     preds = _load(PRED_PATH)
     if preds.empty:
         return _load(IC_PATH)
     scored = _load(IC_PATH)
-    done = set(scored["as_of"]) if not scored.empty else set()
+    done = (set(zip(scored["as_of"], scored["horizon"]))
+            if not scored.empty else set())
 
     returns = prices.pct_change(fill_method=None)
-    fwd = forward_return(returns, horizon)
-    # a date is scoreable once `horizon` bars exist after it
-    scoreable_through = prices.index[-(horizon + 1)] if len(prices) > horizon else None
-    if scoreable_through is None:
-        return scored
+    fwd_cache: dict[int, pd.DataFrame] = {}
 
     new_rows = []
-    for as_of, grp in preds.groupby("as_of"):
-        if as_of in done or as_of > scoreable_through or as_of not in fwd.index:
+    for (as_of, horizon), grp in preds.groupby(["as_of", "horizon"]):
+        horizon = int(horizon)
+        if len(prices) <= horizon:
+            continue
+        scoreable_through = prices.index[-(horizon + 1)]
+        if (as_of, horizon) in done or as_of > scoreable_through:
+            continue
+        if horizon not in fwd_cache:
+            fwd_cache[horizon] = forward_return(returns, horizon)
+        fwd = fwd_cache[horizon]
+        if as_of not in fwd.index:
             continue
         p = grp.set_index("ticker")["prob"]
         r = fwd.loc[as_of].reindex(p.index)
@@ -76,16 +89,22 @@ def update_realized(prices: pd.DataFrame,
         new_rows.append({
             "as_of": as_of, "n": len(both), "ic": ic,
             "decile_spread": spread, "source": grp["source"].iloc[0],
+            "horizon": horizon,
         })
     if new_rows:
         add = pd.DataFrame(new_rows).sort_values("as_of")
-        add.to_csv(IC_PATH, mode="a", header=not IC_PATH.exists(), index=False)
+        if not IC_PATH.exists() or "horizon" in pd.read_csv(IC_PATH, nrows=0).columns:
+            add.to_csv(IC_PATH, mode="a", header=not IC_PATH.exists(), index=False)
+        else:
+            pd.concat([scored, add], ignore_index=True).to_csv(IC_PATH, index=False)
         scored = pd.concat([scored, add], ignore_index=True)
     return scored.sort_values("as_of") if not scored.empty else scored
 
 
 def health_summary(ic_history: pd.DataFrame, data_through,
-                   window: int = 26) -> dict:
+                   window: int = 26, horizon: int = 5) -> dict:
+    if ic_history is not None and not ic_history.empty and "horizon" in ic_history.columns:
+        ic_history = ic_history[ic_history["horizon"] == horizon]
     """Traffic-light health readout. The point is knowing when NOT to trust
     the model: an edge this size can sit underwater for quarters, but a
     significantly negative trailing IC means stand down."""

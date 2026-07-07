@@ -19,6 +19,13 @@ from quark.universe import load_universe
 
 SPARK_DAYS = 90
 
+# The desk-wide horizon setting. 1W (5 trading days) is the original,
+# most-validated configuration and remains the default; every horizon is a
+# separately retrained model AND a counted trial (see validate_horizons.py
+# and reports/xsec_horizons.csv, quoted per-horizon in the UI).
+HORIZON_SETTINGS = [("1D", 1), ("1W", 5), ("3M", 63), ("6M", 126), ("2Y", 504)]
+SPARK_DAYS_BY_H = {"1D": 90, "1W": 90, "3M": 252, "6M": 378, "2Y": 756}
+
 
 def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict:
     uni = load_universe()
@@ -49,8 +56,18 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
                              field="volume").reindex(eq_prices.index)
     xsec = xsec_latest_predictions(eq_prices, eq_volumes)
 
+    horizon_models = {"1W": xsec}
+    for label, h in HORIZON_SETTINGS:
+        if h != 5:
+            print(f"  retraining for horizon {label} (h={h}d)...")
+            horizon_models[label] = xsec_latest_predictions(
+                eq_prices, eq_volumes, horizon=h)
+
     print("Updating the prediction ledger and model health...")
-    record_predictions(xsec["as_of"], xsec["table"]["prob_outperform"], source="live")
+    for label, h in HORIZON_SETTINGS:
+        xs = horizon_models[label]
+        record_predictions(xs["as_of"], xs["table"]["prob_outperform"],
+                           source="live", horizon=h)
     ic_history = update_realized(eq_prices)
     health = health_summary(ic_history, data_through=eq_prices.index[-1])
     print(f"  model: {health['model_status']} — {health['model_detail']}")
@@ -115,6 +132,23 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
         for t in trades if t["ticker"] in eq_prices.columns
     }
 
+    # One view per desk horizon: trades, sparklines (window scaled), model.
+    horizons = {}
+    for label, h in HORIZON_SETTINGS:
+        xs = horizon_models[label]
+        tr = trades if h == 5 else top_trades(xs, headlines, n=3, horizon_days=h)
+        days = SPARK_DAYS_BY_H[label]
+        sp = {t["ticker"]: [round(float(v), 2) for v in
+                            eq_prices[t["ticker"]].dropna().tail(days)]
+              for t in tr if t["ticker"] in eq_prices.columns}
+        horizons[label] = {"h": h, "xsec": xs, "trades": tr, "sparks": sp}
+
+    validation = {}
+    val_path = config.REPORTS_DIR / "xsec_horizons.csv"
+    if val_path.exists():
+        import pandas as pd
+        validation = pd.read_csv(val_path).set_index("label").to_dict("index")
+
     commentary = None
     self_review = None
     desk_read = None
@@ -149,6 +183,8 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
         "desk_read": desk_read,
         "board": board,
         "board_pos": board_pos,
+        "horizons": horizons,
+        "horizon_validation": validation,
         "commentary": commentary,
     }
 

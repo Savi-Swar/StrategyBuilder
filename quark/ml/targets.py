@@ -17,7 +17,7 @@ def forward_return(returns: pd.DataFrame, horizon: int = 5) -> pd.DataFrame:
     move lands in the next bar, which IS in the window). The result is masked
     where the instrument itself has no return at t (pre-listing, local
     holiday), so no label exists before an instrument trades."""
-    min_p = max(2, horizon - 2)
+    min_p = max(1, horizon - 2)
     log_fwd = np.log1p(returns).rolling(horizon, min_periods=min_p).sum().shift(-horizon)
     return np.expm1(log_fwd).where(returns.notna())
 
