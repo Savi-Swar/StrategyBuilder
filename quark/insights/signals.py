@@ -65,7 +65,7 @@ def xsec_latest_predictions(
 
     Returns {"as_of", "n_trained", "table", "longs", "shorts"}.
     """
-    returns = prices.pct_change(fill_method=None)
+    returns = compute_returns(prices)
     fwd = forward_return(returns, horizon)
 
     feats = build_features(prices, returns)

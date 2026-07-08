@@ -26,6 +26,7 @@ from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.metrics import roc_auc_score
 
 from quark import config
+from quark.data.loader import compute_returns
 from quark.ml.features import build_features
 from quark.ml.pipeline import HGB_PARAMS
 from quark.ml.splits import PurgedWalkForward
@@ -81,7 +82,7 @@ def run_xsec_strategy(
     seed: int = config.SEED,
     shuffle_labels: bool = False,
 ) -> XSecResult:
-    returns = prices.pct_change(fill_method=None)
+    returns = compute_returns(prices)
     fwd = forward_return(returns, horizon)
 
     # Cross-sectional rank features per date, centered at 0.

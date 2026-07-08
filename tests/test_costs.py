@@ -35,6 +35,15 @@ def test_zero_positions_cost_nothing():
     assert (c == 0.0).all().all()
 
 
+def test_missing_rate_raises():
+    """Audit-pinned: an instrument without a cost rate must raise, not
+    trade for free."""
+    import pytest
+    pos = make_positions([1.0, 1.0])
+    with pytest.raises(ValueError, match="no cost rate"):
+        turnover_costs(pos, pd.Series({"OTHER": 5.0}))
+
+
 def test_per_ticker_rates_applied():
     idx = pd.bdate_range("2020-01-01", periods=2)
     pos = pd.DataFrame({"CHEAP": [1.0, 1.0], "DEAR": [1.0, 1.0]}, index=idx)

@@ -25,6 +25,7 @@ import pandas as pd
 
 from quark import config
 from quark.backtest.metrics import max_drawdown, summary_stats
+from quark.data.loader import compute_returns
 
 # sleeve -> (proxy tickers in Quark.db, investable ETF suggestion)
 SLEEVES = {
@@ -47,7 +48,7 @@ ANN = config.ANN_FACTOR
 
 
 def _sleeve_returns(prices: pd.DataFrame) -> pd.DataFrame:
-    rets = prices.pct_change(fill_method=None)
+    rets = compute_returns(prices)
     out = {}
     for name, (proxies, _) in SLEEVES.items():
         cols = [c for c in proxies if c in rets.columns]
@@ -118,7 +119,9 @@ def _drawdown_episodes(port: pd.Series, top: int = 3) -> list[dict]:
     """The worst peak-to-trough episodes with recovery times — the numbers
     an allocator actually asks for."""
     eq = (1 + port).cumprod()
-    peak = eq.cummax()
+    # baseline capital is 1.0 BEFORE day one: a decline that starts
+    # immediately is a real drawdown (audit fix — dd[0] was always 0)
+    peak = eq.cummax().clip(lower=1.0)
     dd = eq / peak - 1.0
     episodes, start = [], None
     for i, (dt, v) in enumerate(dd.items()):
@@ -143,19 +146,28 @@ def _drawdown_episodes(port: pd.Series, top: int = 3) -> list[dict]:
 
 def _mix_history(sleeve_rets: pd.DataFrame, weights: dict,
                  alpha_w: float) -> dict:
-    """Run today's weights through the full history. The alpha sleeve is
-    modeled as US-equity risk (it is long-only large caps)."""
+    """Run today's weights through the full history (daily-rebalanced,
+    fixed weights). The alpha sleeve is modeled as US-equity risk.
+
+    Audit fix (2026-07-08): sleeves are included only from their first
+    valid return, and weights are RENORMALIZED over the sleeves available
+    each day — the old sum treated missing sleeves (BTC pre-2014, index
+    holidays) as phantom 0%-return cash, damping vol and CAGR."""
     w = dict(weights)
     w["us_equity"] = w.get("us_equity", 0.0) + alpha_w
     cols = [c for c in w if c in sleeve_rets.columns]
-    port = (sleeve_rets[cols] * pd.Series({c: w[c] for c in cols})).sum(axis=1)
-    port = port.dropna()
+    rets = sleeve_rets[cols]
+    w_ser = pd.Series({c: w[c] for c in cols})
+    avail_w = rets.notna().mul(w_ser, axis=1).sum(axis=1)
+    port = (rets.mul(w_ser, axis=1).sum(axis=1, min_count=1)
+            / avail_w.replace(0.0, np.nan)).dropna()
     stats = summary_stats(port)
     yearly = port.groupby(port.index.year).apply(lambda x: float((1 + x).prod() - 1))
+    eq = pd.concat([pd.Series([1.0]), (1 + port).cumprod()], ignore_index=True)
     return {
         "hist_cagr": round(stats["cagr"], 4),
         "hist_vol": round(stats["ann_vol"], 4),
-        "hist_max_dd": round(max_drawdown((1 + port).cumprod()), 4),
+        "hist_max_dd": round(max_drawdown(eq), 4),
         "worst_year": {"year": int(yearly.idxmin()), "ret": round(float(yearly.min()), 4)},
         "n_years": round(len(port) / ANN, 1),
         "top_dd": _drawdown_episodes(port),
@@ -184,9 +196,23 @@ def build_portfolio_config(ma_prices: pd.DataFrame, xsec: dict,
         pw.update(_mix_history(sleeve_rets, pw["weights"], pw["alpha_w"]))
         profiles[name] = pw
 
+    # Metadata for the holdings tracker: last price + sector for every
+    # coverable equity, and the model's current decile membership.
+    from quark.data.refresh import load_sp500_sectors
+    sectors = load_sp500_sectors()
+    ticker_meta = {}
+    for t in eq_prices.columns:
+        px = eq_prices[t].dropna()
+        if not px.empty:
+            ticker_meta[t] = {"last": round(float(px.iloc[-1]), 2),
+                              "sector": sectors.get(t, "Unknown")}
+
     return {
         "profiles": profiles,
         "sleeve_etfs": {k: v[1] for k, v in SLEEVES.items()},
         "alpha_names": alpha_names,
         "as_of": str(xsec["as_of"].date()),
+        "ticker_meta": ticker_meta,
+        "long_decile": list(xsec["longs"]),
+        "short_decile": list(xsec["shorts"]),
     }

@@ -13,4 +13,8 @@ def turnover_costs(positions: pd.DataFrame, cost_bps: pd.Series) -> pd.DataFrame
     if len(dpos):
         dpos.iloc[0] = positions.iloc[0]
     rate = cost_bps.reindex(positions.columns) * 1e-4
+    if rate.isna().any():
+        missing = list(rate.index[rate.isna()])
+        raise ValueError(f"no cost rate for {missing} — silent free trading "
+                         "is how backtests lie")
     return dpos.abs().mul(rate, axis=1).fillna(0.0)

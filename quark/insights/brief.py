@@ -80,7 +80,7 @@ def build_brief(
                 lines.append(f"| _…{remaining} more per leg in the full ranking CSV_ | | | |")
             break
     lines += ["", f"_Model trained on {xsec['n_trained']:,} weekly observations; "
-              "5-day horizon; weekly IC ≈ 0.017 (t=3.2) in walk-forward — a modest, "
+              "5-day horizon; weekly IC ≈ 0.017 (t=3.4) in walk-forward — a modest, "
               "long-side-driven edge. Dollar-neutral decile spread is the "
               "backtested implementation._", ""]
 
@@ -120,7 +120,7 @@ def payload_for_llm(snapshot: pd.DataFrame, xsec: dict,
             "shorts": {t: round(float(xsec["table"].at[t, "prob_outperform"]), 4)
                        for t in xsec["shorts"]},
             "n_universe": xsec["n_universe"],
-            "backtest_context": "weekly IC 0.0165 (t=3.22), long-side driven, "
+            "backtest_context": "weekly IC 0.0172 (t=3.35), long-side driven, "
                                 "net Sharpe 0.05 weekly / 0.26 monthly",
         },
         "multi_asset": json.loads(snapshot.round(4).to_json(orient="index")),

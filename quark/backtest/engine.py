@@ -36,15 +36,21 @@ class BacktestResult:
     stats: dict = field(default_factory=dict)
 
 
-def _finalize(positions, gross, costs, net, portfolio) -> BacktestResult:
+def _finalize(positions, gross, costs, net, portfolio,
+              divisor=None) -> BacktestResult:
+    """`divisor` (per-date instrument count) puts turnover/cost stats in the
+    SAME portfolio-NAV units as cagr/sharpe — without it they are
+    per-instrument sums, ~n_alive x larger than the portfolio experience."""
     equity = (1.0 + portfolio).cumprod()
     turnover = positions.diff().abs().sum(axis=1)
     if len(turnover):
         turnover.iloc[0] = positions.iloc[0].abs().sum()
     stats = summary_stats(portfolio)
     n_years = max(len(portfolio) / config.ANN_FACTOR, 1e-9)
-    stats["ann_turnover"] = float(turnover.sum() / n_years)
-    stats["cost_drag_ann"] = float(costs.sum().sum() / n_years) if len(costs) else 0.0
+    div = divisor if divisor is not None else pd.Series(1.0, index=portfolio.index)
+    stats["ann_turnover"] = float((turnover / div).sum() / n_years)
+    stats["cost_drag_ann"] = (float((costs.sum(axis=1) / div).sum() / n_years)
+                              if len(costs) else 0.0)
     return BacktestResult(positions, gross, costs, net, portfolio, equity, turnover, stats)
 
 
@@ -85,7 +91,7 @@ def run_backtest(
     n_alive = alive.sum(axis=1).clip(lower=1)
     portfolio = net.sum(axis=1) / n_alive
 
-    return _finalize(positions, gross, costs, net, portfolio)
+    return _finalize(positions, gross, costs, net, portfolio, divisor=n_alive)
 
 
 def run_weights_backtest(

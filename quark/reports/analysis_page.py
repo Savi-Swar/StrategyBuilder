@@ -77,9 +77,9 @@ def _cards(articles: list[dict], group: str) -> str:
 
 
 BOARD_HEADERS = {
-    "tactical": ("RSI14", "Boll %B (20d)", "MACD bps", "50/200d",
+    "tactical": ("RSI14 (Cutler)", "Boll %B (20d)", "MACD bps", "50/200d",
                  "vs VWAP20d", "12m"),
-    "position": ("RSI14w", "Boll %B (20w)", "MACD bps (wkly)", "10/40w",
+    "position": ("RSI14w (Cutler)", "Boll %B (20w)", "MACD bps (wkly)", "10/40w",
                  "vs VWAP20w", "6m"),
 }
 
@@ -106,8 +106,8 @@ def _board_table(board: pd.DataFrame, mode: str) -> str:
             f'<td class="{rsi_cls}">{r["rsi14"]:.0f}{rsi_note}</td>'
             f'<td class="{"pos" if r["pctb"] > 0.5 else "neg"}">{r["pctb"]:.2f}</td>'
             f'<td class="{"pos" if r["macd_bps"] > 0 else "neg"}">{r["macd_bps"]:+.1f}</td>'
-            f'<td class="{"pos" if r["golden"] else "neg"}">'
-            f'{"GOLDEN" if r["golden"] else "DEATH"}</td>'
+            f'<td class="{"muted" if pd.isna(r["golden"]) else ("pos" if r["golden"] else "neg")}">'
+            f'{"—" if pd.isna(r["golden"]) else ("GOLDEN" if r["golden"] else "DEATH")}</td>'
             f'<td>{vwap}</td><td>{mom}</td>'
             f'<td class="{ccls}"><b>{c:+d}</b></td></tr>')
     return (f"<table><tr><th>Instrument</th><th>{h[0]}</th><th>{h[1]}</th>"

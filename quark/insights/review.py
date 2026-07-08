@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 
 from quark import config
+from quark.data.loader import compute_returns
 from quark.insights.ledger import _load, PRED_PATH
 from quark.ml.targets import forward_return
 
@@ -60,7 +61,7 @@ def build_review(prices: pd.DataFrame, weeks: int = 52,
     if preds.empty:
         return {"trades": pd.DataFrame(), "summary": {}, "lessons": []}
 
-    returns = prices.pct_change(fill_method=None)
+    returns = compute_returns(prices)
     fwd = forward_return(returns, horizon)
     scoreable_through = prices.index[-(horizon + 1)]
 

@@ -88,10 +88,12 @@ def render_review_page(review: dict, generated_at: str,
     body = f"""
 <h2>The record <span class="dim">/ weekly top-3, graded after each 5-day horizon</span></h2>
 {_tiles(s)}
-<h2>Cumulative edge <span class="dim">/ mean top-3 return vs S&amp;P median, compounding weekly</span></h2>
+<h2>Cumulative edge <span class="dim">/ mean top-3 return vs S&amp;P median,
+summed arithmetically week by week — not compounded, not a P&amp;L</span></h2>
 <div class="bigchart">{curve}
-  <div class="hdetail">final: {s["cum_rel"][-1] * 100:+.1f}% relative over {s["n_weeks"]} weeks
-  (gross, before costs — the honest yardstick of pick quality, not a P&amp;L)</div></div>
+  <div class="hdetail">final: {s["cum_rel"][-1] * 100:+.1f} percentage points of
+  cumulative relative edge over {s["n_weeks"]} weeks (gross, before costs —
+  a yardstick of pick quality)</div></div>
 <h2>Where the edge lives</h2>
 {_breakdown_tables(s)}
 <h2>Self-diagnosis <span class="dim">/ computed from the record, regenerated daily</span></h2>

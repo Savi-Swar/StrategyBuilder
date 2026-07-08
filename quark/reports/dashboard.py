@@ -302,9 +302,10 @@ def _health_panel(health: dict | None) -> str:
     <div class="hdetail">every prediction is scored once its 5-day horizon completes</div></div>
 </div>
 <div class="edgemath">EDGE MATH, HONESTLY — at the backtested best case (monthly
-config, net Sharpe ≈ 0.26) the half-Kelly growth rate is ≈ Sharpe²/4 ≈
-<b>1.7%/yr</b> per unit of gross. Vig compounds calibration and discipline;
-the money, if ever, follows the process — not the other way round.</div>"""
+config, net Sharpe ≈ 0.26) the full-Kelly growth rate is S²/2 ≈ <b>3.4%/yr</b>
+per unit of gross; at the half-Kelly a sane desk actually runs, ≈ 3S²/8 ≈
+<b>2.5%/yr</b>. Vig compounds calibration and discipline; the money, if ever,
+follows the process — not the other way round.</div>"""
 
 
 def _trade_card(trade: dict, spark: list[float]) -> str:

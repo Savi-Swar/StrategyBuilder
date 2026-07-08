@@ -2,8 +2,10 @@
 cross-sectional model at every desk horizon. Each horizon is a TRIAL and is
 recorded as such — the UI quotes these numbers next to each horizon's picks.
 
-Rebalance cadence scales with horizon (h/5 weeks) so scored labels do not
-overlap: honest sample counts, honest t-stats.
+Cadence note (audit fix 2026-07-08): a calendar week averages ~4.83 TRADING
+days, so cadences are sized on 4.6 td/week to keep scored label windows
+non-overlapping at 3M/6M/2Y. 1W at weekly cadence retains ~20% single-day
+overlaps on holiday weeks — immaterial and documented, kept for sample size.
 """
 
 import numpy as np
@@ -15,8 +17,8 @@ from quark.data.quality import clean_panel, quality_report
 from quark.data.refresh import load_sp500_tickers
 from quark.ml.xsec import run_xsec_strategy
 
-HORIZONS = [("1D", 1, 1), ("1W", 5, 1), ("3M", 63, 13),
-            ("6M", 126, 26), ("2Y", 504, 101)]
+HORIZONS = [("1D", 1, 1), ("1W", 5, 1), ("3M", 63, 14),
+            ("6M", 126, 28), ("2Y", 504, 110)]
 
 
 def main() -> None:

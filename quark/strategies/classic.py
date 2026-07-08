@@ -28,12 +28,17 @@ def ma_crossover(prices: pd.DataFrame, fast: int = 50, slow: int = 200) -> pd.Da
 
 
 def rsi(prices: pd.DataFrame, window: int = 14) -> pd.DataFrame:
+    """Cutler's RSI (simple-MA of gains/losses). NOTE: charting platforms
+    default to Wilder's recursive smoothing — values can differ by several
+    points; the UI labels this variant explicitly."""
     delta = prices.diff()
     gain = delta.clip(lower=0).rolling(window, min_periods=window).mean()
     loss = (-delta.clip(upper=0)).rolling(window, min_periods=window).mean()
     rs = gain / loss.replace(0.0, np.nan)
     out = 100.0 - 100.0 / (1.0 + rs)
-    return out.where(loss != 0, 100.0).where(gain.notna() & loss.notna())
+    out = out.where(loss != 0, 100.0)
+    out = out.where((gain != 0) | (loss != 0), 50.0)  # flat window: neutral
+    return out.where(gain.notna() & loss.notna())
 
 
 def rsi_reversion(prices: pd.DataFrame, window: int = 14,

@@ -94,6 +94,23 @@ def test_weights_backtest_hand_computed(bdates):
     assert np.isclose(res.turnover.iloc[1], 1.0)
 
 
+def test_cost_drag_in_portfolio_units(bdates):
+    """Audit-pinned: cost_drag_ann must equal the actual gross-net gap of
+    the PORTFOLIO return stream (not the per-instrument sum, ~N x larger)."""
+    rng = np.random.default_rng(5)
+    prices = pd.DataFrame(
+        {c: 100 * np.cumprod(1 + rng.normal(0, 0.01, len(bdates)))
+         for c in "ABCDE"}, index=bdates)
+    signals = np.sign(prices.pct_change())
+    res = run_backtest(signals, prices, universe=make_universe(list("ABCDE"),
+                                                               cost_bps=20.0))
+    n_years = len(res.portfolio) / 252
+    gross_port = (res.gross_returns.fillna(0).sum(axis=1)
+                  / prices.notna().cummax().sum(axis=1))
+    actual_drag = float((gross_port - res.portfolio).sum() / n_years)
+    assert np.isclose(res.stats["cost_drag_ann"], actual_drag, rtol=1e-6)
+
+
 def test_gross_geq_net_with_costs(bdates):
     rng = np.random.default_rng(3)
     prices = pd.DataFrame({"A": 100 * np.cumprod(1 + rng.normal(0, 0.01, len(bdates)))},

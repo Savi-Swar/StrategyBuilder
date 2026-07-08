@@ -11,12 +11,22 @@ def dates():
     return pd.bdate_range("2020-01-01", periods=300)
 
 
-def test_returns_do_not_pad_across_gaps(dates):
+def test_returns_gap_semantics(dates):
+    """Audit-pinned: gap bars are NaN (no phantom returns), but the first
+    bar AFTER a gap carries the true cross-gap move — the old
+    pct_change(fill_method=None) deleted it entirely."""
     px = pd.Series(100.0, index=dates)
-    px.iloc[50:60] = np.nan  # a 10-day hole
+    px.iloc[50:60] = np.nan          # a 10-day hole
+    px.iloc[60:] = 110.0             # +10% across the gap
     r = compute_returns(px.to_frame("A"))["A"]
-    # No phantom returns inside or when exiting the gap
-    assert r.iloc[50:61].isna().all()
+    assert r.iloc[50:60].isna().all()            # nothing invented inside
+    assert np.isclose(r.iloc[60], 0.10)          # the move is NOT deleted
+    assert r.iloc[61] == 0.0
+    # leading NaNs stay NaN (no returns before first observation)
+    px2 = pd.Series(np.nan, index=dates)
+    px2.iloc[100:] = 50.0
+    r2 = compute_returns(px2.to_frame("B"))["B"]
+    assert r2.iloc[:101].isna().all()
 
 
 def test_stale_run_detected(dates):

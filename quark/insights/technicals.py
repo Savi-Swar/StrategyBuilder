@@ -24,7 +24,7 @@ BULL_RULES = {  # column -> is-bullish predicate, conventional trend reading
     "rsi14": lambda v: v > 50,
     "pctb": lambda v: v > 0.5,
     "macd_bps": lambda v: v > 0,
-    "golden": lambda v: bool(v),
+    "golden": lambda v: bool(v),  # NaN rows are skipped upstream via pd.isna
     "vwap_dist": lambda v: v > 0,
     "mom": lambda v: v > 0,
 }
@@ -69,12 +69,16 @@ def build_board(prices: pd.DataFrame, volumes: pd.DataFrame | None,
         vv = vol.rolling(p["vwap"], min_periods=p["vwap"] // 2).sum()
         vwap_dist = (px / (pv / vv.replace(0.0, np.nan)) - 1.0).loc[last]
 
+    # NaN-when-undefined, so short-history names are SKIPPED in consensus,
+    # not counted as a bearish vote (audit fix: bool False for missing MAs)
+    golden = (fast > slow).where(fast.notna() & slow.notna()).loc[last]
+
     board = pd.DataFrame({
         "asset_class": universe.loc[tradable, "asset_class"],
         "rsi14": rsi(px, 14).loc[last],
         "pctb": pctb.loc[last],
         "macd_bps": (hist.loc[last] / px.loc[last]) * 1e4,
-        "golden": (fast.loc[last] > slow.loc[last]),
+        "golden": golden,
         "vwap_dist": vwap_dist,
         "mom": px.pct_change(p["mom"], fill_method=None).loc[last],
     })

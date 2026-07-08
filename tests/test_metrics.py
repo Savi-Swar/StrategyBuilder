@@ -38,6 +38,16 @@ def test_sharpe_of_alternating_series():
     assert stats["hit_rate"] == 0.5
 
 
+def test_sortino_target_downside_deviation():
+    """Audit-pinned: standard Sortino — MAR=0, downside = sqrt(mean of
+    squared negative returns over ALL observations), no mean-centering."""
+    vals = np.tile([0.03, -0.01, 0.02, -0.02], 250)
+    r = pd.Series(vals, index=pd.bdate_range("2015-01-01", periods=1000))
+    downside = np.sqrt((np.minimum(vals, 0.0) ** 2).mean())
+    expected = vals.mean() / downside * np.sqrt(252)
+    assert np.isclose(summary_stats(r)["sortino"], expected, rtol=1e-9)
+
+
 def test_psr_large_t_positive_sr_near_one():
     assert probabilistic_sharpe(0.1, 5000, 0.0, 3.0) > 0.99
 

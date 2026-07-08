@@ -12,6 +12,7 @@ scaler fitted on pooled data is a potential leak vector.
 import numpy as np
 import pandas as pd
 
+from quark.data.loader import compute_returns
 from quark.strategies.classic import rsi
 
 MOM_HORIZONS = (5, 21, 63, 126, 252)
@@ -25,7 +26,7 @@ def build_features(
     rate_ticker: str = "^TNX",
 ) -> pd.DataFrame:
     if returns is None:
-        returns = prices.pct_change(fill_method=None)
+        returns = compute_returns(prices)
 
     vol21 = returns.rolling(21, min_periods=21).std()
     vol63 = returns.rolling(63, min_periods=42).std()

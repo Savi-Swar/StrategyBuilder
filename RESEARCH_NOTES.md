@@ -114,6 +114,40 @@ so per-horizon live ICs accrue with time — long horizons will take months
 to score their first entries, which the UI should treat as "unproven", not
 "clean".
 
+## Adversarial math audit (2026-07-08)
+
+Two independent review passes re-derived every formula. Confirmed correct:
+PSR/DSR (exact Bailey–LdP forms, Monte-Carlo verified), expected-max-Sharpe,
+CAGR/Sharpe/max-DD, vol targeting, cost timing, engine causality,
+forward-return alignment, positional purge arithmetic, Spearman IC,
+%B/MACD/VWAP, VaR z and time-scaling, blend-search vol targeting.
+
+Found and fixed (all with regression tests):
+1. **CRITICAL — cross-gap return deletion.** `pct_change(fill_method=None)`
+   NaN'd the bar AFTER every gap, deleting each post-holiday move from
+   labels AND backtest PnL (~9/instrument/yr, biases toward zero). Fixed:
+   returns = ffilled-denominator pct_change masked to observed bars. All
+   headline numbers recomputed under the fix.
+2. Sortino used std of negative returns about their own mean; now standard
+   target downside deviation (MAR=0, all obs).
+3. `ann_turnover`/`cost_drag_ann` were per-instrument sums next to
+   portfolio-unit stats (~n_alive x overstated); now divided consistently.
+4. Half-Kelly growth mislabeled as S²/4; correct is 3S²/8 (2.5%/yr at
+   S=0.26); full Kelly S²/2 (3.4%/yr).
+5. "Compounding weekly" label on an arithmetic cumsum; relabeled.
+6. Horizon-validation cadences were calendar weeks (~4.83 td): 2Y windows
+   overlapped 100% (~19 td). Cadences re-sized (14/28/110 wks), re-run.
+7. Missing-sleeve history in the portfolio replay was implicit 0%-return
+   cash (aggressive was ~97% invested pre-2014); weights now renormalize
+   over available sleeves, sleeves enter at inception; drawdowns now see a
+   decline that starts on day one (baseline-1.0 peak).
+8. Golden-cross NaN counted as bearish for short-history names; now skipped.
+9. RSI labeled as Cutler's variant (differs from Wilder's by up to ~20 pts);
+   flat-window RSI now 50, not 100. Missing cost rates now raise instead of
+   trading free. Ledger logs unscoreable (delisted) names per scoring date —
+   the backfilled IC history is survivorship-tilted and should be read as an
+   upper bound (current-members universe; see Study 2 caveat).
+
 ## Future work (ordered by expected value)
 
 1. Point-in-time S&P universe from Wikipedia change history (kills the main

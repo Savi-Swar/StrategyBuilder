@@ -58,6 +58,12 @@ def load_prices(
 
 
 def compute_returns(prices: pd.DataFrame) -> pd.DataFrame:
-    """Simple returns. ``fill_method=None`` is load-bearing: pad-filling
-    across gaps would manufacture phantom 0% returns off stale prices."""
-    return prices.pct_change(fill_method=None)
+    """Simple returns: r_t = p_t / last_valid_price - 1, defined ONLY at
+    observed bars (NaN where p_t is missing).
+
+    2026-07-08 audit fix: the old `pct_change(fill_method=None)` made the
+    bar AFTER a gap NaN too (p_t / NaN), silently deleting every
+    cross-holiday move from labels and backtest PnL. Forward-filling the
+    denominator and masking unobserved bars keeps gaps PnL-complete without
+    manufacturing phantom returns on the missing bars themselves."""
+    return prices.ffill().pct_change(fill_method=None).where(prices.notna())

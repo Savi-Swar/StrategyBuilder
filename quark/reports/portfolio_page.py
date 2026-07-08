@@ -30,6 +30,27 @@ input[type=text]:focus { outline: none; border-color: #ffb000; }
 .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 11px; color: #8a9199; }
 .legend i { display: inline-block; width: 9px; height: 9px; margin-right: 5px; }
 .warn { color: #ffb000; font-size: 12px; margin-top: 10px; }
+.tk-form { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;
+  background: #0b0d10; border: 1px solid #22262c; padding: 16px 18px; }
+.tk-form input { background: #060708; border: 1px solid #2a2e35; color: #e6e2d8;
+  font: 14px "SF Mono", ui-monospace, Menlo, monospace; padding: 9px 12px; }
+#tk-t { width: 110px; text-transform: uppercase; } #tk-sh { width: 110px; }
+#tk-basis { width: 130px; }
+.tk-form button, .tk-tools span { background: none; border: 1px solid #ffb000;
+  color: #ffb000; font: 700 12px "SF Mono", ui-monospace, Menlo, monospace;
+  padding: 10px 16px; cursor: pointer; letter-spacing: 1px; }
+.tk-form button:hover, .tk-tools span:hover { background: #ffb000; color: #060708; }
+.tk-tools { display: flex; gap: 8px; margin-top: 10px; }
+.tk-tools span { padding: 6px 12px; font-weight: 400; border-color: #2a2e35;
+  color: #8a9199; }
+.tk-x { color: #ff5d5d; cursor: pointer; }
+ul.recs { list-style: none; }
+ul.recs li { padding: 9px 14px 9px 30px; position: relative; margin-bottom: 8px;
+  background: #0b0d10; border: 1px solid #22262c; font-size: 12.5px;
+  color: #c9c4b8; }
+ul.recs li::before { content: "»"; position: absolute; left: 12px; color: #ffb000; }
+ul.recs li.flag { border-left: 3px solid #ff5d5d; }
+ul.recs li.good { border-left: 3px solid #46ff9a; }
 </style>"""
 
 COLORS = {
@@ -113,12 +134,178 @@ function render() {
   }
 }
 
+/* ── MY BOOK: holdings tracker + rebalance recommendations ───────── */
+const ETF_MAP = { SPY: "us_equity", VOO: "us_equity", IVV: "us_equity",
+  VTI: "us_equity", QQQ: "us_equity", VXUS: "intl_equity", VEA: "intl_equity",
+  EFA: "intl_equity", IEFA: "intl_equity", IEF: "bonds", AGG: "bonds",
+  BND: "bonds", TLT: "long_bonds", VGLT: "long_bonds", GLD: "gold",
+  IAU: "gold", IBIT: "crypto", FBTC: "crypto", "BTC-USD": "crypto",
+  SGOV: "cash", BIL: "cash" };
+const SLEEVE_LBL = { us_equity: "US equities", intl_equity: "Intl equities",
+  bonds: "Bonds", long_bonds: "Long bonds", gold: "Gold", crypto: "Crypto",
+  cash: "Cash" };
+
+let book = JSON.parse(localStorage.getItem("vig_holdings") || "[]");
+const saveBook = () => localStorage.setItem("vig_holdings", JSON.stringify(book));
+
+function classify(t) {
+  if (ETF_MAP[t]) return { sleeve: ETF_MAP[t], sector: "ETF",
+                           last: null, etf: true };
+  const m = DATA.ticker_meta[t];
+  if (m) return { sleeve: "us_equity", sector: m.sector, last: m.last, etf: false };
+  return null;
+}
+
+function modelView(t) {
+  if (DATA.short_decile.includes(t))
+    return ['<span class="neg">SHORT decile — model ranks it bottom 10%</span>', "flag"];
+  if (DATA.long_decile.includes(t))
+    return ['<span class="pos">LONG decile</span>', "good"];
+  if (DATA.ticker_meta[t]) return ['<span class="muted">mid-book</span>', ""];
+  return ['<span class="muted">not covered</span>', ""];
+}
+
+function renderTracker() {
+  const rows = [];
+  let total = 0, pnlTotal = 0, basisTotal = 0;
+  const sleeves = {}, sectors = {}, positions = [];
+  for (const h of book) {
+    const c = classify(h.t);
+    const last = c ? (c.last ?? h.basis ?? null) : null;  // ETFs: no embedded px
+    const value = last != null ? h.sh * last : null;
+    if (value != null && c) {
+      total += value;
+      sleeves[c.sleeve] = (sleeves[c.sleeve] || 0) + value;
+      if (!c.etf) sectors[c.sector] = (sectors[c.sector] || 0) + value;
+      positions.push({ t: h.t, value });
+      if (h.basis) { pnlTotal += (last - h.basis) * h.sh; basisTotal += h.basis * h.sh; }
+    }
+    rows.push({ h, c, last, value });
+  }
+
+  document.getElementById("tk-rows").innerHTML = rows.map((r, i) => {
+    const c = r.c;
+    const sleeve = c ? `${SLEEVE_LBL[c.sleeve]} <span class="muted">${c.sector}</span>`
+                     : '<span class="neg">unknown ticker</span>';
+    const pnl = (r.h.basis && r.last != null)
+      ? `<span class="${r.last >= r.h.basis ? "pos" : "neg"}">` +
+        `${(100 * (r.last / r.h.basis - 1)).toFixed(1)}%</span>` : "—";
+    const note = c && c.etf && r.last == null
+      ? ' <span class="muted">(enter basis to price ETFs)</span>' : "";
+    const [mv] = modelView(r.h.t);
+    return `<tr><td><b>${r.h.t}</b></td><td class="tl">${sleeve}${note}</td>
+      <td>${r.h.sh}</td><td>${r.last != null ? fmt$(r.last) : "—"}</td>
+      <td>${r.value != null ? fmt$(r.value) : "—"}</td>
+      <td>${r.value != null && total ? pct(r.value / total) : "—"}</td>
+      <td>${pnl}</td><td class="tl">${mv}</td>
+      <td><span class="tk-x" data-i="${i}">✕</span></td></tr>`;
+  }).join("");
+  document.querySelectorAll(".tk-x").forEach(x =>
+    x.addEventListener("click", () => { book.splice(+x.dataset.i, 1);
+      saveBook(); renderTracker(); }));
+
+  const biggest = positions.sort((a, b) => b.value - a.value)[0];
+  document.getElementById("tk-tiles").innerHTML = total ? [
+    ["Book value (priced positions)", fmt$(total)],
+    ["Unrealized P&L (where basis given)",
+     basisTotal ? `<span class="${pnlTotal >= 0 ? "pos" : "neg"}">${fmt$(pnlTotal)}` +
+       ` (${(100 * pnlTotal / basisTotal).toFixed(1)}%)</span>` : "—"],
+    ["Largest position", biggest ? `${biggest.t} · ${pct(biggest.value / total)}` : "—"],
+  ].map(([k, v]) =>
+    `<div class="htile"><div class="hlabel">${k}</div><div class="hval">${v}</div></div>`
+  ).join("") : "";
+
+  // ── recommendations vs the selected profile ──
+  const recs = [];
+  const p = DATA.profiles[profile];
+  if (total > 0) {
+    // target sleeves: profile weights, alpha counted as US equity,
+    // renormalized to the invested (non-cash) book we can actually see
+    const tgt = { ...p.weights };
+    tgt.us_equity = (tgt.us_equity || 0) + p.alpha_w;
+    const investedT = Object.values(tgt).reduce((a, b) => a + b, 0);
+    for (const k of Object.keys(tgt)) tgt[k] /= investedT;
+    const gaps = [];
+    const allSleeves = new Set([...Object.keys(tgt), ...Object.keys(sleeves)]);
+    for (const s of allSleeves) {
+      if (s === "cash") continue;
+      const cur = (sleeves[s] || 0) / total;
+      const gap = (tgt[s] || 0) - cur;
+      if (Math.abs(gap) >= 0.03) gaps.push({ s, gap, d: gap * total });
+    }
+    gaps.sort((a, b) => Math.abs(b.d) - Math.abs(a.d));
+    for (const g of gaps.slice(0, 4)) {
+      const etf = DATA.sleeve_etfs[g.s] || "";
+      recs.push([g.gap > 0
+        ? `<b>Add ~${fmt$(g.d)}</b> to ${SLEEVE_LBL[g.s]}${etf ? ` (${etf})` : ""} — ` +
+          `you hold ${pct((sleeves[g.s] || 0) / total)} vs ${pct(tgt[g.s] || 0)} target ` +
+          `for the <b>${profile}</b> profile`
+        : `<b>Trim ~${fmt$(-g.d)}</b> from ${SLEEVE_LBL[g.s]} — ` +
+          `${pct((sleeves[g.s] || 0) / total)} held vs ${pct(tgt[g.s] || 0)} target ` +
+          `(or just direct new money elsewhere — fewer taxable events)`, ""]);
+    }
+    if (biggest && biggest.value / total > 0.15)
+      recs.push([`<b>${biggest.t} is ${pct(biggest.value / total)} of your book.</b> ` +
+        `Single-name risk dwarfs any model edge — the backtests here assume ` +
+        `50-name diversification. Consider capping single positions near 10%.`, "flag"]);
+    for (const [sec, v] of Object.entries(sectors))
+      if (v / total > 0.30)
+        recs.push([`<b>${pct(v / total)} in ${sec}.</b> Sector concentration — ` +
+          `one macro story moves most of your book.`, "flag"]);
+    for (const h of book) {
+      const [, cls] = modelView(h.t);
+      if (cls === "flag")
+        recs.push([`<b>${h.t} sits in Vig's SHORT decile (1W model).</b> Not a ` +
+          `sell order — the edge is thin — but the model would not be long it ` +
+          `this week.`, "flag"]);
+    }
+    if (!recs.length)
+      recs.push(["Book is within 3pp of the selected profile on every sleeve, " +
+        "no concentration flags. Nothing to do — which is usually the right trade.",
+        "good"]);
+  } else {
+    recs.push(["Add positions above (or paste a JSON book) and Vig will " +
+      "compare you against the selected profile.", ""]);
+  }
+  document.getElementById("tk-recs").innerHTML =
+    recs.map(([txt, cls]) => `<li class="${cls}">${txt}</li>`).join("");
+}
+
+function addPosition() {
+  const t = document.getElementById("tk-t").value.trim().toUpperCase();
+  const sh = parseFloat(document.getElementById("tk-sh").value);
+  const basis = parseFloat(document.getElementById("tk-basis").value) || null;
+  if (!t || !(sh > 0)) return;
+  book.push({ t, sh, basis });
+  saveBook();
+  ["tk-t", "tk-sh", "tk-basis"].forEach(id => document.getElementById(id).value = "");
+  renderTracker();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("cap").addEventListener("input", render);
+  document.getElementById("cap").addEventListener("input", () => render());
   document.querySelectorAll(".seg button").forEach(b =>
     b.addEventListener("click", () => { profile = b.dataset.p; render(); }));
+  document.getElementById("tk-add").addEventListener("click", addPosition);
+  ["tk-t", "tk-sh", "tk-basis"].forEach(id =>
+    document.getElementById(id).addEventListener("keydown",
+      e => { if (e.key === "Enter") addPosition(); }));
+  document.getElementById("tk-export").addEventListener("click", () =>
+    navigator.clipboard.writeText(JSON.stringify(book)));
+  document.getElementById("tk-import").addEventListener("click", () => {
+    const j = prompt("Paste your book JSON:");
+    if (!j) return;
+    try { book = JSON.parse(j); saveBook(); renderTracker(); }
+    catch { alert("invalid JSON"); }
+  });
+  document.getElementById("tk-clear").addEventListener("click", () => {
+    if (confirm("Clear all tracked positions?")) { book = []; saveBook(); renderTracker(); }
+  });
   render();
 });
+
+const _renderOrig = render;
+render = function() { _renderOrig(); renderTracker(); };
 </script>"""
 
 
@@ -150,7 +337,10 @@ vol-targeted, Vig alpha capped</span></h2>
 2004-present — pain included, promises excluded</span></h2>
 <div class="health" id="stats"></div>
 <div class="warn">Cash sleeve is modeled at 0% return (T-bills would add ~the
-short rate — conservative profiles are understated here). Historical CAGR is
+short rate — conservative profiles are understated here). History assumes
+daily rebalancing to fixed weights; a real quarterly-rebalanced book drifts
+and would show modestly deeper drawdowns. Sleeves enter history at their
+inception (BTC 2014+), weights renormalized before that. Historical CAGR is
 what this mix DID, not what it will do. Rebalance quarterly; more often just
 pays your broker.</div>
 
@@ -165,6 +355,25 @@ long-only top decile, equal weight; treat as equity risk with a thin tilt</span>
 <table><tr><th>Ticker</th><th>P(out)</th><th>Last</th><th>Dollars</th><th>Shares</th></tr>
 <tbody id="alpharows"></tbody></table>
 </div>
+
+<h2>My book <span class="dim">/ track your actual positions — stored only in this
+browser; recommendations rebalance you toward the selected profile above</span></h2>
+<div class="tk-form">
+  <div class="pfield"><label>Ticker</label><input id="tk-t" placeholder="AAPL / SPY / IEF"></div>
+  <div class="pfield"><label>Shares</label><input id="tk-sh" inputmode="decimal" placeholder="10"></div>
+  <div class="pfield"><label>Cost basis / share <span class="muted">(optional)</span></label>
+    <input id="tk-basis" inputmode="decimal" placeholder="182.50"></div>
+  <button id="tk-add">ADD</button>
+</div>
+<div class="tk-tools"><span id="tk-export">copy JSON</span>
+<span id="tk-import">paste JSON</span><span id="tk-clear">clear book</span></div>
+<div class="health" id="tk-tiles" style="margin-top:14px"></div>
+<table style="margin-top:14px"><tr><th>Position</th><th class="tl">Sleeve / sector</th>
+<th>Shares</th><th>Last</th><th>Value</th><th>Weight</th><th>P&amp;L</th>
+<th class="tl">Model view (1W)</th><th></th></tr>
+<tbody id="tk-rows"></tbody></table>
+<h2>Rebalance me <span class="dim">/ vs the selected profile — dollar moves, honestly sized</span></h2>
+<ul class="recs" id="tk-recs"></ul>
 {data_js}"""
 
     return page_shell("Vig — Portfolio Builder", generated_at, "portfolio", body)

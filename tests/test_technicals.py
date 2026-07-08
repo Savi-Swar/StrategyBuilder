@@ -35,6 +35,22 @@ def test_board_reads_trend_correctly():
     assert pos.loc["UP", "mom"] > 0 > pos.loc["DN", "mom"]  # 26w momentum
 
 
+def test_short_history_golden_is_skipped_not_bearish():
+    """Audit-pinned: a name too young for the slow MA gets golden=NaN and a
+    consensus vote SKIP, not an automatic bearish -1."""
+    idx = pd.bdate_range("2023-01-02", periods=400)
+    rng = np.random.default_rng(2)
+    prices = pd.DataFrame({
+        "OLD": 100 * np.cumprod(1 + rng.normal(4e-4, 0.01, 400)),
+        "NEW": np.nan}, index=idx)
+    prices.loc[idx[-120:], "NEW"] = 100 * np.cumprod(1 + np.full(120, 4e-4))
+    volumes = pd.DataFrame(1e6, index=idx, columns=["OLD", "NEW"])
+    uni = make_universe(["OLD", "NEW"], ["commodity", "commodity"])
+    board = build_board(prices, volumes, uni)
+    assert pd.isna(board.loc["NEW", "golden"])   # 200d MA undefined
+    assert -5 <= board.loc["NEW", "consensus"] <= 5  # only 5 votes counted
+
+
 def test_board_handles_missing_volume():
     idx = pd.bdate_range("2023-01-02", periods=400)
     prices = pd.DataFrame({"FX": 1.1 + 0.1 * np.sin(np.arange(400) / 25)}, index=idx)

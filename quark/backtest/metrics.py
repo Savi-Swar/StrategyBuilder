@@ -30,8 +30,9 @@ def summary_stats(returns: pd.Series, ann: int = config.ANN_FACTOR) -> dict:
     cagr = float(equity.iloc[-1] ** (1.0 / years) - 1.0)
     ann_vol = float(r.std() * np.sqrt(ann))
     sharpe = float(r.mean() / r.std() * np.sqrt(ann))
-    downside = r[r < 0].std()
-    sortino = float(r.mean() * ann / (downside * np.sqrt(ann))) if downside > 0 else np.nan
+    # standard target downside deviation: MAR=0, no mean-centering, N = all obs
+    downside = float(np.sqrt((np.minimum(r, 0.0) ** 2).mean()))
+    sortino = float(r.mean() / downside * np.sqrt(ann)) if downside > 0 else np.nan
     mdd = max_drawdown(equity)
     active = r[r != 0]
     return {

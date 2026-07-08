@@ -16,24 +16,24 @@ what is actually left?**
 
 | | cagr | ann_vol | sharpe | sortino | max_dd | calmar | hit_rate | skew |
 |---|---|---|---|---|---|---|---|---|
-| xsec_ls_weekly (S2) | 0.001 | 0.076 | 0.052 | 0.067 | -0.228 | 0.005 | 0.514 | 0.308 |
-| ml_timing (S1) | -0.011 | 0.016 | -0.714 | -0.879 | -0.153 | -0.073 | 0.486 | -0.779 |
-| tsmom_252 (S1) | 0.011 | 0.031 | 0.369 | 0.536 | -0.097 | 0.111 | 0.518 | -0.083 |
-| buy&hold ^GSPC | 0.138 | 0.167 | 0.857 | 1.049 | -0.339 | 0.407 | 0.548 | -0.399 |
+| xsec_ls_weekly (S2) | -0.000 | 0.077 | 0.038 | 0.054 | -0.220 | -0.000 | 0.517 | 0.410 |
+| ml_timing (S1) | -0.008 | 0.017 | -0.455 | -0.597 | -0.146 | -0.053 | 0.499 | -0.994 |
+| tsmom_252 (S1) | 0.001 | 0.025 | 0.072 | 0.101 | -0.073 | 0.020 | 0.504 | 0.014 |
+| buy&hold ^GSPC | 0.130 | 0.167 | 0.818 | 1.154 | -0.339 | 0.384 | 0.545 | -0.362 |
 
 **What survived rigorous treatment:**
 
-1. **The cross-sectional model has real predictive power**: weekly IC = 0.0165,
-   t-stat = 3.22 over 756 weeks, near-monotonic decile spread (bottom→top:
-   ~31→47 bps gross per 5 days), and a clean shuffled-label control
-   (AUC 0.498, IC ≈ 0). The signal is almost entirely **long-side** — shorting
+1. **The cross-sectional model has real predictive power**: weekly IC = 0.0172,
+   t-stat = 3.35 over 756 weeks, near-monotonic decile spread (bottom→top:
+   ~31→46 bps gross per 5 days), and a clean shuffled-label control
+   (AUC 0.500, IC ≈ 0). The signal is almost entirely **long-side** — shorting
    large caps did not pay — and weekly turnover consumes most of it
-   (net Sharpe 0.05 weekly; 0.26 at monthly rebalance).
+   (net Sharpe 0.04 weekly; 0.26 at monthly rebalance).
 2. **Classic indicators are dead after costs** on the multi-asset universe.
    Best of 8 registered variants (tsmom_252) has a Deflated Sharpe Ratio of
-   0.29 — indistinguishable from the luck of picking the best of 8 coin flips.
-3. **The daily ML timing model failed honestly**: mean fold AUC 0.513 does not
-   clear transaction costs (net Sharpe −0.71, DSR ≈ 0). Reported, not massaged.
+   0.19 — indistinguishable from the luck of picking the best of 8 coin flips.
+3. **The daily ML timing model failed honestly**: mean fold AUC 0.518 does not
+   clear transaction costs (net Sharpe −0.44, DSR ≈ 0). Reported, not massaged.
 
 ![Study 2 tearsheet](reports/study2_tearsheet.png)
 ![Study 1 tearsheet](reports/study1_tearsheet.png)
@@ -96,7 +96,7 @@ quark/
   ml/                features, targets, purged splits, timing pipeline, xsec study
   reports/           tearsheet + tables
 scripts/             refresh_data | run_baselines | run_ml | run_xsec | make_report
-tests/               43 tests, synthetic fixtures only — no DB needed
+tests/               62 tests, synthetic fixtures only — no DB needed
 legacy/              the original 2025 project, kept for the before/after story
 ```
 
@@ -104,7 +104,7 @@ legacy/              the original 2025 project, kept for the before/after story
 
 ```bash
 pip install -e .
-python -m pytest                     # 43 tests, <1s, no data required
+python -m pytest                     # 62 tests, <2s, no data required
 python scripts/refresh_data.py       # ~550 tickers from Yahoo -> Quark.db
 python scripts/run_baselines.py      # classic registry + DSR verdict
 python scripts/run_ml.py             # Study 1: folds, shuffled control, corr-to-momentum

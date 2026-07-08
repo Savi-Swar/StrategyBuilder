@@ -19,6 +19,7 @@ from sklearn.inspection import permutation_importance
 from sklearn.metrics import roc_auc_score
 
 from quark import config
+from quark.data.loader import compute_returns
 from quark.ml.features import build_features
 from quark.ml.splits import PurgedWalkForward
 from quark.ml.targets import build_target
@@ -59,7 +60,7 @@ def run_ml_strategy(
     shuffle_labels: bool = False,
     compute_importance: bool = True,
 ) -> MLResult:
-    returns = prices.pct_change(fill_method=None)
+    returns = compute_returns(prices)
     features = build_features(prices, returns, universe)
     _, label = build_target(returns, horizon)
 

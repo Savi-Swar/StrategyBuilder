@@ -5,7 +5,7 @@ import json
 from datetime import date, datetime
 
 from quark import config
-from quark.data.loader import load_prices
+from quark.data.loader import compute_returns, load_prices
 from quark.data.quality import clean_panel, quality_report
 from quark.data.refresh import fetch_sp500_universe, load_sp500_tickers, refresh_tickers
 from quark.insights.brief import build_brief, llm_commentary, payload_for_llm
@@ -100,7 +100,7 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
         }
         for col, label in tilt_feats.items() if col in f.columns
     }
-    ma_rets = ma_prices.pct_change(fill_method=None)
+    ma_rets = compute_returns(ma_prices)
     regime = {}
     if "^GSPC" in ma_rets.columns and "ZN=F" in ma_rets.columns:
         # pairwise-complete days only: holiday NaNs would void every window

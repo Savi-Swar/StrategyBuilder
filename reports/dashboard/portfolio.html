@@ -153,7 +153,7 @@ footer { margin: 48px 44px 0; color: #565d64; font-size: 11px; max-width: 880px;
     <div class="wordmark">VIG</div>
     <div class="tagline">the house takes its cut — <b>systematic daily desk</b></div>
   </div>
-  <div class="stamp-date">2026-07-08 · 02:12:14</div>
+  <div class="stamp-date">2026-07-08 · 11:30:04</div>
 </header>
 <nav class="tabs"><a class="tab" href="index.html"><span class="k">01</span>DESK</a><a class="tab" href="analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab" href="past_trades.html"><span class="k">03</span>PAST TRADES</a><a class="tab active" href="portfolio.html"><span class="k">04</span>PORTFOLIO</a></nav>
 
@@ -181,6 +181,27 @@ input[type=text]:focus { outline: none; border-color: #ffb000; }
 .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 11px; color: #8a9199; }
 .legend i { display: inline-block; width: 9px; height: 9px; margin-right: 5px; }
 .warn { color: #ffb000; font-size: 12px; margin-top: 10px; }
+.tk-form { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;
+  background: #0b0d10; border: 1px solid #22262c; padding: 16px 18px; }
+.tk-form input { background: #060708; border: 1px solid #2a2e35; color: #e6e2d8;
+  font: 14px "SF Mono", ui-monospace, Menlo, monospace; padding: 9px 12px; }
+#tk-t { width: 110px; text-transform: uppercase; } #tk-sh { width: 110px; }
+#tk-basis { width: 130px; }
+.tk-form button, .tk-tools span { background: none; border: 1px solid #ffb000;
+  color: #ffb000; font: 700 12px "SF Mono", ui-monospace, Menlo, monospace;
+  padding: 10px 16px; cursor: pointer; letter-spacing: 1px; }
+.tk-form button:hover, .tk-tools span:hover { background: #ffb000; color: #060708; }
+.tk-tools { display: flex; gap: 8px; margin-top: 10px; }
+.tk-tools span { padding: 6px 12px; font-weight: 400; border-color: #2a2e35;
+  color: #8a9199; }
+.tk-x { color: #ff5d5d; cursor: pointer; }
+ul.recs { list-style: none; }
+ul.recs li { padding: 9px 14px 9px 30px; position: relative; margin-bottom: 8px;
+  background: #0b0d10; border: 1px solid #22262c; font-size: 12.5px;
+  color: #c9c4b8; }
+ul.recs li::before { content: "»"; position: absolute; left: 12px; color: #ffb000; }
+ul.recs li.flag { border-left: 3px solid #ff5d5d; }
+ul.recs li.good { border-left: 3px solid #46ff9a; }
 </style>
 <h2>Portfolio builder <span class="dim">/ capital in, allocation out — risk parity core,
 vol-targeted, Vig alpha capped</span></h2>
@@ -205,7 +226,10 @@ vol-targeted, Vig alpha capped</span></h2>
 2004-present — pain included, promises excluded</span></h2>
 <div class="health" id="stats"></div>
 <div class="warn">Cash sleeve is modeled at 0% return (T-bills would add ~the
-short rate — conservative profiles are understated here). Historical CAGR is
+short rate — conservative profiles are understated here). History assumes
+daily rebalancing to fixed weights; a real quarterly-rebalanced book drifts
+and would show modestly deeper drawdowns. Sleeves enter history at their
+inception (BTC 2014+), weights renormalized before that. Historical CAGR is
 what this mix DID, not what it will do. Rebalance quarterly; more often just
 pays your broker.</div>
 
@@ -221,8 +245,27 @@ long-only top decile, equal weight; treat as equity risk with a thin tilt</span>
 <tbody id="alpharows"></tbody></table>
 </div>
 
+<h2>My book <span class="dim">/ track your actual positions — stored only in this
+browser; recommendations rebalance you toward the selected profile above</span></h2>
+<div class="tk-form">
+  <div class="pfield"><label>Ticker</label><input id="tk-t" placeholder="AAPL / SPY / IEF"></div>
+  <div class="pfield"><label>Shares</label><input id="tk-sh" inputmode="decimal" placeholder="10"></div>
+  <div class="pfield"><label>Cost basis / share <span class="muted">(optional)</span></label>
+    <input id="tk-basis" inputmode="decimal" placeholder="182.50"></div>
+  <button id="tk-add">ADD</button>
+</div>
+<div class="tk-tools"><span id="tk-export">copy JSON</span>
+<span id="tk-import">paste JSON</span><span id="tk-clear">clear book</span></div>
+<div class="health" id="tk-tiles" style="margin-top:14px"></div>
+<table style="margin-top:14px"><tr><th>Position</th><th class="tl">Sleeve / sector</th>
+<th>Shares</th><th>Last</th><th>Value</th><th>Weight</th><th>P&amp;L</th>
+<th class="tl">Model view (1W)</th><th></th></tr>
+<tbody id="tk-rows"></tbody></table>
+<h2>Rebalance me <span class="dim">/ vs the selected profile — dollar moves, honestly sized</span></h2>
+<ul class="recs" id="tk-recs"></ul>
+
 <script>
-const DATA = {"profiles": {"conservative": {"weights": {"us_equity": 0.1304, "intl_equity": 0.1438, "bonds": 0.3565, "long_bonds": 0.1895, "gold": 0.0946}, "alpha_w": 0.0, "cash_w": 0.0852, "est_vol": 0.06, "fully_invested": false, "capped_at_growth": false, "hist_cagr": 0.037, "hist_vol": 0.0533, "hist_max_dd": -0.155, "worst_year": {"year": 2022, "ret": -0.1042}, "n_years": 23.3, "top_dd": [{"depth": -0.155, "peak": "2021-09-14", "trough": "2022-10-20", "recovered": "2024-05-15"}, {"depth": -0.1444, "peak": "2008-05-20", "trough": "2008-10-27", "recovered": "2010-06-16"}, {"depth": -0.0897, "peak": "2020-03-06", "trough": "2020-03-18", "recovered": "2020-04-28"}]}, "balanced": {"weights": {"us_equity": 0.4379, "intl_equity": 0.3405, "bonds": 0.0955, "long_bonds": 0.0507, "gold": 0.0253}, "alpha_w": 0.05, "cash_w": 0.0, "est_vol": 0.1, "fully_invested": true, "capped_at_growth": false, "hist_cagr": 0.0769, "hist_vol": 0.1239, "hist_max_dd": -0.4438, "worst_year": {"year": 2008, "ret": -0.2913}, "n_years": 23.3, "top_dd": [{"depth": -0.4438, "peak": "2007-10-12", "trough": "2009-03-09", "recovered": "2013-03-05"}, {"depth": -0.2773, "peak": "2020-02-19", "trough": "2020-03-23", "recovered": "2020-08-25"}, {"depth": -0.193, "peak": "2021-12-28", "trough": "2022-09-30", "recovered": "2023-06-14"}]}, "aggressive": {"weights": {"us_equity": 0.482, "intl_equity": 0.388, "crypto": 0.03}, "alpha_w": 0.1, "cash_w": 0.0, "est_vol": 0.1202, "fully_invested": true, "capped_at_growth": true, "hist_cagr": 0.0946, "hist_vol": 0.1505, "hist_max_dd": -0.5189, "worst_year": {"year": 2008, "ret": -0.3532}, "n_years": 23.3, "top_dd": [{"depth": -0.5189, "peak": "2007-07-13", "trough": "2009-03-09", "recovered": "2013-05-14"}, {"depth": -0.3351, "peak": "2020-02-12", "trough": "2020-03-23", "recovered": "2020-09-02"}, {"depth": -0.2209, "peak": "2021-12-28", "trough": "2022-09-30", "recovered": "2023-06-13"}]}}, "sleeve_etfs": {"us_equity": "VOO / SPY", "intl_equity": "VXUS / VEA", "bonds": "IEF", "long_bonds": "TLT", "gold": "GLD", "crypto": "IBIT / FBTC"}, "alpha_names": [{"ticker": "AES", "prob": 0.589, "last": 14.57}, {"ticker": "MU", "prob": 0.574, "last": 984.75}, {"ticker": "CIEN", "prob": 0.573, "last": 433.83}, {"ticker": "NUE", "prob": 0.57, "last": 223.92}, {"ticker": "DDOG", "prob": 0.569, "last": 255.37}, {"ticker": "DELL", "prob": 0.568, "last": 411.8}, {"ticker": "INTC", "prob": 0.567, "last": 122.2}, {"ticker": "STLD", "prob": 0.567, "last": 227.07}, {"ticker": "CAH", "prob": 0.565, "last": 237.52}, {"ticker": "STX", "prob": 0.565, "last": 868.26}], "as_of": "2026-07-06"};
+const DATA = {"profiles": {"conservative": {"weights": {"us_equity": 0.1308, "intl_equity": 0.1445, "bonds": 0.3569, "long_bonds": 0.1886, "gold": 0.0948}, "alpha_w": 0.0, "cash_w": 0.0844, "est_vol": 0.06, "fully_invested": false, "capped_at_growth": false, "hist_cagr": 0.057, "hist_vol": 0.0661, "hist_max_dd": -0.1917, "worst_year": {"year": 2022, "ret": -0.1217}, "n_years": 23.2, "top_dd": [{"depth": -0.1917, "peak": "2008-01-03", "trough": "2008-10-27", "recovered": "2009-11-11"}, {"depth": -0.173, "peak": "2021-09-06", "trough": "2022-10-20", "recovered": "2024-07-05"}, {"depth": -0.1131, "peak": "2018-01-23", "trough": "2018-12-25", "recovered": "2019-08-07"}]}, "balanced": {"weights": {"us_equity": 0.4357, "intl_equity": 0.3395, "bonds": 0.0974, "long_bonds": 0.0515, "gold": 0.0259}, "alpha_w": 0.05, "cash_w": 0.0, "est_vol": 0.0999, "fully_invested": true, "capped_at_growth": false, "hist_cagr": 0.0926, "hist_vol": 0.128, "hist_max_dd": -0.4387, "worst_year": {"year": 2008, "ret": -0.2865}, "n_years": 23.2, "top_dd": [{"depth": -0.4387, "peak": "2007-10-12", "trough": "2009-03-09", "recovered": "2012-02-16"}, {"depth": -0.2739, "peak": "2020-02-12", "trough": "2020-03-23", "recovered": "2020-07-21"}, {"depth": -0.1966, "peak": "2022-01-04", "trough": "2022-10-12", "recovered": "2023-07-19"}]}, "aggressive": {"weights": {"us_equity": 0.482, "intl_equity": 0.388, "crypto": 0.03}, "alpha_w": 0.1, "cash_w": 0.0, "est_vol": 0.1202, "fully_invested": true, "capped_at_growth": true, "hist_cagr": 0.1126, "hist_vol": 0.1586, "hist_max_dd": -0.5261, "worst_year": {"year": 2008, "ret": -0.3567}, "n_years": 23.3, "top_dd": [{"depth": -0.5261, "peak": "2007-07-13", "trough": "2009-03-09", "recovered": "2013-01-02"}, {"depth": -0.3349, "peak": "2020-02-12", "trough": "2020-03-23", "recovered": "2020-08-26"}, {"depth": -0.2534, "peak": "2017-12-18", "trough": "2018-12-25", "recovered": "2019-11-04"}]}}, "sleeve_etfs": {"us_equity": "VOO / SPY", "intl_equity": "VXUS / VEA", "bonds": "IEF", "long_bonds": "TLT", "gold": "GLD", "crypto": "IBIT / FBTC"}, "alpha_names": [{"ticker": "CIEN", "prob": 0.576, "last": 433.83}, {"ticker": "AES", "prob": 0.574, "last": 14.57}, {"ticker": "NUE", "prob": 0.565, "last": 223.92}, {"ticker": "MNST", "prob": 0.565, "last": 97.37}, {"ticker": "DDOG", "prob": 0.564, "last": 255.37}, {"ticker": "STLD", "prob": 0.564, "last": 227.07}, {"ticker": "ALB", "prob": 0.562, "last": 133.8}, {"ticker": "CAH", "prob": 0.561, "last": 237.52}, {"ticker": "MU", "prob": 0.56, "last": 984.75}, {"ticker": "HAL", "prob": 0.559, "last": 33.0}], "as_of": "2026-07-06", "ticker_meta": {"A": {"last": 130.6, "sector": "Health Care"}, "AAPL": {"last": 312.66, "sector": "Information Technology"}, "ABBV": {"last": 254.76, "sector": "Health Care"}, "ABNB": {"last": 147.65, "sector": "Consumer Discretionary"}, "ABT": {"last": 95.63, "sector": "Health Care"}, "ACGL": {"last": 101.81, "sector": "Financials"}, "ACN": {"last": 136.96, "sector": "Information Technology"}, "ADBE": {"last": 218.07, "sector": "Information Technology"}, "ADI": {"last": 388.83, "sector": "Information Technology"}, "ADM": {"last": 77.93, "sector": "Consumer Staples"}, "ADP": {"last": 239.49, "sector": "Industrials"}, "ADSK": {"last": 207.54, "sector": "Information Technology"}, "AEE": {"last": 112.99, "sector": "Utilities"}, "AEP": {"last": 135.98, "sector": "Utilities"}, "AES": {"last": 14.57, "sector": "Utilities"}, "AFL": {"last": 120.47, "sector": "Financials"}, "AIG": {"last": 80.75, "sector": "Financials"}, "AIZ": {"last": 279.28, "sector": "Financials"}, "AJG": {"last": 249.77, "sector": "Financials"}, "AKAM": {"last": 112.73, "sector": "Information Technology"}, "ALB": {"last": 133.8, "sector": "Materials"}, "ALGN": {"last": 188.39, "sector": "Health Care"}, "ALL": {"last": 248.37, "sector": "Financials"}, "ALLE": {"last": 140.14, "sector": "Industrials"}, "AMAT": {"last": 592.79, "sector": "Information Technology"}, "AMCR": {"last": 44.62, "sector": "Materials"}, "AMD": {"last": 552.05, "sector": "Information Technology"}, "AME": {"last": 237.14, "sector": "Industrials"}, "AMGN": {"last": 366.44, "sector": "Health Care"}, "AMP": {"last": 507.5, "sector": "Financials"}, "AMT": {"last": 162.11, "sector": "Real Estate"}, "AMZN": {"last": 244.16, "sector": "Consumer Discretionary"}, "ANET": {"last": 173.28, "sector": "Information Technology"}, "AON": {"last": 356.91, "sector": "Financials"}, "AOS": {"last": 62.45, "sector": "Industrials"}, "APA": {"last": 32.46, "sector": "Energy"}, "APD": {"last": 308.86, "sector": "Materials"}, "APH": {"last": 166.81, "sector": "Information Technology"}, "APO": {"last": 122.17, "sector": "Financials"}, "APP": {"last": 543.79, "sector": "Information Technology"}, "APTV": {"last": 59.73, "sector": "Consumer Discretionary"}, "ARE": {"last": 49.87, "sector": "Real Estate"}, "ARES": {"last": 121.83, "sector": "Financials"}, "ATO": {"last": 173.83, "sector": "Utilities"}, "AVB": {"last": 194.35, "sector": "Real Estate"}, "AVGO": {"last": 373.9, "sector": "Information Technology"}, "AVY": {"last": 166.04, "sector": "Materials"}, "AWK": {"last": 133.09, "sector": "Utilities"}, "AXON": {"last": 622.35, "sector": "Industrials"}, "AXP": {"last": 356.03, "sector": "Financials"}, "AZO": {"last": 2957.71, "sector": "Consumer Discretionary"}, "BA": {"last": 234.54, "sector": "Industrials"}, "BAC": {"last": 59.9, "sector": "Financials"}, "BALL": {"last": 62.95, "sector": "Materials"}, "BAX": {"last": 22.58, "sector": "Health Care"}, "BBY": {"last": 78.0, "sector": "Consumer Discretionary"}, "BDX": {"last": 155.54, "sector": "Health Care"}, "BEN": {"last": 34.44, "sector": "Financials"}, "BF-B": {"last": 25.75, "sector": "Consumer Staples"}, "BG": {"last": 108.78, "sector": "Consumer Staples"}, "BIIB": {"last": 208.46, "sector": "Health Care"}, "BKNG": {"last": 181.03, "sector": "Consumer Discretionary"}, "BKR": {"last": 53.25, "sector": "Energy"}, "BLDR": {"last": 82.33, "sector": "Industrials"}, "BLK": {"last": 1011.21, "sector": "Financials"}, "BMY": {"last": 56.7, "sector": "Health Care"}, "BNY": {"last": 149.96, "sector": "Financials"}, "BR": {"last": 144.77, "sector": "Industrials"}, "BRK-B": {"last": 506.58, "sector": "Financials"}, "BRO": {"last": 68.43, "sector": "Financials"}, "BSX": {"last": 44.6, "sector": "Health Care"}, "BX": {"last": 123.42, "sector": "Financials"}, "BXP": {"last": 69.97, "sector": "Real Estate"}, "C": {"last": 143.86, "sector": "Financials"}, "CAH": {"last": 237.52, "sector": "Health Care"}, "CARR": {"last": 70.1, "sector": "Industrials"}, "CASY": {"last": 807.18, "sector": "Consumer Staples"}, "CAT": {"last": 969.92, "sector": "Industrials"}, "CB": {"last": 356.53, "sector": "Financials"}, "CBOE": {"last": 245.08, "sector": "Financials"}, "CBRE": {"last": 140.55, "sector": "Real Estate"}, "CCI": {"last": 74.92, "sector": "Real Estate"}, "CCL": {"last": 27.51, "sector": "Consumer Discretionary"}, "CDNS": {"last": 375.77, "sector": "Information Technology"}, "CDW": {"last": 134.19, "sector": "Information Technology"}, "CEG": {"last": 245.87, "sector": "Utilities"}, "CF": {"last": 113.2, "sector": "Materials"}, "CFG": {"last": 72.11, "sector": "Financials"}, "CHD": {"last": 97.45, "sector": "Consumer Staples"}, "CHRW": {"last": 188.57, "sector": "Industrials"}, "CHTR": {"last": 135.44, "sector": "Communication Services"}, "CI": {"last": 281.98, "sector": "Health Care"}, "CIEN": {"last": 433.83, "sector": "Information Technology"}, "CINF": {"last": 189.59, "sector": "Financials"}, "CL": {"last": 93.39, "sector": "Consumer Staples"}, "CLX": {"last": 97.25, "sector": "Consumer Staples"}, "CMCSA": {"last": 23.38, "sector": "Communication Services"}, "CME": {"last": 234.76, "sector": "Financials"}, "CMG": {"last": 33.98, "sector": "Consumer Discretionary"}, "CMI": {"last": 678.24, "sector": "Industrials"}, "CMS": {"last": 76.29, "sector": "Utilities"}, "CNC": {"last": 66.05, "sector": "Health Care"}, "CNP": {"last": 44.0, "sector": "Utilities"}, "COF": {"last": 206.5, "sector": "Financials"}, "COHR": {"last": 335.7, "sector": "Information Technology"}, "COIN": {"last": 168.87, "sector": "Financials"}, "COO": {"last": 72.61, "sector": "Health Care"}, "COP": {"last": 103.58, "sector": "Energy"}, "COR": {"last": 298.55, "sector": "Health Care"}, "COST": {"last": 950.25, "sector": "Consumer Staples"}, "CPAY": {"last": 356.55, "sector": "Financials"}, "CPRT": {"last": 29.24, "sector": "Industrials"}, "CPT": {"last": 116.95, "sector": "Real Estate"}, "CRH": {"last": 107.58, "sector": "Materials"}, "CRL": {"last": 231.43, "sector": "Health Care"}, "CRM": {"last": 165.65, "sector": "Information Technology"}, "CRWD": {"last": 199.38, "sector": "Information Technology"}, "CSCO": {"last": 113.98, "sector": "Information Technology"}, "CSGP": {"last": 28.7, "sector": "Real Estate"}, "CSX": {"last": 48.81, "sector": "Industrials"}, "CTAS": {"last": 178.24, "sector": "Industrials"}, "CTSH": {"last": 41.37, "sector": "Information Technology"}, "CTVA": {"last": 86.39, "sector": "Materials"}, "CVNA": {"last": 70.38, "sector": "Consumer Discretionary"}, "CVS": {"last": 102.08, "sector": "Health Care"}, "CVX": {"last": 168.1, "sector": "Energy"}, "D": {"last": 69.26, "sector": "Utilities"}, "DAL": {"last": 91.68, "sector": "Industrials"}, "DASH": {"last": 188.46, "sector": "Consumer Discretionary"}, "DD": {"last": 141.05, "sector": "Materials"}, "DDOG": {"last": 255.37, "sector": "Information Technology"}, "DE": {"last": 635.24, "sector": "Industrials"}, "DECK": {"last": 105.67, "sector": "Consumer Discretionary"}, "DELL": {"last": 411.8, "sector": "Information Technology"}, "DG": {"last": 116.27, "sector": "Consumer Staples"}, "DGX": {"last": 213.45, "sector": "Health Care"}, "DHI": {"last": 156.88, "sector": "Consumer Discretionary"}, "DHR": {"last": 193.62, "sector": "Health Care"}, "DIS": {"last": 97.41, "sector": "Communication Services"}, "DLR": {"last": 173.7, "sector": "Real Estate"}, "DLTR": {"last": 121.46, "sector": "Consumer Staples"}, "DOC": {"last": 21.75, "sector": "Real Estate"}, "DOV": {"last": 214.74, "sector": "Industrials"}, "DOW": {"last": 27.33, "sector": "Materials"}, "DPZ": {"last": 305.91, "sector": "Consumer Discretionary"}, "DRI": {"last": 203.22, "sector": "Consumer Discretionary"}, "DTE": {"last": 151.36, "sector": "Utilities"}, "DUK": {"last": 125.97, "sector": "Utilities"}, "DVA": {"last": 235.71, "sector": "Health Care"}, "DVN": {"last": 40.36, "sector": "Energy"}, "DXCM": {"last": 72.38, "sector": "Health Care"}, "EA": {"last": 205.21, "sector": "Communication Services"}, "EBAY": {"last": 113.67, "sector": "Consumer Discretionary"}, "ECHO": {"last": 98.29, "sector": "Communication Services"}, "ECL": {"last": 283.72, "sector": "Materials"}, "ED": {"last": 111.94, "sector": "Utilities"}, "EFX": {"last": 171.94, "sector": "Industrials"}, "EG": {"last": 372.93, "sector": "Financials"}, "EIX": {"last": 74.84, "sector": "Utilities"}, "EL": {"last": 84.9, "sector": "Consumer Staples"}, "ELV": {"last": 408.17, "sector": "Health Care"}, "EME": {"last": 787.29, "sector": "Industrials"}, "EMR": {"last": 141.56, "sector": "Industrials"}, "EOG": {"last": 129.39, "sector": "Energy"}, "EQIX": {"last": 998.84, "sector": "Real Estate"}, "EQR": {"last": 69.93, "sector": "Real Estate"}, "EQT": {"last": 51.71, "sector": "Energy"}, "ERIE": {"last": 257.13, "sector": "Financials"}, "ES": {"last": 73.23, "sector": "Utilities"}, "ESS": {"last": 298.0, "sector": "Real Estate"}, "ETN": {"last": 413.42, "sector": "Industrials"}, "ETR": {"last": 113.83, "sector": "Utilities"}, "EVRG": {"last": 86.27, "sector": "Utilities"}, "EW": {"last": 95.18, "sector": "Health Care"}, "EXC": {"last": 47.05, "sector": "Utilities"}, "EXE": {"last": 88.89, "sector": "Energy"}, "EXPD": {"last": 165.7, "sector": "Industrials"}, "EXPE": {"last": 266.76, "sector": "Consumer Discretionary"}, "EXR": {"last": 146.14, "sector": "Real Estate"}, "F": {"last": 13.83, "sector": "Consumer Discretionary"}, "FANG": {"last": 173.73, "sector": "Energy"}, "FAST": {"last": 48.31, "sector": "Industrials"}, "FCX": {"last": 61.0, "sector": "Materials"}, "FDS": {"last": 252.2, "sector": "Financials"}, "FDX": {"last": 309.93, "sector": "Industrials"}, "FDXF": {"last": 152.68, "sector": "Industrials"}, "FE": {"last": 47.71, "sector": "Utilities"}, "FFIV": {"last": 419.03, "sector": "Information Technology"}, "FICO": {"last": 1286.51, "sector": "Information Technology"}, "FIS": {"last": 41.27, "sector": "Financials"}, "FISV": {"last": 51.78, "sector": "Financials"}, "FITB": {"last": 57.89, "sector": "Financials"}, "FIX": {"last": 1793.03, "sector": "Industrials"}, "FLEX": {"last": 138.65, "sector": "Information Technology"}, "FOX": {"last": 49.9, "sector": "Communication Services"}, "FOXA": {"last": 55.87, "sector": "Communication Services"}, "FRT": {"last": 120.56, "sector": "Real Estate"}, "FSLR": {"last": 233.06, "sector": "Information Technology"}, "FTNT": {"last": 162.35, "sector": "Information Technology"}, "FTV": {"last": 63.6, "sector": "Industrials"}, "GD": {"last": 376.88, "sector": "Industrials"}, "GDDY": {"last": 85.61, "sector": "Information Technology"}, "GE": {"last": 378.68, "sector": "Industrials"}, "GEHC": {"last": 64.84, "sector": "Health Care"}, "GEN": {"last": 26.6, "sector": "Information Technology"}, "GEV": {"last": 1152.04, "sector": "Industrials"}, "GILD": {"last": 129.61, "sector": "Health Care"}, "GIS": {"last": 36.12, "sector": "Consumer Staples"}, "GL": {"last": 176.98, "sector": "Financials"}, "GLW": {"last": 194.8, "sector": "Information Technology"}, "GM": {"last": 77.85, "sector": "Consumer Discretionary"}, "GNRC": {"last": 257.81, "sector": "Industrials"}, "GOOG": {"last": 364.9, "sector": "Communication Services"}, "GOOGL": {"last": 366.46, "sector": "Communication Services"}, "GPC": {"last": 128.66, "sector": "Consumer Discretionary"}, "GPN": {"last": 77.41, "sector": "Financials"}, "GRMN": {"last": 245.22, "sector": "Consumer Discretionary"}, "GS": {"last": 1055.29, "sector": "Financials"}, "GWW": {"last": 1370.16, "sector": "Industrials"}, "HAL": {"last": 33.0, "sector": "Energy"}, "HAS": {"last": 77.98, "sector": "Consumer Discretionary"}, "HBAN": {"last": 17.89, "sector": "Financials"}, "HCA": {"last": 417.07, "sector": "Health Care"}, "HD": {"last": 350.65, "sector": "Consumer Discretionary"}, "HIG": {"last": 137.64, "sector": "Financials"}, "HII": {"last": 294.1, "sector": "Industrials"}, "HLT": {"last": 339.41, "sector": "Consumer Discretionary"}, "HON": {"last": 231.18, "sector": "Industrials"}, "HONA": {"last": 237.7, "sector": "Industrials"}, "HOOD": {"last": 117.55, "sector": "Financials"}, "HPE": {"last": 43.15, "sector": "Information Technology"}, "HPQ": {"last": 22.6, "sector": "Information Technology"}, "HRL": {"last": 24.28, "sector": "Consumer Staples"}, "HSIC": {"last": 86.62, "sector": "Health Care"}, "HST": {"last": 23.25, "sector": "Real Estate"}, "HSY": {"last": 177.51, "sector": "Consumer Staples"}, "HUBB": {"last": 495.6, "sector": "Industrials"}, "HUM": {"last": 392.86, "sector": "Health Care"}, "HWM": {"last": 277.91, "sector": "Industrials"}, "IBKR": {"last": 95.99, "sector": "Financials"}, "IBM": {"last": 299.52, "sector": "Information Technology"}, "ICE": {"last": 134.91, "sector": "Financials"}, "IDXX": {"last": 564.98, "sector": "Health Care"}, "IEX": {"last": 224.46, "sector": "Industrials"}, "IFF": {"last": 82.77, "sector": "Materials"}, "INCY": {"last": 115.62, "sector": "Health Care"}, "INTC": {"last": 122.2, "sector": "Information Technology"}, "INTU": {"last": 272.14, "sector": "Information Technology"}, "INVH": {"last": 30.02, "sector": "Real Estate"}, "IP": {"last": 38.58, "sector": "Materials"}, "IQV": {"last": 205.97, "sector": "Health Care"}, "IR": {"last": 80.63, "sector": "Industrials"}, "IRM": {"last": 116.38, "sector": "Real Estate"}, "ISRG": {"last": 432.83, "sector": "Health Care"}, "IT": {"last": 135.11, "sector": "Information Technology"}, "ITW": {"last": 274.27, "sector": "Industrials"}, "IVZ": {"last": 27.83, "sector": "Financials"}, "J": {"last": 128.98, "sector": "Industrials"}, "JBHT": {"last": 277.74, "sector": "Industrials"}, "JBL": {"last": 338.22, "sector": "Information Technology"}, "JCI": {"last": 142.72, "sector": "Industrials"}, "JKHY": {"last": 146.38, "sector": "Financials"}, "JNJ": {"last": 259.33, "sector": "Health Care"}, "JPM": {"last": 337.72, "sector": "Financials"}, "KDP": {"last": 31.75, "sector": "Consumer Staples"}, "KEY": {"last": 23.43, "sector": "Financials"}, "KEYS": {"last": 319.73, "sector": "Information Technology"}, "KHC": {"last": 24.82, "sector": "Consumer Staples"}, "KIM": {"last": 25.05, "sector": "Real Estate"}, "KKR": {"last": 95.97, "sector": "Financials"}, "KLAC": {"last": 233.31, "sector": "Information Technology"}, "KMB": {"last": 113.01, "sector": "Consumer Staples"}, "KMI": {"last": 31.69, "sector": "Energy"}, "KO": {"last": 82.96, "sector": "Consumer Staples"}, "KR": {"last": 58.25, "sector": "Consumer Staples"}, "KVUE": {"last": 19.56, "sector": "Consumer Staples"}, "L": {"last": 116.3, "sector": "Financials"}, "LDOS": {"last": 108.72, "sector": "Industrials"}, "LEN": {"last": 87.65, "sector": "Consumer Discretionary"}, "LH": {"last": 284.39, "sector": "Health Care"}, "LHX": {"last": 301.27, "sector": "Industrials"}, "LII": {"last": 568.0, "sector": "Industrials"}, "LIN": {"last": 540.52, "sector": "Materials"}, "LITE": {"last": 731.25, "sector": "Information Technology"}, "LLY": {"last": 1200.06, "sector": "Health Care"}, "LMT": {"last": 538.0, "sector": "Industrials"}, "LNT": {"last": 76.58, "sector": "Utilities"}, "LOW": {"last": 223.78, "sector": "Consumer Discretionary"}, "LRCX": {"last": 350.2, "sector": "Information Technology"}, "LULU": {"last": 115.64, "sector": "Consumer Discretionary"}, "LUV": {"last": 50.81, "sector": "Industrials"}, "LVS": {"last": 46.58, "sector": "Consumer Discretionary"}, "LYB": {"last": 52.97, "sector": "Materials"}, "LYV": {"last": 183.29, "sector": "Communication Services"}, "MA": {"last": 533.1, "sector": "Financials"}, "MAA": {"last": 140.77, "sector": "Real Estate"}, "MAR": {"last": 379.75, "sector": "Consumer Discretionary"}, "MAS": {"last": 81.04, "sector": "Industrials"}, "MCD": {"last": 279.5, "sector": "Consumer Discretionary"}, "MCHP": {"last": 87.59, "sector": "Information Technology"}, "MCK": {"last": 784.23, "sector": "Health Care"}, "MCO": {"last": 498.78, "sector": "Financials"}, "MDLZ": {"last": 59.17, "sector": "Consumer Staples"}, "MDT": {"last": 83.06, "sector": "Health Care"}, "MET": {"last": 90.46, "sector": "Financials"}, "META": {"last": 600.29, "sector": "Communication Services"}, "MGM": {"last": 46.88, "sector": "Consumer Discretionary"}, "MKC": {"last": 51.78, "sector": "Consumer Staples"}, "MLM": {"last": 605.3, "sector": "Materials"}, "MMM": {"last": 159.15, "sector": "Industrials"}, "MNST": {"last": 97.37, "sector": "Consumer Staples"}, "MO": {"last": 71.88, "sector": "Consumer Staples"}, "MOS": {"last": 21.18, "sector": "Materials"}, "MPC": {"last": 268.99, "sector": "Energy"}, "MPWR": {"last": 1346.13, "sector": "Information Technology"}, "MRK": {"last": 126.78, "sector": "Health Care"}, "MRNA": {"last": 81.8, "sector": "Health Care"}, "MRSH": {"last": 174.73, "sector": "Financials"}, "MRVL": {"last": 249.27, "sector": "Information Technology"}, "MS": {"last": 222.1, "sector": "Financials"}, "MSCI": {"last": 614.04, "sector": "Financials"}, "MSFT": {"last": 386.74, "sector": "Information Technology"}, "MSI": {"last": 422.83, "sector": "Information Technology"}, "MTB": {"last": 239.92, "sector": "Financials"}, "MTD": {"last": 1295.56, "sector": "Health Care"}, "MU": {"last": 984.75, "sector": "Information Technology"}, "NCLH": {"last": 19.26, "sector": "Consumer Discretionary"}, "NDAQ": {"last": 84.47, "sector": "Financials"}, "NDSN": {"last": 293.66, "sector": "Industrials"}, "NEE": {"last": 87.44, "sector": "Utilities"}, "NEM": {"last": 98.2, "sector": "Materials"}, "NFLX": {"last": 76.02, "sector": "Communication Services"}, "NI": {"last": 47.05, "sector": "Utilities"}, "NKE": {"last": 43.34, "sector": "Consumer Discretionary"}, "NOC": {"last": 547.75, "sector": "Industrials"}, "NOW": {"last": 107.93, "sector": "Information Technology"}, "NRG": {"last": 141.01, "sector": "Utilities"}, "NSC": {"last": 321.9, "sector": "Industrials"}, "NTAP": {"last": 163.55, "sector": "Information Technology"}, "NTRS": {"last": 181.14, "sector": "Financials"}, "NUE": {"last": 223.92, "sector": "Materials"}, "NVDA": {"last": 195.55, "sector": "Information Technology"}, "NVR": {"last": 6693.66, "sector": "Consumer Discretionary"}, "NWS": {"last": 30.02, "sector": "Communication Services"}, "NWSA": {"last": 26.64, "sector": "Communication Services"}, "NXPI": {"last": 280.51, "sector": "Information Technology"}, "O": {"last": 63.19, "sector": "Real Estate"}, "ODFL": {"last": 216.44, "sector": "Industrials"}, "OKE": {"last": 87.43, "sector": "Energy"}, "OMC": {"last": 79.9, "sector": "Communication Services"}, "ON": {"last": 94.69, "sector": "Information Technology"}, "ORCL": {"last": 143.76, "sector": "Information Technology"}, "ORLY": {"last": 84.24, "sector": "Consumer Discretionary"}, "OTIS": {"last": 73.49, "sector": "Industrials"}, "OXY": {"last": 48.81, "sector": "Energy"}, "PANW": {"last": 357.53, "sector": "Information Technology"}, "PAYX": {"last": 105.39, "sector": "Industrials"}, "PCAR": {"last": 125.91, "sector": "Industrials"}, "PCG": {"last": 16.82, "sector": "Utilities"}, "PEG": {"last": 80.79, "sector": "Utilities"}, "PEP": {"last": 143.29, "sector": "Consumer Staples"}, "PFE": {"last": 23.72, "sector": "Health Care"}, "PFG": {"last": 112.55, "sector": "Financials"}, "PG": {"last": 149.31, "sector": "Consumer Staples"}, "PGR": {"last": 231.67, "sector": "Financials"}, "PH": {"last": 971.36, "sector": "Industrials"}, "PHM": {"last": 131.38, "sector": "Consumer Discretionary"}, "PKG": {"last": 236.39, "sector": "Materials"}, "PLD": {"last": 140.2, "sector": "Real Estate"}, "PLTR": {"last": 132.54, "sector": "Information Technology"}, "PM": {"last": 184.76, "sector": "Consumer Staples"}, "PNC": {"last": 253.18, "sector": "Financials"}, "PNR": {"last": 75.53, "sector": "Industrials"}, "PNW": {"last": 106.91, "sector": "Utilities"}, "PODD": {"last": 159.77, "sector": "Health Care"}, "PPG": {"last": 124.04, "sector": "Materials"}, "PPL": {"last": 36.11, "sector": "Utilities"}, "PRU": {"last": 114.28, "sector": "Financials"}, "PSA": {"last": 324.0, "sector": "Real Estate"}, "PSKY": {"last": 10.09, "sector": "Communication Services"}, "PSX": {"last": 177.33, "sector": "Energy"}, "PTC": {"last": 124.98, "sector": "Information Technology"}, "PWR": {"last": 674.04, "sector": "Industrials"}, "PYPL": {"last": 45.09, "sector": "Financials"}, "Q": {"last": 146.68, "sector": "Information Technology"}, "QCOM": {"last": 186.48, "sector": "Information Technology"}, "RCL": {"last": 287.78, "sector": "Consumer Discretionary"}, "REG": {"last": 79.84, "sector": "Real Estate"}, "REGN": {"last": 649.81, "sector": "Health Care"}, "RF": {"last": 30.48, "sector": "Financials"}, "RJF": {"last": 166.41, "sector": "Financials"}, "RL": {"last": 396.32, "sector": "Consumer Discretionary"}, "RMD": {"last": 218.4, "sector": "Health Care"}, "ROK": {"last": 482.87, "sector": "Industrials"}, "ROL": {"last": 42.73, "sector": "Industrials"}, "ROP": {"last": 364.25, "sector": "Information Technology"}, "ROST": {"last": 211.36, "sector": "Consumer Discretionary"}, "RSG": {"last": 214.58, "sector": "Industrials"}, "RTX": {"last": 201.37, "sector": "Industrials"}, "RVTY": {"last": 112.95, "sector": "Health Care"}, "SBAC": {"last": 180.57, "sector": "Real Estate"}, "SBUX": {"last": 102.11, "sector": "Consumer Discretionary"}, "SCHW": {"last": 100.62, "sector": "Financials"}, "SHW": {"last": 349.13, "sector": "Materials"}, "SJM": {"last": 111.66, "sector": "Consumer Staples"}, "SLB": {"last": 45.72, "sector": "Energy"}, "SMCI": {"last": 27.19, "sector": "Information Technology"}, "SNA": {"last": 413.62, "sector": "Industrials"}, "SNDK": {"last": 1744.43, "sector": "Information Technology"}, "SNPS": {"last": 442.27, "sector": "Information Technology"}, "SO": {"last": 95.99, "sector": "Utilities"}, "SOLV": {"last": 77.94, "sector": "Health Care"}, "SPG": {"last": 225.0, "sector": "Real Estate"}, "SPGI": {"last": 447.22, "sector": "Financials"}, "SRE": {"last": 92.95, "sector": "Utilities"}, "STE": {"last": 213.28, "sector": "Health Care"}, "STLD": {"last": 227.07, "sector": "Materials"}, "STT": {"last": 175.96, "sector": "Financials"}, "STX": {"last": 868.26, "sector": "Information Technology"}, "STZ": {"last": 130.68, "sector": "Consumer Staples"}, "SW": {"last": 45.64, "sector": "Materials"}, "SWK": {"last": 92.56, "sector": "Industrials"}, "SWKS": {"last": 61.91, "sector": "Information Technology"}, "SYF": {"last": 77.05, "sector": "Financials"}, "SYK": {"last": 324.73, "sector": "Health Care"}, "SYY": {"last": 84.23, "sector": "Consumer Staples"}, "T": {"last": 20.58, "sector": "Communication Services"}, "TAP": {"last": 38.86, "sector": "Consumer Staples"}, "TDG": {"last": 1346.12, "sector": "Industrials"}, "TDY": {"last": 654.98, "sector": "Information Technology"}, "TECH": {"last": 70.92, "sector": "Health Care"}, "TEL": {"last": 200.15, "sector": "Information Technology"}, "TER": {"last": 379.52, "sector": "Information Technology"}, "TFC": {"last": 51.42, "sector": "Financials"}, "TGT": {"last": 126.1, "sector": "Consumer Staples"}, "TJX": {"last": 151.31, "sector": "Consumer Discretionary"}, "TKO": {"last": 192.3, "sector": "Communication Services"}, "TMO": {"last": 517.6, "sector": "Health Care"}, "TMUS": {"last": 181.79, "sector": "Communication Services"}, "TPL": {"last": 402.8, "sector": "Energy"}, "TPR": {"last": 145.49, "sector": "Consumer Discretionary"}, "TRGP": {"last": 263.52, "sector": "Energy"}, "TRMB": {"last": 52.47, "sector": "Information Technology"}, "TROW": {"last": 119.12, "sector": "Financials"}, "TRV": {"last": 339.17, "sector": "Financials"}, "TSCO": {"last": 30.22, "sector": "Consumer Discretionary"}, "TSLA": {"last": 419.77, "sector": "Consumer Discretionary"}, "TSN": {"last": 58.75, "sector": "Consumer Staples"}, "TT": {"last": 487.24, "sector": "Industrials"}, "TTD": {"last": 19.31, "sector": "Communication Services"}, "TTWO": {"last": 258.41, "sector": "Communication Services"}, "TXN": {"last": 303.5, "sector": "Information Technology"}, "TXT": {"last": 93.84, "sector": "Industrials"}, "TYL": {"last": 319.01, "sector": "Information Technology"}, "UAL": {"last": 132.5, "sector": "Industrials"}, "UBER": {"last": 72.42, "sector": "Industrials"}, "UDR": {"last": 40.96, "sector": "Real Estate"}, "UHS": {"last": 158.05, "sector": "Health Care"}, "ULTA": {"last": 452.49, "sector": "Consumer Discretionary"}, "UNH": {"last": 417.99, "sector": "Health Care"}, "UNP": {"last": 282.59, "sector": "Industrials"}, "UPS": {"last": 110.02, "sector": "Industrials"}, "URI": {"last": 1099.68, "sector": "Industrials"}, "USB": {"last": 62.83, "sector": "Financials"}, "V": {"last": 357.25, "sector": "Financials"}, "VEEV": {"last": 192.01, "sector": "Health Care"}, "VICI": {"last": 26.7, "sector": "Real Estate"}, "VLO": {"last": 270.32, "sector": "Energy"}, "VLTO": {"last": 92.48, "sector": "Industrials"}, "VMC": {"last": 304.84, "sector": "Materials"}, "VRSK": {"last": 187.79, "sector": "Industrials"}, "VRSN": {"last": 259.13, "sector": "Information Technology"}, "VRT": {"last": 318.47, "sector": "Industrials"}, "VRTX": {"last": 529.59, "sector": "Health Care"}, "VST": {"last": 157.22, "sector": "Utilities"}, "VTR": {"last": 92.21, "sector": "Real Estate"}, "VTRS": {"last": 16.8, "sector": "Health Care"}, "VZ": {"last": 42.07, "sector": "Communication Services"}, "WAB": {"last": 261.31, "sector": "Industrials"}, "WAT": {"last": 378.89, "sector": "Health Care"}, "WBD": {"last": 26.12, "sector": "Communication Services"}, "WDAY": {"last": 137.99, "sector": "Information Technology"}, "WDC": {"last": 577.46, "sector": "Information Technology"}, "WEC": {"last": 116.63, "sector": "Utilities"}, "WELL": {"last": 232.69, "sector": "Real Estate"}, "WFC": {"last": 87.45, "sector": "Financials"}, "WM": {"last": 228.98, "sector": "Industrials"}, "WMB": {"last": 72.82, "sector": "Energy"}, "WMT": {"last": 110.65, "sector": "Consumer Staples"}, "WRB": {"last": 70.92, "sector": "Financials"}, "WSM": {"last": 223.83, "sector": "Consumer Discretionary"}, "WST": {"last": 357.64, "sector": "Health Care"}, "WTW": {"last": 287.66, "sector": "Financials"}, "WY": {"last": 23.4, "sector": "Real Estate"}, "WYNN": {"last": 95.89, "sector": "Consumer Discretionary"}, "XEL": {"last": 80.37, "sector": "Utilities"}, "XOM": {"last": 136.44, "sector": "Energy"}, "XYL": {"last": 119.42, "sector": "Industrials"}, "XYZ": {"last": 78.92, "sector": "Financials"}, "YUM": {"last": 165.99, "sector": "Consumer Discretionary"}, "ZBH": {"last": 89.76, "sector": "Health Care"}, "ZBRA": {"last": 270.29, "sector": "Information Technology"}, "ZTS": {"last": 75.42, "sector": "Health Care"}}, "long_decile": ["CIEN", "AES", "NUE", "MNST", "DDOG", "STLD", "ALB", "CAH", "MU", "HAL", "INTC", "STX", "WMT", "WST", "COHR", "ADM", "EA", "DAL", "APA", "MGM", "JBHT", "MO", "LUV", "TER", "GL", "UAL", "SNDK", "TPR", "MAR", "PKG", "NEE", "ABBV", "CAT", "FIX", "COR", "ROST", "AMD", "ATO", "PH", "WDC", "LNT", "RL", "URI", "FANG", "UNH", "EXPE", "LITE", "BG", "FDX", "SWK"], "short_decile": ["CBRE", "APO", "CMCSA", "AXP", "COO", "IFF", "PG", "DIS", "META", "OTIS", "SYK", "DXCM", "QCOM", "VEEV", "KHC", "CLX", "NWS", "NWSA", "RMD", "NDAQ", "KKR", "VRTX", "FIS", "GD", "MKC", "VRSK", "JKHY", "BAX", "NKE", "EFX", "TRMB", "FISV", "CDW", "MRSH", "MDT", "GEN", "PAYX", "MSFT", "ADBE", "ISRG", "ADP", "CHTR", "GIS", "FDS", "NOW", "CTAS", "TYL", "FOX", "FOXA", "WDAY"]};
 const COLORS = {"us_equity": "#46ff9a", "intl_equity": "#2fbf71", "bonds": "#6ea8fe", "long_bonds": "#3f6fd8", "gold": "#ffb000", "crypto": "#c084fc", "alpha": "#ff8fab", "cash": "#3a4048"};
 const LABELS = {"us_equity": "US equities", "intl_equity": "Intl equities", "bonds": "Bonds 7-10y", "long_bonds": "Long bonds 20y+", "gold": "Gold", "crypto": "Bitcoin", "alpha": "Vig alpha sleeve", "cash": "Cash / T-bills"};
 let profile = "balanced";
@@ -289,12 +332,178 @@ function render() {
   }
 }
 
+/* ── MY BOOK: holdings tracker + rebalance recommendations ───────── */
+const ETF_MAP = { SPY: "us_equity", VOO: "us_equity", IVV: "us_equity",
+  VTI: "us_equity", QQQ: "us_equity", VXUS: "intl_equity", VEA: "intl_equity",
+  EFA: "intl_equity", IEFA: "intl_equity", IEF: "bonds", AGG: "bonds",
+  BND: "bonds", TLT: "long_bonds", VGLT: "long_bonds", GLD: "gold",
+  IAU: "gold", IBIT: "crypto", FBTC: "crypto", "BTC-USD": "crypto",
+  SGOV: "cash", BIL: "cash" };
+const SLEEVE_LBL = { us_equity: "US equities", intl_equity: "Intl equities",
+  bonds: "Bonds", long_bonds: "Long bonds", gold: "Gold", crypto: "Crypto",
+  cash: "Cash" };
+
+let book = JSON.parse(localStorage.getItem("vig_holdings") || "[]");
+const saveBook = () => localStorage.setItem("vig_holdings", JSON.stringify(book));
+
+function classify(t) {
+  if (ETF_MAP[t]) return { sleeve: ETF_MAP[t], sector: "ETF",
+                           last: null, etf: true };
+  const m = DATA.ticker_meta[t];
+  if (m) return { sleeve: "us_equity", sector: m.sector, last: m.last, etf: false };
+  return null;
+}
+
+function modelView(t) {
+  if (DATA.short_decile.includes(t))
+    return ['<span class="neg">SHORT decile — model ranks it bottom 10%</span>', "flag"];
+  if (DATA.long_decile.includes(t))
+    return ['<span class="pos">LONG decile</span>', "good"];
+  if (DATA.ticker_meta[t]) return ['<span class="muted">mid-book</span>', ""];
+  return ['<span class="muted">not covered</span>', ""];
+}
+
+function renderTracker() {
+  const rows = [];
+  let total = 0, pnlTotal = 0, basisTotal = 0;
+  const sleeves = {}, sectors = {}, positions = [];
+  for (const h of book) {
+    const c = classify(h.t);
+    const last = c ? (c.last ?? h.basis ?? null) : null;  // ETFs: no embedded px
+    const value = last != null ? h.sh * last : null;
+    if (value != null && c) {
+      total += value;
+      sleeves[c.sleeve] = (sleeves[c.sleeve] || 0) + value;
+      if (!c.etf) sectors[c.sector] = (sectors[c.sector] || 0) + value;
+      positions.push({ t: h.t, value });
+      if (h.basis) { pnlTotal += (last - h.basis) * h.sh; basisTotal += h.basis * h.sh; }
+    }
+    rows.push({ h, c, last, value });
+  }
+
+  document.getElementById("tk-rows").innerHTML = rows.map((r, i) => {
+    const c = r.c;
+    const sleeve = c ? `${SLEEVE_LBL[c.sleeve]} <span class="muted">${c.sector}</span>`
+                     : '<span class="neg">unknown ticker</span>';
+    const pnl = (r.h.basis && r.last != null)
+      ? `<span class="${r.last >= r.h.basis ? "pos" : "neg"}">` +
+        `${(100 * (r.last / r.h.basis - 1)).toFixed(1)}%</span>` : "—";
+    const note = c && c.etf && r.last == null
+      ? ' <span class="muted">(enter basis to price ETFs)</span>' : "";
+    const [mv] = modelView(r.h.t);
+    return `<tr><td><b>${r.h.t}</b></td><td class="tl">${sleeve}${note}</td>
+      <td>${r.h.sh}</td><td>${r.last != null ? fmt$(r.last) : "—"}</td>
+      <td>${r.value != null ? fmt$(r.value) : "—"}</td>
+      <td>${r.value != null && total ? pct(r.value / total) : "—"}</td>
+      <td>${pnl}</td><td class="tl">${mv}</td>
+      <td><span class="tk-x" data-i="${i}">✕</span></td></tr>`;
+  }).join("");
+  document.querySelectorAll(".tk-x").forEach(x =>
+    x.addEventListener("click", () => { book.splice(+x.dataset.i, 1);
+      saveBook(); renderTracker(); }));
+
+  const biggest = positions.sort((a, b) => b.value - a.value)[0];
+  document.getElementById("tk-tiles").innerHTML = total ? [
+    ["Book value (priced positions)", fmt$(total)],
+    ["Unrealized P&L (where basis given)",
+     basisTotal ? `<span class="${pnlTotal >= 0 ? "pos" : "neg"}">${fmt$(pnlTotal)}` +
+       ` (${(100 * pnlTotal / basisTotal).toFixed(1)}%)</span>` : "—"],
+    ["Largest position", biggest ? `${biggest.t} · ${pct(biggest.value / total)}` : "—"],
+  ].map(([k, v]) =>
+    `<div class="htile"><div class="hlabel">${k}</div><div class="hval">${v}</div></div>`
+  ).join("") : "";
+
+  // ── recommendations vs the selected profile ──
+  const recs = [];
+  const p = DATA.profiles[profile];
+  if (total > 0) {
+    // target sleeves: profile weights, alpha counted as US equity,
+    // renormalized to the invested (non-cash) book we can actually see
+    const tgt = { ...p.weights };
+    tgt.us_equity = (tgt.us_equity || 0) + p.alpha_w;
+    const investedT = Object.values(tgt).reduce((a, b) => a + b, 0);
+    for (const k of Object.keys(tgt)) tgt[k] /= investedT;
+    const gaps = [];
+    const allSleeves = new Set([...Object.keys(tgt), ...Object.keys(sleeves)]);
+    for (const s of allSleeves) {
+      if (s === "cash") continue;
+      const cur = (sleeves[s] || 0) / total;
+      const gap = (tgt[s] || 0) - cur;
+      if (Math.abs(gap) >= 0.03) gaps.push({ s, gap, d: gap * total });
+    }
+    gaps.sort((a, b) => Math.abs(b.d) - Math.abs(a.d));
+    for (const g of gaps.slice(0, 4)) {
+      const etf = DATA.sleeve_etfs[g.s] || "";
+      recs.push([g.gap > 0
+        ? `<b>Add ~${fmt$(g.d)}</b> to ${SLEEVE_LBL[g.s]}${etf ? ` (${etf})` : ""} — ` +
+          `you hold ${pct((sleeves[g.s] || 0) / total)} vs ${pct(tgt[g.s] || 0)} target ` +
+          `for the <b>${profile}</b> profile`
+        : `<b>Trim ~${fmt$(-g.d)}</b> from ${SLEEVE_LBL[g.s]} — ` +
+          `${pct((sleeves[g.s] || 0) / total)} held vs ${pct(tgt[g.s] || 0)} target ` +
+          `(or just direct new money elsewhere — fewer taxable events)`, ""]);
+    }
+    if (biggest && biggest.value / total > 0.15)
+      recs.push([`<b>${biggest.t} is ${pct(biggest.value / total)} of your book.</b> ` +
+        `Single-name risk dwarfs any model edge — the backtests here assume ` +
+        `50-name diversification. Consider capping single positions near 10%.`, "flag"]);
+    for (const [sec, v] of Object.entries(sectors))
+      if (v / total > 0.30)
+        recs.push([`<b>${pct(v / total)} in ${sec}.</b> Sector concentration — ` +
+          `one macro story moves most of your book.`, "flag"]);
+    for (const h of book) {
+      const [, cls] = modelView(h.t);
+      if (cls === "flag")
+        recs.push([`<b>${h.t} sits in Vig's SHORT decile (1W model).</b> Not a ` +
+          `sell order — the edge is thin — but the model would not be long it ` +
+          `this week.`, "flag"]);
+    }
+    if (!recs.length)
+      recs.push(["Book is within 3pp of the selected profile on every sleeve, " +
+        "no concentration flags. Nothing to do — which is usually the right trade.",
+        "good"]);
+  } else {
+    recs.push(["Add positions above (or paste a JSON book) and Vig will " +
+      "compare you against the selected profile.", ""]);
+  }
+  document.getElementById("tk-recs").innerHTML =
+    recs.map(([txt, cls]) => `<li class="${cls}">${txt}</li>`).join("");
+}
+
+function addPosition() {
+  const t = document.getElementById("tk-t").value.trim().toUpperCase();
+  const sh = parseFloat(document.getElementById("tk-sh").value);
+  const basis = parseFloat(document.getElementById("tk-basis").value) || null;
+  if (!t || !(sh > 0)) return;
+  book.push({ t, sh, basis });
+  saveBook();
+  ["tk-t", "tk-sh", "tk-basis"].forEach(id => document.getElementById(id).value = "");
+  renderTracker();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("cap").addEventListener("input", render);
+  document.getElementById("cap").addEventListener("input", () => render());
   document.querySelectorAll(".seg button").forEach(b =>
     b.addEventListener("click", () => { profile = b.dataset.p; render(); }));
+  document.getElementById("tk-add").addEventListener("click", addPosition);
+  ["tk-t", "tk-sh", "tk-basis"].forEach(id =>
+    document.getElementById(id).addEventListener("keydown",
+      e => { if (e.key === "Enter") addPosition(); }));
+  document.getElementById("tk-export").addEventListener("click", () =>
+    navigator.clipboard.writeText(JSON.stringify(book)));
+  document.getElementById("tk-import").addEventListener("click", () => {
+    const j = prompt("Paste your book JSON:");
+    if (!j) return;
+    try { book = JSON.parse(j); saveBook(); renderTracker(); }
+    catch { alert("invalid JSON"); }
+  });
+  document.getElementById("tk-clear").addEventListener("click", () => {
+    if (confirm("Clear all tracked positions?")) { book = []; saveBook(); renderTracker(); }
+  });
   render();
 });
+
+const _renderOrig = render;
+render = function() { _renderOrig(); renderTracker(); };
 </script></div>
 <footer><span class="muted">keys: <b>1–4</b> screens · <b>/</b> search ·
 click any column header to sort</span><br><br>

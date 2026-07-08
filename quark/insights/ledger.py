@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 
 from quark import config
+from quark.data.loader import compute_returns
 from quark.ml.targets import forward_return
 
 LEDGER_DIR = config.REPORTS_DIR / "ledger"
@@ -61,7 +62,7 @@ def update_realized(prices: pd.DataFrame) -> pd.DataFrame:
     done = (set(zip(scored["as_of"], scored["horizon"]))
             if not scored.empty else set())
 
-    returns = prices.pct_change(fill_method=None)
+    returns = compute_returns(prices)
     fwd_cache: dict[int, pd.DataFrame] = {}
 
     new_rows = []
@@ -86,10 +87,12 @@ def update_realized(prices: pd.DataFrame) -> pd.DataFrame:
         # method="first" keeps decile buckets populated even under prob ties
         rank = both["p"].rank(pct=True, method="first")
         spread = both.loc[rank > 0.9, "r"].mean() - both.loc[rank <= 0.1, "r"].mean()
+        # survivorship accounting: predictions we could no longer score
+        # (delistings skew toward blowups, which flatters the IC — log it)
         new_rows.append({
             "as_of": as_of, "n": len(both), "ic": ic,
             "decile_spread": spread, "source": grp["source"].iloc[0],
-            "horizon": horizon,
+            "horizon": horizon, "n_unscoreable": int(len(p) - len(both)),
         })
     if new_rows:
         add = pd.DataFrame(new_rows).sort_values("as_of")
@@ -103,11 +106,11 @@ def update_realized(prices: pd.DataFrame) -> pd.DataFrame:
 
 def health_summary(ic_history: pd.DataFrame, data_through,
                    window: int = 26, horizon: int = 5) -> dict:
+    """Traffic-light health readout for one horizon's model. The point is
+    knowing when NOT to trust it: an edge this size can sit underwater for
+    quarters, but a significantly negative trailing IC means stand down."""
     if ic_history is not None and not ic_history.empty and "horizon" in ic_history.columns:
         ic_history = ic_history[ic_history["horizon"] == horizon]
-    """Traffic-light health readout. The point is knowing when NOT to trust
-    the model: an edge this size can sit underwater for quarters, but a
-    significantly negative trailing IC means stand down."""
     out = {"window": window}
 
     today = pd.Timestamp.today().normalize()
