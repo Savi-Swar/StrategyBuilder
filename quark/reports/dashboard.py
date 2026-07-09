@@ -180,6 +180,192 @@ PAGES = [
     ("portfolio", "portfolio.html", "04", "PORTFOLIO"),
 ]
 
+PALETTE_CSS = """
+td b:hover { color: #ffb000; cursor: pointer; }
+#vp-scrim, #vi-scrim { position: fixed; inset: 0; background: rgba(3,4,5,.82);
+  z-index: 80; display: none; }
+#vp-scrim.open, #vi-scrim.open { display: block; }
+#vp-box { position: fixed; top: 14vh; left: 50%; transform: translateX(-50%);
+  width: 560px; max-width: 92vw; z-index: 90; background: #0b0d10;
+  border: 1px solid #ffb000; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+#vp-in { width: 100%; background: #060708; border: none; border-bottom: 1px solid #22262c;
+  color: #e6e2d8; font: 18px "SF Mono", ui-monospace, Menlo, monospace;
+  padding: 16px 18px; }
+#vp-in:focus { outline: none; }
+#vp-list { max-height: 320px; overflow-y: auto; }
+.vp-row { display: flex; justify-content: space-between; padding: 10px 18px;
+  cursor: pointer; font-size: 13px; border-bottom: 1px solid #14171b; }
+.vp-row:hover, .vp-row.sel { background: rgba(255,176,0,.08); }
+.vp-row .m { color: #6d747c; font-size: 11px; }
+#vi-card { position: fixed; top: 7vh; left: 50%; transform: translateX(-50%);
+  width: 920px; max-width: 94vw; max-height: 86vh; overflow-y: auto; z-index: 90;
+  background: #0a0c0f; border: 1px solid #ffb000; padding: 26px 30px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.75); }
+#vi-head { display: flex; justify-content: space-between; align-items: baseline;
+  flex-wrap: wrap; gap: 10px; }
+#vi-tick { font-size: 44px; font-weight: 800; letter-spacing: 1px; }
+#vi-sub { color: #8a9199; font-size: 12px; letter-spacing: 1px; }
+#vi-last { font-size: 26px; }
+.vi-chips { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
+.vi-chip { border: 1px solid #22262c; padding: 5px 13px; font-size: 12px;
+  color: #9fb0c0; background: #0e1114; }
+.vi-chip b { color: #e6e2d8; }
+#vi-close { cursor: pointer; color: #8a9199; font-size: 18px; }
+#vi-close:hover { color: #e6e2d8; }
+.vi-sect { font-size: 11px; letter-spacing: 2.5px; color: #ffb000;
+  margin: 20px 0 10px; text-transform: uppercase; }
+.vi-sect::before { content: "▚ "; }
+"""
+
+PALETTE_JS = r"""
+<script>
+(() => {
+const INST = window.VIG_INSTRUMENTS || {};
+const KEYS = Object.keys(INST);
+const CMDS = [
+  { n: "01 DESK", m: "screen", go: () => location.href = "index.html" },
+  { n: "02 ANALYSIS", m: "screen", go: () => location.href = "analysis.html" },
+  { n: "03 PAST TRADES", m: "screen", go: () => location.href = "past_trades.html" },
+  { n: "04 PORTFOLIO", m: "screen", go: () => location.href = "portfolio.html" },
+  ...["1D", "1W", "3M", "6M", "2Y"].map(h => ({
+    n: "HORIZON " + h, m: "setting",
+    go: () => { localStorage.setItem("vig_hz", h); location.href = "index.html"; } })),
+];
+const $ = id => document.getElementById(id);
+const pct = x => (x >= 0 ? "+" : "") + (100 * x).toFixed(1) + "%";
+const cls = x => x >= 0 ? "pos" : "neg";
+
+function chart(px, w = 850, h = 230) {
+  if (!px || px.length < 2) return "";
+  const lo = Math.min(...px), hi = Math.max(...px), rng = (hi - lo) || 1;
+  const pts = px.map((v, i) =>
+    `${(i * w / (px.length - 1)).toFixed(1)},${(h - 8 - (v - lo) / rng * (h - 16)).toFixed(1)}`
+  ).join(" ");
+  const color = px[px.length - 1] >= px[0] ? "#46ff9a" : "#ff5d5d";
+  return `<svg width="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"
+    style="border:1px solid #22262c;background:#0b0d10">
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.6"/>
+    <text x="6" y="14" fill="#6d747c" font-size="11">${hi.toLocaleString()}</text>
+    <text x="6" y="${h - 6}" fill="#6d747c" font-size="11">${lo.toLocaleString()}</text>
+  </svg>`;
+}
+
+function openInst(t) {
+  const d = INST[t];
+  if (!d) return;
+  closePalette();
+  let html = `<div id="vi-head"><div><div id="vi-tick">${t}</div>
+    <div id="vi-sub">${d.c} · ${d.k === "stock" ? "S&P 500 universe" : "trend universe"} · 1y daily</div></div>
+    <div style="text-align:right"><div id="vi-last">${d.l.toLocaleString()}</div>
+    <div class="${cls(d.r1 ?? 0)}">${d.r1 != null ? pct(d.r1) + " today" : ""}</div></div>
+    <span id="vi-close">✕</span></div>
+    ${chart(d.px)}
+    <div class="vi-chips">
+      ${d.r21 != null ? `<span class="vi-chip">1m <b class="${cls(d.r21)}">${pct(d.r21)}</b></span>` : ""}
+      ${d.r252 != null ? `<span class="vi-chip">12m <b class="${cls(d.r252)}">${pct(d.r252)}</b></span>` : ""}
+      ${d.tp != null ? `<span class="vi-chip">trend book <b class="${cls(d.tp)}">${d.tp > 0 ? "LONG" : d.tp < 0 ? "SHORT" : "FLAT"} ${Math.abs(d.tp)}x</b></span>` : ""}
+    </div>`;
+  if (d.h && Object.keys(d.h).length) {
+    html += `<div class="vi-sect">Model view by horizon — P(outperform S&P median)</div><div class="vi-chips">` +
+      Object.entries(d.h).map(([k, p]) => {
+        const side = (d.hd || {})[k];
+        const badge = side === "L" ? ' <b class="pos">LONG BOOK</b>'
+                    : side === "S" ? ' <b class="neg">SHORT BOOK</b>' : "";
+        return `<span class="vi-chip">${k} <b>${p.toFixed(3)}</b>${badge}</span>`;
+      }).join("") + `</div>
+      <div class="edgemath">probabilities near 0.55 are the honest size of this
+      edge (weekly IC ≈ 0.017) — conviction, not certainty.</div>`;
+  }
+  if (d.b) {
+    const g = d.b.gold == null ? "—" : (d.b.gold ? "GOLDEN" : "DEATH");
+    html += `<div class="vi-sect">Technicals (tactical board)</div><div class="vi-chips">
+      <span class="vi-chip">RSI14 <b>${d.b.rsi}</b></span>
+      <span class="vi-chip">%B <b>${d.b.pctb}</b></span>
+      <span class="vi-chip">MACD <b>${d.b.macd} bps</b></span>
+      <span class="vi-chip">50/200 <b>${g}</b></span>
+      ${d.b.vwap != null ? `<span class="vi-chip">vs VWAP20 <b class="${cls(d.b.vwap)}">${pct(d.b.vwap)}</b></span>` : ""}
+      <span class="vi-chip">consensus <b class="${d.b.cons >= 3 ? "pos" : d.b.cons <= -3 ? "neg" : "muted"}">${d.b.cons >= 0 ? "+" : ""}${d.b.cons}</b></span>
+    </div>`;
+  }
+  $("vi-card").innerHTML = html;
+  $("vi-scrim").classList.add("open");
+  $("vi-card").style.display = "";
+  $("vi-close").addEventListener("click", closeInst);
+}
+function closeInst() {
+  $("vi-scrim").classList.remove("open");
+  $("vi-card").style.display = "none";
+}
+
+function matches(q) {
+  q = q.trim().toUpperCase();
+  if (!q) return CMDS.slice(0, 4).map(c => ({ label: c.n, meta: c.m, go: c.go }));
+  const out = [];
+  for (const t of KEYS) {
+    if (t.toUpperCase().startsWith(q)) out.push({
+      label: t, meta: INST[t].c, go: () => openInst(t) });
+    if (out.length >= 6) break;
+  }
+  for (const c of CMDS)
+    if (c.n.toUpperCase().includes(q)) out.push({ label: c.n, meta: c.m, go: c.go });
+  return out.slice(0, 9);
+}
+
+let sel = 0;
+function renderList() {
+  const rows = matches($("vp-in").value);
+  sel = Math.min(sel, Math.max(0, rows.length - 1));
+  $("vp-list").innerHTML = rows.map((r, i) =>
+    `<div class="vp-row${i === sel ? " sel" : ""}" data-i="${i}">
+     <span>${r.label}</span><span class="m">${r.meta}</span></div>`).join("");
+  document.querySelectorAll(".vp-row").forEach(el =>
+    el.addEventListener("click", () => rows[+el.dataset.i].go()));
+  $("vp-list")._rows = rows;
+}
+function openPalette() {
+  $("vp-scrim").classList.add("open");
+  $("vp-box").style.display = "";
+  $("vp-in").value = ""; sel = 0; renderList();
+  $("vp-in").focus();
+}
+function closePalette() {
+  $("vp-scrim").classList.remove("open");
+  $("vp-box").style.display = "none";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const wrap = document.createElement("div");
+  wrap.innerHTML = `<div id="vp-scrim"></div>
+    <div id="vp-box" style="display:none">
+      <input id="vp-in" placeholder="ticker or command… (esc to close)">
+      <div id="vp-list"></div></div>
+    <div id="vi-scrim"></div><div id="vi-card" style="display:none"></div>`;
+  document.body.appendChild(wrap);
+  $("vp-in").addEventListener("input", () => { sel = 0; renderList(); });
+  $("vp-in").addEventListener("keydown", e => {
+    const rows = $("vp-list")._rows || [];
+    if (e.key === "ArrowDown") { sel = Math.min(sel + 1, rows.length - 1); renderList(); e.preventDefault(); }
+    if (e.key === "ArrowUp") { sel = Math.max(sel - 1, 0); renderList(); e.preventDefault(); }
+    if (e.key === "Enter" && rows[sel]) rows[sel].go();
+  });
+  $("vp-scrim").addEventListener("click", closePalette);
+  $("vi-scrim").addEventListener("click", closeInst);
+
+  document.addEventListener("keydown", e => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault(); openPalette(); return;
+    }
+    if (e.key === "Escape") { closePalette(); closeInst(); }
+  });
+  // any bold ticker anywhere becomes a security link
+  document.addEventListener("click", e => {
+    const b = e.target.closest("b");
+    if (b && INST[b.textContent.trim()]) openInst(b.textContent.trim());
+  });
+});
+})();
+</script>"""
+
 # Terminal behaviors, page-wide: numbered-key screen switching ("/" focuses
 # search), sticky-header offset tracking, and click-to-sort on every table.
 GLOBAL_JS = """
@@ -241,7 +427,7 @@ def page_shell(title: str, generated_at: str, active: str, body: str,
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta http-equiv="refresh" content="900">
-<title>{title}</title><style>{CSS}</style></head><body>
+<title>{title}</title><style>{CSS}{PALETTE_CSS}</style></head><body>
 <header>
   <div>
     <div class="wordmark">VIG</div>
@@ -252,11 +438,14 @@ def page_shell(title: str, generated_at: str, active: str, body: str,
 <nav class="tabs">{tabs}</nav>
 {tape_html}
 <div class="wrap">{body}</div>
-<footer><span class="muted">keys: <b>1–4</b> screens · <b>/</b> search ·
+<footer><span class="muted">keys: <b>⌘K</b> any ticker or command ·
+<b>1–4</b> screens · <b>/</b> search · click a ticker for its security page ·
 click any column header to sort</span><br><br>
 Research tooling output — signals from backtested models with modest,
 documented edges (weekly IC ≈ 0.017; see RESEARCH_NOTES.md). Probabilities are
 calibrated conviction, not certainty. Not investment advice.</footer>
+<script src="instruments.js"></script>
+{PALETTE_JS}
 {GLOBAL_JS}
 </body></html>"""
 

@@ -26,6 +26,20 @@ def main() -> None:
     print("Top trades: " + ", ".join(
         f"{t['side']} {t['ticker']} (p={t['prob']:.3f})" for t in result["trades"]))
 
+    # morning push: the one-line desk summary a terminal would give you
+    try:
+        import subprocess
+        h = result.get("health", {})
+        trades_line = " · ".join(f"{t['side']} {t['ticker']}"
+                                 for t in result["trades"])
+        msg = (f"{trades_line} — edge {h.get('model_status', '?')}"
+               f" (26w IC {h.get('ic_mean', float('nan')):+.3f})")
+        subprocess.run(["osascript", "-e",
+                        f'display notification "{msg}" with title "Vig — desk is set"'],
+                       check=False, capture_output=True, timeout=10)
+    except Exception:  # noqa: BLE001 — notification is garnish
+        pass
+
 
 if __name__ == "__main__":
     main()

@@ -143,6 +143,11 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
               for t in tr if t["ticker"] in eq_prices.columns}
         horizons[label] = {"h": h, "xsec": xs, "trades": tr, "sparks": sp}
 
+    print("Building the security master...")
+    from quark.insights.instruments import build_instruments
+    instruments = build_instruments(eq_prices, ma_prices, uni, sec,
+                                    horizon_models, snapshot, board)
+
     validation = {}
     val_path = config.REPORTS_DIR / "xsec_horizons.csv"
     if val_path.exists():
@@ -185,6 +190,7 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
         "board_pos": board_pos,
         "horizons": horizons,
         "horizon_validation": validation,
+        "instruments": instruments,
         "commentary": commentary,
     }
 
@@ -224,6 +230,10 @@ def write_outputs(result: dict) -> dict:
         render_analysis_page(result["wire"], result["generated_at"],
                              result.get("desk_read"), result.get("board"),
                              result.get("board_pos")))
+
+    from quark.insights.instruments import render_instruments_js
+    (dash_dir / "instruments.js").write_text(
+        render_instruments_js(result.get("instruments", {})))
 
     (dash_dir / "meta.json").write_text(json.dumps(
         {"generated_at": result["generated_at"],
