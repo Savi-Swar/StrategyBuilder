@@ -1,11 +1,7 @@
-"""Vig's daily desk — self-contained HTML, no external assets, opened
-straight from disk. Aesthetic: phosphor terminal, not SaaS dashboard."""
-
-import html as html_mod
-
-import pandas as pd
-
-CSS = """
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta http-equiv="refresh" content="900">
+<title>Vig — Screener</title><style>
 :root { color-scheme: dark; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -151,37 +147,7 @@ tr:hover td { background: rgba(255,176,0,.035); }
 footer { margin: 48px 44px 0; color: #565d64; font-size: 11px; max-width: 880px;
          border-top: 1px dashed #2a2e35; padding-top: 14px; }
 .bigchart { background: #0b0d10; border: 1px solid #22262c; padding: 18px; }
-"""
 
-
-def _spark_svg(values: list[float], width: int = 270, height: int = 52,
-               color: str | None = None, cls: str = "spark") -> str:
-    if len(values) < 2:
-        return ""
-    lo, hi = min(values), max(values)
-    rng = (hi - lo) or 1.0
-    pts = " ".join(
-        f"{i * width / (len(values) - 1):.1f},"
-        f"{height - 4 - (v - lo) / rng * (height - 8):.1f}"
-        for i, v in enumerate(values)
-    )
-    if color is None:
-        color = "#46ff9a" if values[-1] >= values[0] else "#ff5d5d"
-    return (f'<svg class="{cls}" width="{width}" height="{height}" '
-            f'viewBox="0 0 {width} {height}">'
-            f'<polyline points="{pts}" fill="none" stroke="{color}" '
-            f'stroke-width="1.6" stroke-linejoin="round"/></svg>')
-
-
-PAGES = [
-    ("desk", "index.html", "01", "DESK"),
-    ("analysis", "analysis.html", "02", "ANALYSIS"),
-    ("screener", "screener.html", "03", "SCREENER"),
-    ("past_trades", "past_trades.html", "04", "PAST TRADES"),
-    ("portfolio", "portfolio.html", "05", "PORTFOLIO"),
-]
-
-PALETTE_CSS = """
 td b:hover { color: #ffb000; cursor: pointer; }
 #vp-scrim, #vi-scrim { position: fixed; inset: 0; background: rgba(3,4,5,.82);
   z-index: 80; display: none; }
@@ -216,9 +182,151 @@ td b:hover { color: #ffb000; cursor: pointer; }
 .vi-sect { font-size: 11px; letter-spacing: 2.5px; color: #ffb000;
   margin: 20px 0 10px; text-transform: uppercase; }
 .vi-sect::before { content: "▚ "; }
-"""
 
-PALETTE_JS = r"""
+#va-btn { cursor: pointer; color: #ffb000; font-size: 11px; letter-spacing: 2px;
+  border: 1px solid #2a2e35; padding: 4px 10px; margin-left: 10px; }
+#va-btn:hover { border-color: #ffb000; }
+#va-panel { position: fixed; right: 0; top: 0; bottom: 0; width: 380px;
+  max-width: 92vw; z-index: 75; background: #0a0c0f; border-left: 1px solid #ffb000;
+  transform: translateX(102%); transition: transform .2s ease; padding: 24px 22px;
+  overflow-y: auto; box-shadow: -30px 0 60px rgba(0,0,0,.55); }
+#va-panel.open { transform: translateX(0); }
+#va-panel h3 { font-size: 13px; letter-spacing: 3px; color: #ffb000; margin-bottom: 4px; }
+#va-panel .s { font-size: 11px; color: #6d747c; margin-bottom: 18px; }
+.va-field { margin-bottom: 14px; }
+.va-field label { display: block; font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: #8a9199; margin-bottom: 6px; }
+.va-field input, .va-field select { width: 100%; background: #060708;
+  border: 1px solid #2a2e35; color: #e6e2d8; padding: 9px 12px;
+  font: 13px "SF Mono", ui-monospace, Menlo, monospace; }
+.va-field input:focus, .va-field select:focus { outline: none; border-color: #ffb000; }
+.va-row { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+.va-row span { border: 1px solid #2a2e35; color: #8a9199; font-size: 11px;
+  padding: 7px 12px; cursor: pointer; }
+.va-row span:hover { border-color: #ffb000; color: #ffb000; }
+.va-row span.primary { border-color: #ffb000; color: #ffb000; font-weight: 700; }
+.va-note { font-size: 10.5px; color: #565d64; margin-top: 14px; line-height: 1.6; }
+</style></head><body>
+<header>
+  <div>
+    <div class="wordmark">VIG</div>
+    <div class="tagline">the house takes its cut — <b>systematic daily desk</b></div>
+  </div>
+  <div class="stamp-date">2026-07-12 · 02:41:32</div>
+</header>
+<nav class="tabs"><a class="tab" href="index.html"><span class="k">01</span>DESK</a><a class="tab" href="analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab active" href="screener.html"><span class="k">03</span>SCREENER</a><a class="tab" href="past_trades.html"><span class="k">04</span>PAST TRADES</a><a class="tab" href="portfolio.html"><span class="k">05</span>PORTFOLIO</a></nav>
+
+<div class="wrap">
+<h2>Screener <span class="dim">/ the whole coverage universe — click a ticker
+for its security page, any header to sort, filters to cut</span></h2>
+<div class="tagline" style="margin-bottom:10px">model as-of <b>2026-07-10</b> ·
+probabilities are P(beat the S&amp;P median) per horizon · factor columns are
+cross-sectional percentiles · <span id="sc-n" class="muted"></span></div>
+
+<div class="fbar">
+  <input type="text" id="fb-q" placeholder="search ticker…">
+  <span class="fb-chip" data-c="Communication Services">Communication Services</span><span class="fb-chip" data-c="Consumer Discretionary">Consumer Discretionary</span><span class="fb-chip" data-c="Consumer Staples">Consumer Staples</span><span class="fb-chip" data-c="Energy">Energy</span><span class="fb-chip" data-c="Financials">Financials</span><span class="fb-chip" data-c="Health Care">Health Care</span><span class="fb-chip" data-c="Industrials">Industrials</span><span class="fb-chip" data-c="Information Technology">Information Technology</span><span class="fb-chip" data-c="Materials">Materials</span><span class="fb-chip" data-c="Real Estate">Real Estate</span><span class="fb-chip" data-c="Utilities">Utilities</span><span class="fb-prob">P(out) ≥ <b id="fb-pv">0.00</b><input type="range" id="fb-prob" min="0" max="0.65" step="0.01" value="0"></span>
+  <span class="fb-count" id="fb-n"></span>
+  <span class="fb-reset" id="fb-reset">reset</span>
+</div>
+<script>
+(() => {
+  const st = { q: "", cls: new Set(), side: null, minp: 0 };
+  const $ = id => document.getElementById(id);
+  function apply() {
+    let n = 0, total = 0;
+    document.querySelectorAll("[data-search]").forEach(el => {
+      total++;
+      let ok = true;
+      if (st.q) ok = ok && el.dataset.search.toLowerCase().includes(st.q);
+      if (st.cls.size) ok = ok && [...st.cls].some(c =>
+        (el.dataset.class || "").includes(c));
+      if (st.side) ok = ok && (el.dataset.side || "") === st.side;
+      if (st.minp > 0) ok = ok && el.dataset.prob != null &&
+        parseFloat(el.dataset.prob) >= st.minp;
+      el.style.display = ok ? "" : "none";
+      if (ok) n++;
+    });
+    $("fb-n").textContent = (st.q || st.cls.size || st.side || st.minp > 0)
+      ? n + "/" + total + " shown" : "";
+  }
+  $("fb-q").addEventListener("input", e => {
+    st.q = e.target.value.trim().toLowerCase(); apply(); });
+  document.querySelectorAll(".fb-chip").forEach(ch =>
+    ch.addEventListener("click", () => {
+      const c = ch.dataset.c;
+      st.cls.has(c) ? st.cls.delete(c) : st.cls.add(c);
+      ch.classList.toggle("on"); apply(); }));
+  document.querySelectorAll(".fb-side").forEach(b =>
+    b.addEventListener("click", () => {
+      st.side = st.side === b.dataset.s ? null : b.dataset.s;
+      document.querySelectorAll(".fb-side").forEach(x =>
+        x.classList.toggle("on", st.side === x.dataset.s));
+      apply(); }));
+  const pr = $("fb-prob");
+  if (pr) pr.addEventListener("input", e => {
+    st.minp = parseFloat(e.target.value);
+    $("fb-pv").textContent = st.minp.toFixed(2); apply(); });
+  $("fb-reset").addEventListener("click", () => {
+    st.q = ""; st.cls.clear(); st.side = null; st.minp = 0;
+    $("fb-q").value = ""; if (pr) { pr.value = 0; $("fb-pv").textContent = "0.00"; }
+    document.querySelectorAll(".fb-chip.on,.fb-side.on").forEach(x =>
+      x.classList.remove("on"));
+    apply(); });
+})();
+</script>
+<table>
+<tr><th>Ticker</th><th class="tl">Name</th><th class="tl">Sector</th><th>Last</th>
+<th>1m</th><th>12m</th><th>P 1W</th><th>P 3M</th>
+<th>12m mom</th><th>52w-high</th><th>ST vol</th></tr>
+<tbody id="sc-rows"></tbody></table>
+<div class="edgemath">HONESTY — 1W and 1D are the validated horizons
+(IC ≈ 0.017–0.019, t &gt; 2.8); 3M is suggestive only (t = 1.87). A 0.55
+probability is a thin, real edge — screen with it, don't worship it.</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const INST = window.VIG_INSTRUMENTS || {};
+  const pct = x => x == null ? "—" : (x >= 0 ? "+" : "") + (100 * x).toFixed(1) + "%";
+  const cls = x => x == null ? "muted" : (x >= 0 ? "pos" : "neg");
+  const badge = s => s === "L" ? ' <span class="pos">▲L</span>'
+               : s === "S" ? ' <span class="neg">▼S</span>' : "";
+
+  const rows = Object.entries(INST)
+    .filter(([, d]) => d.k === "stock")
+    .map(([t, d]) => {
+      const p1 = (d.h || {})["1W"], p3 = (d.h || {})["3M"];
+      const f = d.f || {};
+      return { t, d, p1, p3, f };
+    })
+    .sort((a, b) => (b.p1 ?? 0) - (a.p1 ?? 0));
+
+  document.getElementById("sc-rows").innerHTML = rows.map(r => `
+    <tr data-search="${r.t} ${(r.d.n || "").toLowerCase()}"
+        data-class="${r.d.c}" ${r.p1 != null ? `data-prob="${r.p1}"` : ""}>
+      <td><b>${r.t}</b></td>
+      <td class="tl muted">${r.d.n || ""}</td>
+      <td class="tl muted">${r.d.c}</td>
+      <td>${r.d.l.toLocaleString()}</td>
+      <td class="${cls(r.d.r21)}">${pct(r.d.r21)}</td>
+      <td class="${cls(r.d.r252)}">${pct(r.d.r252)}</td>
+      <td class="${r.p1 > 0.5 ? "pos" : "neg"}">${r.p1?.toFixed(3) ?? "—"}${badge((r.d.hd || {})["1W"])}</td>
+      <td class="${r.p3 > 0.5 ? "pos" : "neg"}">${r.p3?.toFixed(3) ?? "—"}${badge((r.d.hd || {})["3M"])}</td>
+      <td>${r.f.m12 != null ? r.f.m12 + "th" : "—"}</td>
+      <td>${r.f.hi != null ? r.f.hi + "th" : "—"}</td>
+      <td>${r.f.vol != null ? r.f.vol + "th" : "—"}</td>
+    </tr>`).join("");
+  document.getElementById("sc-n").textContent = rows.length + " names";
+});
+</script></div>
+<footer><span class="muted">keys: <b>⌘K</b> any ticker or command ·
+<b>1–4</b> screens · <b>/</b> search · click a ticker for its security page ·
+click any column header to sort</span><br><br>
+Research tooling output — signals from backtested models with modest,
+documented edges (weekly IC ≈ 0.017; see RESEARCH_NOTES.md). Probabilities are
+calibrated conviction, not certainty. Not investment advice.</footer>
+<script src="instruments.js"></script>
+
 <script>
 (() => {
 const INST = window.VIG_INSTRUMENTS || {};
@@ -418,35 +526,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 })();
-</script>"""
+</script>
 
-ACCOUNT_CSS = """
-#va-btn { cursor: pointer; color: #ffb000; font-size: 11px; letter-spacing: 2px;
-  border: 1px solid #2a2e35; padding: 4px 10px; margin-left: 10px; }
-#va-btn:hover { border-color: #ffb000; }
-#va-panel { position: fixed; right: 0; top: 0; bottom: 0; width: 380px;
-  max-width: 92vw; z-index: 75; background: #0a0c0f; border-left: 1px solid #ffb000;
-  transform: translateX(102%); transition: transform .2s ease; padding: 24px 22px;
-  overflow-y: auto; box-shadow: -30px 0 60px rgba(0,0,0,.55); }
-#va-panel.open { transform: translateX(0); }
-#va-panel h3 { font-size: 13px; letter-spacing: 3px; color: #ffb000; margin-bottom: 4px; }
-#va-panel .s { font-size: 11px; color: #6d747c; margin-bottom: 18px; }
-.va-field { margin-bottom: 14px; }
-.va-field label { display: block; font-size: 10px; letter-spacing: 2px;
-  text-transform: uppercase; color: #8a9199; margin-bottom: 6px; }
-.va-field input, .va-field select { width: 100%; background: #060708;
-  border: 1px solid #2a2e35; color: #e6e2d8; padding: 9px 12px;
-  font: 13px "SF Mono", ui-monospace, Menlo, monospace; }
-.va-field input:focus, .va-field select:focus { outline: none; border-color: #ffb000; }
-.va-row { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
-.va-row span { border: 1px solid #2a2e35; color: #8a9199; font-size: 11px;
-  padding: 7px 12px; cursor: pointer; }
-.va-row span:hover { border-color: #ffb000; color: #ffb000; }
-.va-row span.primary { border-color: #ffb000; color: #ffb000; font-weight: 700; }
-.va-note { font-size: 10.5px; color: #565d64; margin-top: 14px; line-height: 1.6; }
-"""
-
-ACCOUNT_JS = r"""
 <script>
 (() => {
 const $ = id => document.getElementById(id);
@@ -529,11 +610,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 })();
-</script>"""
+</script>
 
-# Terminal behaviors, page-wide: numbered-key screen switching ("/" focuses
-# search), sticky-header offset tracking, and click-to-sort on every table.
-GLOBAL_JS = """
 <script>
 (() => {
   const pages = { "1": "index.html", "2": "analysis.html",
@@ -580,385 +658,5 @@ GLOBAL_JS = """
     });
   });
 })();
-</script>"""
-
-
-def page_shell(title: str, generated_at: str, active: str, body: str,
-               tape_html: str = "") -> str:
-    tabs = "".join(
-        f'<a class="tab{" active" if key == active else ""}" href="{href}">'
-        f'<span class="k">{num}</span>{label}</a>'
-        for key, href, num, label in PAGES
-    )
-    return f"""<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
-<meta http-equiv="refresh" content="900">
-<title>{title}</title><style>{CSS}{PALETTE_CSS}{ACCOUNT_CSS}</style></head><body>
-<header>
-  <div>
-    <div class="wordmark">VIG</div>
-    <div class="tagline">the house takes its cut — <b>systematic daily desk</b></div>
-  </div>
-  <div class="stamp-date">{generated_at.replace("T", " · ")}</div>
-</header>
-<nav class="tabs">{tabs}</nav>
-{tape_html}
-<div class="wrap">{body}</div>
-<footer><span class="muted">keys: <b>⌘K</b> any ticker or command ·
-<b>1–4</b> screens · <b>/</b> search · click a ticker for its security page ·
-click any column header to sort</span><br><br>
-Research tooling output — signals from backtested models with modest,
-documented edges (weekly IC ≈ 0.017; see RESEARCH_NOTES.md). Probabilities are
-calibrated conviction, not certainty. Not investment advice.</footer>
-<script src="instruments.js"></script>
-{PALETTE_JS}
-{ACCOUNT_JS}
-{GLOBAL_JS}
-</body></html>"""
-
-
-def _tape(snapshot: pd.DataFrame) -> str:
-    bits = []
-    for tick, r in snapshot.iterrows():
-        if pd.isna(r["ret_1d"]):
-            continue
-        cls = "up" if r["ret_1d"] >= 0 else "dn"
-        arrow = "▲" if r["ret_1d"] >= 0 else "▼"
-        side = "L" if r["target_position"] > 0 else ("S" if r["target_position"] < 0 else "·")
-        bits.append(f'<span><b>{tick}</b> <span class="{cls}">{arrow} '
-                    f'{r["ret_1d"] * 100:+.2f}%</span> {side}{abs(r["target_position"]):.1f}</span>')
-    row = "".join(bits)
-    return f'<div class="tape"><div class="tape-inner">{row}{row}</div></div>'
-
-
-def _data_check_tile(dc: dict) -> str:
-    if not dc or not dc.get("n_checked"):
-        return ('<div class="htile"><div class="hlabel">Cross-source check</div>'
-                '<div class="hval"><span class="led warming"></span>inactive</div>'
-                '<div class="hdetail">verifies Yahoo returns against an '
-                'independent provider on each refresh — add a free Tiingo API '
-                'key in MYVIG to activate (keyless stooq is bot-walled)</div></div>')
-    flagged = (", ".join(dc["flagged"]) if dc.get("flagged")
-               else "no disagreements beyond tolerance")
-    return (f'<div class="htile"><div class="hlabel">Cross-source check '
-            f'({dc["source"]})</div>'
-            f'<div class="hval"><span class="led {dc["status"]}"></span>'
-            f'{dc["n_checked"] - dc["n_flagged"]}/{dc["n_checked"]} agree</div>'
-            f'<div class="hdetail">{flagged}</div></div>')
-
-
-def _health_panel(health: dict | None) -> str:
-    if not health:
-        return ""
-    model_led = health.get("model_status", "warming")
-    ic_t = health.get("ic_t")
-    ic_line = ("—" if pd.isna(health.get("ic_mean", float("nan")))
-               else f'{health["ic_mean"]:+.3f} <span class="muted">'
-                    f'(t={ic_t:.1f}, {health["n_scored"]} wks)</span>')
-    spread = health.get("spread_bps")
-    spread_line = ("—" if spread is None or pd.isna(spread)
-                   else f"{spread:+.0f} bps / 5d")
-    data_led = health.get("data_status", "yellow")
-    age = health.get("data_age_bdays", "?")
-    return f"""
-<h2>Model health <span class="dim">/ trust gate</span></h2>
-<div class="health">
-  <div class="htile"><div class="hlabel">Live edge — trailing {health.get("window", 26)}w IC</div>
-    <div class="hval"><span class="led {model_led}"></span>{ic_line}</div>
-    <div class="hdetail">{html_mod.escape(str(health.get("model_detail", "")))}</div></div>
-  <div class="htile"><div class="hlabel">Realized decile spread</div>
-    <div class="hval"><span class="led {model_led}"></span>{spread_line}</div>
-    <div class="hdetail">top vs bottom decile, realized, gross</div></div>
-  <div class="htile"><div class="hlabel">Data freshness</div>
-    <div class="hval"><span class="led {data_led}"></span>{age} bday(s) old</div>
-    <div class="hdetail">every prediction is scored once its 5-day horizon completes</div></div>
-  {_data_check_tile(health.get("data_check", {}))}
-</div>
-<div class="edgemath">EDGE MATH, HONESTLY — at the backtested best case (monthly
-config, net Sharpe ≈ 0.26) the full-Kelly growth rate is S²/2 ≈ <b>3.4%/yr</b>
-per unit of gross; at the half-Kelly a sane desk actually runs, ≈ 3S²/8 ≈
-<b>2.5%/yr</b>. Vig compounds calibration and discipline; the money, if ever,
-follows the process — not the other way round.</div>"""
-
-
-def _trade_card(trade: dict, spark: list[float]) -> str:
-    side = trade["side"].lower()
-    fill = "#46ff9a" if side == "long" else "#ff5d5d"
-    why = "".join(f"<li>{html_mod.escape(d)}</li>" for d in trade["drivers"])
-    news = ""
-    if trade["headline"]:
-        h = trade["headline"]
-        provider = f' <span class="muted">— {html_mod.escape(h["provider"])}</span>' if h["provider"] else ""
-        news = (f'<div class="news">▤ <a href="{html_mod.escape(h["url"])}" '
-                f'target="_blank">{html_mod.escape(h["title"])}</a>{provider}</div>')
-    pct90 = ""
-    if len(spark) > 1 and spark[0]:
-        chg = (spark[-1] / spark[0] - 1) * 100
-        cls = "pos" if chg >= 0 else "neg"
-        pct90 = f'<span class="{cls}">{chg:+.1f}%/90d</span>'
-    return f"""
-<div class="card {side}">
-  <div class="cardtop">
-    <span class="tick">{trade["ticker"]}</span>
-    <span class="stamp {side}">{trade["side"]}</span>
-  </div>
-  {_spark_svg(spark)}
-  <div class="probrow">
-    <div class="probbar"><div class="probfill" style="width:{trade["prob"] * 100:.0f}%;background:{fill}"></div></div>
-    <span class="probtxt">P(out) {trade["prob"]:.3f} · edge {trade["edge_pct"]:+.1f}pp {pct90}</span>
-  </div>
-  <ul class="why">{why}</ul>
-  {news}
-  <div class="sizing">{html_mod.escape(trade["sizing"])}</div>
-</div>"""
-
-
-def _xsec_table(xsec: dict, k: int = 10) -> str:
-    t = xsec["table"]
-    rows = []
-    for lo, sh in zip(xsec["longs"][:k], list(reversed(xsec["shorts"]))[:k]):
-        rows.append(
-            f'<tr data-search="{lo} {sh}" data-class="stock" '
-            f'data-prob="{t.at[lo, "prob_outperform"]:.3f}">'
-            f'<td><b>{lo}</b></td>'
-            f'<td class="pos">{t.at[lo, "prob_outperform"]:.3f}</td>'
-            f'<td class="tl"><b>{sh}</b></td>'
-            f'<td class="neg">{t.at[sh, "prob_outperform"]:.3f}</td></tr>'
-        )
-    return ("<table><tr><th>Long book</th><th>P(out)</th>"
-            "<th>Short book</th><th>P(out)</th></tr>" + "".join(rows) + "</table>")
-
-
-def _trend_table(snapshot: pd.DataFrame, k: int = 18) -> str:
-    top = snapshot.reindex(
-        snapshot["target_position"].abs().sort_values(ascending=False).index
-    ).head(k)
-    rows = []
-    for tick, r in top.iterrows():
-        side = "LONG" if r["target_position"] > 0 else ("SHORT" if r["target_position"] < 0 else "—")
-        cls = "pos" if r["target_position"] > 0 else "neg"
-        r21 = "—" if pd.isna(r["ret_21d"]) else f"{r['ret_21d'] * 100:+.1f}%"
-        rows.append(
-            f'<tr data-search="{tick}" data-class="{r["asset_class"]}" data-side="{side}">'
-            f'<td><b>{tick}</b> <span class="muted">{r["asset_class"]}</span></td>'
-            f'<td>{r21}</td><td>{r["ann_vol_63d"] * 100:.0f}%</td>'
-            f'<td class="{cls}">{side} {abs(r["target_position"]):.2f}x</td></tr>'
-        )
-    return ("<table><tr><th>Instrument</th><th>21d</th><th>Vol</th>"
-            "<th>Trend position</th></tr>" + "".join(rows) + "</table>")
-
-
-def filter_bar(classes: list[str] | None = None, show_prob: bool = True,
-               show_side: bool = True) -> str:
-    """Manual pick-and-choose filters. Pure client-side JS operating on every
-    element carrying data-search (table rows and article cards alike)."""
-    chips = "".join(f'<span class="fb-chip" data-c="{c}">{c}</span>'
-                    for c in (classes or []))
-    side = ('<span class="fb-side" data-s="LONG">LONG</span>'
-            '<span class="fb-side" data-s="SHORT">SHORT</span>') if show_side else ""
-    prob = ('<span class="fb-prob">P(out) ≥ <b id="fb-pv">0.00</b>'
-            '<input type="range" id="fb-prob" min="0" max="0.65" step="0.01" value="0">'
-            '</span>') if show_prob else ""
-    return f"""
-<div class="fbar">
-  <input type="text" id="fb-q" placeholder="search ticker…">
-  {chips}{side}{prob}
-  <span class="fb-count" id="fb-n"></span>
-  <span class="fb-reset" id="fb-reset">reset</span>
-</div>
-<script>
-(() => {{
-  const st = {{ q: "", cls: new Set(), side: null, minp: 0 }};
-  const $ = id => document.getElementById(id);
-  function apply() {{
-    let n = 0, total = 0;
-    document.querySelectorAll("[data-search]").forEach(el => {{
-      total++;
-      let ok = true;
-      if (st.q) ok = ok && el.dataset.search.toLowerCase().includes(st.q);
-      if (st.cls.size) ok = ok && [...st.cls].some(c =>
-        (el.dataset.class || "").includes(c));
-      if (st.side) ok = ok && (el.dataset.side || "") === st.side;
-      if (st.minp > 0) ok = ok && el.dataset.prob != null &&
-        parseFloat(el.dataset.prob) >= st.minp;
-      el.style.display = ok ? "" : "none";
-      if (ok) n++;
-    }});
-    $("fb-n").textContent = (st.q || st.cls.size || st.side || st.minp > 0)
-      ? n + "/" + total + " shown" : "";
-  }}
-  $("fb-q").addEventListener("input", e => {{
-    st.q = e.target.value.trim().toLowerCase(); apply(); }});
-  document.querySelectorAll(".fb-chip").forEach(ch =>
-    ch.addEventListener("click", () => {{
-      const c = ch.dataset.c;
-      st.cls.has(c) ? st.cls.delete(c) : st.cls.add(c);
-      ch.classList.toggle("on"); apply(); }}));
-  document.querySelectorAll(".fb-side").forEach(b =>
-    b.addEventListener("click", () => {{
-      st.side = st.side === b.dataset.s ? null : b.dataset.s;
-      document.querySelectorAll(".fb-side").forEach(x =>
-        x.classList.toggle("on", st.side === x.dataset.s));
-      apply(); }}));
-  const pr = $("fb-prob");
-  if (pr) pr.addEventListener("input", e => {{
-    st.minp = parseFloat(e.target.value);
-    $("fb-pv").textContent = st.minp.toFixed(2); apply(); }});
-  $("fb-reset").addEventListener("click", () => {{
-    st.q = ""; st.cls.clear(); st.side = null; st.minp = 0;
-    $("fb-q").value = ""; if (pr) {{ pr.value = 0; $("fb-pv").textContent = "0.00"; }}
-    document.querySelectorAll(".fb-chip.on,.fb-side.on").forEach(x =>
-      x.classList.remove("on"));
-    apply(); }});
-}})();
-</script>"""
-
-
-def _positioning_panel(sectors: dict, tilts: dict, regime: dict) -> str:
-    if not sectors and not tilts:
-        return ""
-    sec_rows = []
-    if sectors:
-        all_secs = sorted(set(sectors["long"]) | set(sectors["short"]),
-                          key=lambda s: -(sectors["long"].get(s, 0)
-                                          - sectors["short"].get(s, 0)))
-        max_n = max([*sectors["long"].values(), *sectors["short"].values(), 1])
-        for s in all_secs:
-            ln, sh = sectors["long"].get(s, 0), sectors["short"].get(s, 0)
-            net = ln - sh
-            cls = "pos" if net > 0 else ("neg" if net < 0 else "muted")
-            lbar = f'<div style="display:inline-block;height:8px;width:{ln / max_n * 70}px;background:#46ff9a"></div>'
-            sbar = f'<div style="display:inline-block;height:8px;width:{sh / max_n * 70}px;background:#ff5d5d"></div>'
-            sec_rows.append(
-                f'<tr><td>{s}</td><td class="tl">{lbar} {ln}</td>'
-                f'<td class="tl">{sbar} {sh}</td>'
-                f'<td class="{cls}">{net:+d}</td></tr>')
-    tilt_rows = []
-    for label, d in tilts.items():
-        spread = d["long"] - d["short"]
-        cls = "pos" if spread > 0 else "neg"
-        tilt_rows.append(
-            f'<tr><td>{label}</td><td class="pos">{d["long"]:.0f}th</td>'
-            f'<td class="neg">{d["short"]:.0f}th</td>'
-            f'<td class="{cls}">{spread:+.0f}pp</td></tr>')
-    corr = regime.get("stock_bond_corr63")
-    if corr is None:
-        regime_line = ""
-    else:
-        verdict = ("bonds are hedging equities — diversification working"
-                   if corr < -0.2 else
-                   "stocks and bonds moving TOGETHER — diversification weak, "
-                   "risk-parity style books run hotter than their vol suggests"
-                   if corr > 0.2 else "neutral coupling")
-        regime_line = (f'<div class="edgemath">REGIME — 63d stock-bond correlation '
-                       f'<b>{corr:+.2f}</b>: {verdict}.</div>')
-    return f"""
-<h2>Positioning intelligence <span class="dim">/ what the books are actually made of</span></h2>
-<div class="cols">
-  <div><table><tr><th>Sector</th><th>Longs</th><th>Shorts</th><th>Net</th></tr>
-  {"".join(sec_rows)}</table></div>
-  <div><table><tr><th>Factor (avg xsec percentile)</th><th>Long book</th><th>Short book</th><th>Spread</th></tr>
-  {"".join(tilt_rows)}</table>
-  {regime_line}</div>
-</div>"""
-
-
-def _commentary_html(text: str) -> str:
-    paras = []
-    for block in text.split("\n\n"):
-        b = html_mod.escape(block.strip())
-        if not b:
-            continue
-        while "**" in b:
-            b = b.replace("**", "<strong>", 1).replace("**", "</strong>", 1)
-        paras.append(f"<p>{b}</p>")
-    return "".join(paras)
-
-
-def _validation_line(label: str, validation: dict) -> str:
-    v = validation.get(label)
-    if not v:
-        return ('<span class="muted">walk-forward validation pending for this '
-                'horizon — treat picks as unproven</span>')
-    tone = "pos" if v["ic_t"] > 2 else ("muted" if v["ic_t"] > 1 else "neg")
-    return (f'walk-forward IC <b class="{tone}">{v["ic_mean"]:+.4f}</b> '
-            f'(t={v["ic_t"]:+.1f}, n={v["n_periods"]} non-overlapping periods) '
-            f'— every horizon is a counted trial')
-
-
-def _horizon_views(result: dict) -> str:
-    horizons = result.get("horizons") or {}
-    if not horizons:  # fallback: single-horizon desk
-        cards = "".join(_trade_card(t, result["sparks"].get(t["ticker"], []))
-                        for t in result["trades"])
-        return (f'<h2>Top trades <span class="dim">/ today</span></h2>'
-                f'<div class="cards">{cards}</div>')
-
-    strip = "".join(
-        f'<span class="bm-btn hz" data-hz="{label}">{label}</span>'
-        for label in horizons
-    )
-    views = []
-    for label, hv in horizons.items():
-        cards = "".join(_trade_card(t, hv["sparks"].get(t["ticker"], []))
-                        for t in hv["trades"])
-        views.append(f"""
-<div data-hzview="{label}" style="display:none">
-  <div class="tagline" style="margin:4px 0 14px">as-of
-  <b>{hv["xsec"]["as_of"].date()}</b> · {hv["h"]} trading-day horizon ·
-  {_validation_line(label, result.get("horizon_validation", {}))}</div>
-  <div class="cards">{cards}</div>
-  <h2>The equity book <span class="dim">/ at this horizon</span></h2>
-  {_xsec_table(hv["xsec"])}
-</div>""")
-
-    return f"""
-<h2>Top trades <span class="dim">/ pick your horizon — the whole desk view follows</span></h2>
-<div class="fbar" style="margin-bottom:14px">
-  <span class="hlabel" style="margin:0">HORIZON</span>{strip}
-  <span class="muted" style="font-size:11px">each horizon is its own retrained
-  model; 1W is the desk default and carries the live track record</span>
-</div>
-{"".join(views)}
-<script>
-(() => {{
-  const btns = document.querySelectorAll(".hz");
-  const views = document.querySelectorAll("[data-hzview]");
-  const set = k => {{
-    views.forEach(v => v.style.display = v.dataset.hzview === k ? "" : "none");
-    btns.forEach(b => b.classList.toggle("on", b.dataset.hz === k));
-    localStorage.setItem("vig_hz", k);
-  }};
-  btns.forEach(b => b.addEventListener("click", () => set(b.dataset.hz)));
-  const saved = localStorage.getItem("vig_hz");
-  set([...btns].some(b => b.dataset.hz === saved) ? saved : "1W");
-}})();
-</script>"""
-
-
-def render_dashboard(result: dict) -> str:
-    commentary = ""
-    if result["commentary"]:
-        commentary = (f'<h2>Vig&rsquo;s commentary</h2>'
-                      f'<div class="commentary">{_commentary_html(result["commentary"])}</div>')
-
-    health = dict(result.get("health") or {})
-    health["data_check"] = result.get("data_check", {})
-    body = f"""
-<div class="tagline" style="margin-bottom:6px">data through
-<b>{result["data_through"]}</b> · universe <b>{result["xsec"]["n_universe"]}</b> names</div>
-{_health_panel(health)}
-<h2>Watchlist <span class="dim">/ yours — star anything from its security page</span></h2>
-<div id="vig-watch"></div>
-{_horizon_views(result)}
-{_positioning_panel(result.get("sectors", {}), result.get("factor_tilts", {}),
-                    result.get("regime", {}))}
-{commentary}
-<h2>The trend book <span class="dim">/ multi-asset, 12m trend, vol-targeted</span></h2>
-{filter_bar(sorted(result["snapshot"]["asset_class"].unique()) + ["stock"])}
-{_trend_table(result["snapshot"])}"""
-
-    return page_shell(
-        "Vig — Daily Desk", result["generated_at"], "desk",
-        body, tape_html=_tape(result["snapshot"]),
-    )
+</script>
+</body></html>

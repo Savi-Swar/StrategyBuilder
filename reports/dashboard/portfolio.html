@@ -212,9 +212,9 @@ td b:hover { color: #ffb000; cursor: pointer; }
     <div class="wordmark">VIG</div>
     <div class="tagline">the house takes its cut — <b>systematic daily desk</b></div>
   </div>
-  <div class="stamp-date">2026-07-12 · 02:23:37</div>
+  <div class="stamp-date">2026-07-12 · 02:41:32</div>
 </header>
-<nav class="tabs"><a class="tab" href="index.html"><span class="k">01</span>DESK</a><a class="tab" href="analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab" href="past_trades.html"><span class="k">03</span>PAST TRADES</a><a class="tab active" href="portfolio.html"><span class="k">04</span>PORTFOLIO</a></nav>
+<nav class="tabs"><a class="tab" href="index.html"><span class="k">01</span>DESK</a><a class="tab" href="analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab" href="screener.html"><span class="k">03</span>SCREENER</a><a class="tab" href="past_trades.html"><span class="k">04</span>PAST TRADES</a><a class="tab active" href="portfolio.html"><span class="k">05</span>PORTFOLIO</a></nav>
 
 <div class="wrap">
 <style>
@@ -585,12 +585,15 @@ const KEYS = Object.keys(INST);
 const CMDS = [
   { n: "01 DESK", m: "screen", go: () => location.href = "index.html" },
   { n: "02 ANALYSIS", m: "screen", go: () => location.href = "analysis.html" },
-  { n: "03 PAST TRADES", m: "screen", go: () => location.href = "past_trades.html" },
-  { n: "04 PORTFOLIO", m: "screen", go: () => location.href = "portfolio.html" },
+  { n: "03 SCREENER", m: "screen", go: () => location.href = "screener.html" },
+  { n: "04 PAST TRADES", m: "screen", go: () => location.href = "past_trades.html" },
+  { n: "05 PORTFOLIO", m: "screen", go: () => location.href = "portfolio.html" },
   ...["1D", "1W", "3M", "6M", "2Y"].map(h => ({
     n: "HORIZON " + h, m: "setting",
     go: () => { localStorage.setItem("vig_hz", h); location.href = "index.html"; } })),
 ];
+const getWatch = () => JSON.parse(localStorage.getItem("vig_watchlist") || "[]");
+const setWatch = w => localStorage.setItem("vig_watchlist", JSON.stringify(w));
 const $ = id => document.getElementById(id);
 const pct = x => (x >= 0 ? "+" : "") + (100 * x).toFixed(1) + "%";
 const cls = x => x >= 0 ? "pos" : "neg";
@@ -618,6 +621,8 @@ function openInst(t) {
     <div id="vi-sub">${d.c} · ${d.k === "stock" ? "S&P 500 universe" : "trend universe"} · 1y daily</div></div>
     <div style="text-align:right"><div id="vi-last">${d.l.toLocaleString()}</div>
     <div class="${cls(d.r1 ?? 0)}">${d.r1 != null ? pct(d.r1) + " today" : ""}</div></div>
+    <span id="vi-watch" style="cursor:pointer;color:#ffb000;font-size:12px;
+      letter-spacing:1px;border:1px solid #2a2e35;padding:5px 10px"></span>
     <span id="vi-close">✕</span></div>
     ${chart(d.px)}
     <div class="vi-chips">
@@ -651,6 +656,38 @@ function openInst(t) {
   $("vi-scrim").classList.add("open");
   $("vi-card").style.display = "";
   $("vi-close").addEventListener("click", closeInst);
+  const wb = $("vi-watch");
+  const paint = () => wb.textContent =
+    getWatch().includes(t) ? "★ WATCHING" : "☆ WATCH";
+  paint();
+  wb.addEventListener("click", () => {
+    const w = getWatch();
+    setWatch(w.includes(t) ? w.filter(x => x !== t) : [...w, t]);
+    paint(); renderWatch();
+  });
+}
+
+function renderWatch() {
+  const el = $("vig-watch");
+  if (!el) return;
+  const wl = getWatch().filter(t => INST[t]);
+  if (!wl.length) {
+    el.innerHTML = '<p class="muted" style="font-size:12px">nothing starred ' +
+      'yet — open any instrument (⌘K or click a ticker) and hit ☆ WATCH</p>';
+    return;
+  }
+  el.innerHTML = '<table><tr><th>Ticker</th><th class="tl">Name</th>' +
+    '<th>Last</th><th>1d</th><th>1m</th><th>12m</th><th>P 1W</th></tr>' +
+    wl.map(t => {
+      const d = INST[t], p = (d.h || {})["1W"];
+      const cells = ["r1", "r21", "r252"].map(k =>
+        `<td class="${(d[k] ?? 0) >= 0 ? "pos" : "neg"}">` +
+        `${d[k] != null ? pct(d[k]) : "—"}</td>`).join("");
+      return `<tr data-search="${t}"><td><b>${t}</b></td>` +
+        `<td class="tl muted">${d.n || d.c}</td>` +
+        `<td>${d.l.toLocaleString()}</td>${cells}` +
+        `<td class="${p > 0.5 ? "pos" : "neg"}">${p?.toFixed(3) ?? "—"}</td></tr>`;
+    }).join("") + "</table>";
 }
 function closeInst() {
   $("vi-scrim").classList.remove("open");
@@ -659,13 +696,28 @@ function closeInst() {
 
 function matches(q) {
   q = q.trim().toUpperCase();
-  if (!q) return CMDS.slice(0, 4).map(c => ({ label: c.n, meta: c.m, go: c.go }));
-  const out = [];
-  for (const t of KEYS) {
-    if (t.toUpperCase().startsWith(q)) out.push({
-      label: t, meta: INST[t].c, go: () => openInst(t) });
-    if (out.length >= 6) break;
+  if (!q) {
+    const wl = getWatch().filter(t => INST[t]).map(t => ({
+      label: "★ " + t, meta: INST[t].n || INST[t].c, go: () => openInst(t) }));
+    return [...wl.slice(0, 5),
+            ...CMDS.slice(0, 5).map(c => ({ label: c.n, meta: c.m, go: c.go }))]
+           .slice(0, 9);
   }
+  // rank: ticker prefix > name prefix > any substring (ticker/name/sector)
+  const scored = [];
+  for (const t of KEYS) {
+    const d = INST[t], name = (d.n || "").toUpperCase();
+    let s = -1;
+    if (t.toUpperCase().startsWith(q)) s = 0;
+    else if (name.startsWith(q)) s = 1;
+    else if (t.toUpperCase().includes(q) || name.includes(q)
+             || (d.c || "").toUpperCase().includes(q)) s = 2;
+    if (s >= 0) scored.push([s, t]);
+  }
+  scored.sort((a, b) => a[0] - b[0] || a[1].localeCompare(b[1]));
+  const out = scored.slice(0, 7).map(([, t]) => ({
+    label: t, meta: [INST[t].n, INST[t].c].filter(Boolean).join(" · "),
+    go: () => openInst(t) }));
   for (const c of CMDS)
     if (c.n.toUpperCase().includes(q)) out.push({ label: c.n, meta: c.m, go: c.go });
   return out.slice(0, 9);
@@ -711,6 +763,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $("vp-scrim").addEventListener("click", closePalette);
   $("vi-scrim").addEventListener("click", closeInst);
 
+  renderWatch();
   document.addEventListener("keydown", e => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
       e.preventDefault(); openPalette(); return;
@@ -790,6 +843,7 @@ document.addEventListener("DOMContentLoaded", () => {
     navigator.clipboard.writeText(JSON.stringify({
       account: load(),
       holdings: JSON.parse(localStorage.getItem("vig_holdings") || "[]"),
+      watchlist: JSON.parse(localStorage.getItem("vig_watchlist") || "[]"),
       hz: localStorage.getItem("vig_hz") || "1W",
     }));
   });
@@ -800,6 +854,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const d = JSON.parse(j);
       if (d.account) localStorage.setItem("vig_account", JSON.stringify(d.account));
       if (d.holdings) localStorage.setItem("vig_holdings", JSON.stringify(d.holdings));
+      if (d.watchlist) localStorage.setItem("vig_watchlist", JSON.stringify(d.watchlist));
       if (d.hz) localStorage.setItem("vig_hz", d.hz);
       location.reload();
     } catch { alert("invalid JSON"); }
@@ -811,7 +866,8 @@ document.addEventListener("DOMContentLoaded", () => {
 <script>
 (() => {
   const pages = { "1": "index.html", "2": "analysis.html",
-                  "3": "past_trades.html", "4": "portfolio.html" };
+                  "3": "screener.html", "4": "past_trades.html",
+                  "5": "portfolio.html" };
   document.addEventListener("keydown", e => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.target instanceof Element && e.target.matches("input,textarea")) return;

@@ -22,11 +22,17 @@ def _series_block(px: pd.Series) -> dict:
     return out
 
 
+FACTOR_COLS = {"mom_252": "m12", "mom_21": "m1",
+               "vol_ratio_21_63": "vol", "dist_52w_high": "hi"}
+
+
 def build_instruments(eq_prices: pd.DataFrame, ma_prices: pd.DataFrame,
                       universe: pd.DataFrame, sectors: dict,
                       horizon_models: dict, snapshot: pd.DataFrame,
-                      board: pd.DataFrame) -> dict:
+                      board: pd.DataFrame, names: dict | None = None) -> dict:
     inst: dict[str, dict] = {}
+    names = names or {}
+    feats = horizon_models.get("1W", {}).get("features")
 
     for t in eq_prices.columns:
         px = eq_prices[t].dropna()
@@ -35,6 +41,8 @@ def build_instruments(eq_prices: pd.DataFrame, ma_prices: pd.DataFrame,
         rec = _series_block(px)
         rec["c"] = sectors.get(t, "US equity")
         rec["k"] = "stock"
+        if t in names:
+            rec["n"] = names[t]
         h_probs, h_side = {}, {}
         for label, xs in horizon_models.items():
             tab = xs["table"]
@@ -43,6 +51,11 @@ def build_instruments(eq_prices: pd.DataFrame, ma_prices: pd.DataFrame,
                 h_side[label] = ("L" if t in xs["longs"]
                                  else "S" if t in xs["shorts"] else "")
         rec["h"], rec["hd"] = h_probs, h_side
+        if feats is not None and t in feats.index:
+            row = feats.loc[t]
+            rec["f"] = {short: int(round((float(row[col]) + 0.5) * 100))
+                        for col, short in FACTOR_COLS.items()
+                        if col in row.index and pd.notna(row[col])}
         inst[t] = rec
 
     for t in ma_prices.columns:

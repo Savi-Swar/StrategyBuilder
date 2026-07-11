@@ -147,3 +147,10 @@ def load_sp500_sectors(db_path=None) -> dict[str, str]:
     db_path = str(db_path or config.DB_PATH)
     with sqlite3.connect(db_path) as conn:
         return dict(conn.execute("SELECT ticker, sector FROM sp500_members"))
+
+
+def load_sp500_names(db_path=None) -> dict[str, str]:
+    """ticker -> company name, from the stored membership table."""
+    db_path = str(db_path or config.DB_PATH)
+    with sqlite3.connect(db_path) as conn:
+        return dict(conn.execute("SELECT ticker, name FROM sp500_members"))

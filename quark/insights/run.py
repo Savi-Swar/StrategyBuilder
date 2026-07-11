@@ -161,9 +161,11 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
         horizons[label] = {"h": h, "xsec": xs, "trades": tr, "sparks": sp}
 
     print("Building the security master...")
+    from quark.data.refresh import load_sp500_names
     from quark.insights.instruments import build_instruments
     instruments = build_instruments(eq_prices, ma_prices, uni, sec,
-                                    horizon_models, snapshot, board)
+                                    horizon_models, snapshot, board,
+                                    names=load_sp500_names())
 
     validation = {}
     val_path = config.REPORTS_DIR / "xsec_horizons.csv"
@@ -252,6 +254,11 @@ def write_outputs(result: dict) -> dict:
     from quark.insights.instruments import render_instruments_js
     (dash_dir / "instruments.js").write_text(
         render_instruments_js(result.get("instruments", {})))
+
+    from quark.reports.screener_page import render_screener_page
+    (dash_dir / "screener.html").write_text(
+        render_screener_page(result["generated_at"],
+                             str(result["xsec"]["as_of"].date())))
 
     (dash_dir / "meta.json").write_text(json.dumps(
         {"generated_at": result["generated_at"],
