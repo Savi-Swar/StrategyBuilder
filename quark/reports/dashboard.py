@@ -512,6 +512,7 @@ document.addEventListener("DOMContentLoaded", () => {
       account: load(),
       holdings: JSON.parse(localStorage.getItem("vig_holdings") || "[]"),
       watchlist: JSON.parse(localStorage.getItem("vig_watchlist") || "[]"),
+      journal: JSON.parse(localStorage.getItem("vig_journal") || "[]"),
       hz: localStorage.getItem("vig_hz") || "1W",
     }));
   });
@@ -523,6 +524,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (d.account) localStorage.setItem("vig_account", JSON.stringify(d.account));
       if (d.holdings) localStorage.setItem("vig_holdings", JSON.stringify(d.holdings));
       if (d.watchlist) localStorage.setItem("vig_watchlist", JSON.stringify(d.watchlist));
+      if (d.journal) localStorage.setItem("vig_journal", JSON.stringify(d.journal));
       if (d.hz) localStorage.setItem("vig_hz", d.hz);
       location.reload();
     } catch { alert("invalid JSON"); }

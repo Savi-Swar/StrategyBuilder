@@ -11,14 +11,17 @@ import pandas as pd
 PX_DAYS = 252
 
 
-def _series_block(px: pd.Series) -> dict:
-    px = px.dropna()
-    tail = px.tail(PX_DAYS)
-    out = {"l": round(float(px.iloc[-1]), 2),
-           "px": [round(float(v), 2) for v in tail]}
+def _series_block(px: pd.Series, grid: pd.DatetimeIndex) -> dict:
+    """Price block ALIGNED to the shared date grid (nulls where unobserved)
+    so the browser-side journal can look prices up by date."""
+    dense = px.dropna()
+    aligned = px.reindex(grid)
+    out = {"l": round(float(dense.iloc[-1]), 2),
+           "px": [None if pd.isna(v) else round(float(v), 2)
+                  for v in aligned]}
     for key, n in (("r1", 1), ("r21", 21), ("r252", 252)):
-        if len(px) > n:
-            out[key] = round(float(px.iloc[-1] / px.iloc[-(n + 1)] - 1), 4)
+        if len(dense) > n:
+            out[key] = round(float(dense.iloc[-1] / dense.iloc[-(n + 1)] - 1), 4)
     return out
 
 
@@ -33,12 +36,13 @@ def build_instruments(eq_prices: pd.DataFrame, ma_prices: pd.DataFrame,
     inst: dict[str, dict] = {}
     names = names or {}
     feats = horizon_models.get("1W", {}).get("features")
+    grid = eq_prices.index[-PX_DAYS:]
 
     for t in eq_prices.columns:
         px = eq_prices[t].dropna()
         if px.empty:
             continue
-        rec = _series_block(px)
+        rec = _series_block(eq_prices[t], grid)
         rec["c"] = sectors.get(t, "US equity")
         rec["k"] = "stock"
         if t in names:
@@ -62,7 +66,7 @@ def build_instruments(eq_prices: pd.DataFrame, ma_prices: pd.DataFrame,
         px = ma_prices[t].dropna()
         if px.empty or t in inst:
             continue
-        rec = _series_block(px)
+        rec = _series_block(ma_prices[t], grid)
         rec["c"] = (universe.at[t, "asset_class"]
                     if t in universe.index else "multi-asset")
         rec["k"] = "macro"
@@ -81,14 +85,17 @@ def build_instruments(eq_prices: pd.DataFrame, ma_prices: pd.DataFrame,
             }
         inst[t] = rec
 
-    return inst
+    return {"dates": [d.strftime("%Y-%m-%d") for d in grid], "inst": inst}
 
 
-def render_instruments_js(inst: dict) -> str:
+def render_instruments_js(master: dict) -> str:
     def clean(o):
         if isinstance(o, float) and (np.isnan(o) or np.isinf(o)):
             return None
         return o
-    return ("window.VIG_INSTRUMENTS = "
+    inst = master.get("inst", master)     # tolerate old shape
+    dates = master.get("dates", [])
+    return ("window.VIG_DATES = " + json.dumps(dates) + ";\n"
+            "window.VIG_INSTRUMENTS = "
             + json.dumps(inst, default=clean, separators=(",", ":"))
             + ";")

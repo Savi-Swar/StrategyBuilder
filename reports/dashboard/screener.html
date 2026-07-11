@@ -212,7 +212,7 @@ td b:hover { color: #ffb000; cursor: pointer; }
     <div class="wordmark">VIG</div>
     <div class="tagline">the house takes its cut — <b>systematic daily desk</b></div>
   </div>
-  <div class="stamp-date">2026-07-12 · 02:41:32</div>
+  <div class="stamp-date">2026-07-12 · 03:17:13</div>
 </header>
 <nav class="tabs"><a class="tab" href="index.html"><span class="k">01</span>DESK</a><a class="tab" href="analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab active" href="screener.html"><span class="k">03</span>SCREENER</a><a class="tab" href="past_trades.html"><span class="k">04</span>PAST TRADES</a><a class="tab" href="portfolio.html"><span class="k">05</span>PORTFOLIO</a></nav>
 
@@ -593,6 +593,7 @@ document.addEventListener("DOMContentLoaded", () => {
       account: load(),
       holdings: JSON.parse(localStorage.getItem("vig_holdings") || "[]"),
       watchlist: JSON.parse(localStorage.getItem("vig_watchlist") || "[]"),
+      journal: JSON.parse(localStorage.getItem("vig_journal") || "[]"),
       hz: localStorage.getItem("vig_hz") || "1W",
     }));
   });
@@ -604,6 +605,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (d.account) localStorage.setItem("vig_account", JSON.stringify(d.account));
       if (d.holdings) localStorage.setItem("vig_holdings", JSON.stringify(d.holdings));
       if (d.watchlist) localStorage.setItem("vig_watchlist", JSON.stringify(d.watchlist));
+      if (d.journal) localStorage.setItem("vig_journal", JSON.stringify(d.journal));
       if (d.hz) localStorage.setItem("vig_hz", d.hz);
       location.reload();
     } catch { alert("invalid JSON"); }
