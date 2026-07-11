@@ -366,6 +366,115 @@ document.addEventListener("DOMContentLoaded", () => {
 })();
 </script>"""
 
+ACCOUNT_CSS = """
+#va-btn { cursor: pointer; color: #ffb000; font-size: 11px; letter-spacing: 2px;
+  border: 1px solid #2a2e35; padding: 4px 10px; margin-left: 10px; }
+#va-btn:hover { border-color: #ffb000; }
+#va-panel { position: fixed; right: 0; top: 0; bottom: 0; width: 380px;
+  max-width: 92vw; z-index: 75; background: #0a0c0f; border-left: 1px solid #ffb000;
+  transform: translateX(102%); transition: transform .2s ease; padding: 24px 22px;
+  overflow-y: auto; box-shadow: -30px 0 60px rgba(0,0,0,.55); }
+#va-panel.open { transform: translateX(0); }
+#va-panel h3 { font-size: 13px; letter-spacing: 3px; color: #ffb000; margin-bottom: 4px; }
+#va-panel .s { font-size: 11px; color: #6d747c; margin-bottom: 18px; }
+.va-field { margin-bottom: 14px; }
+.va-field label { display: block; font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: #8a9199; margin-bottom: 6px; }
+.va-field input, .va-field select { width: 100%; background: #060708;
+  border: 1px solid #2a2e35; color: #e6e2d8; padding: 9px 12px;
+  font: 13px "SF Mono", ui-monospace, Menlo, monospace; }
+.va-field input:focus, .va-field select:focus { outline: none; border-color: #ffb000; }
+.va-row { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+.va-row span { border: 1px solid #2a2e35; color: #8a9199; font-size: 11px;
+  padding: 7px 12px; cursor: pointer; }
+.va-row span:hover { border-color: #ffb000; color: #ffb000; }
+.va-row span.primary { border-color: #ffb000; color: #ffb000; font-weight: 700; }
+.va-note { font-size: 10.5px; color: #565d64; margin-top: 14px; line-height: 1.6; }
+"""
+
+ACCOUNT_JS = r"""
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const load = () => JSON.parse(localStorage.getItem("vig_account") || "{}");
+
+document.addEventListener("DOMContentLoaded", () => {
+  const dateBox = document.querySelector(".stamp-date");
+  if (dateBox) dateBox.insertAdjacentHTML("beforeend",
+    '<br><span id="va-btn">◈ MYVIG</span>');
+  document.body.insertAdjacentHTML("beforeend", `
+<div id="va-panel">
+  <h3>MYVIG</h3><div class="s">your desk identity — stored only in this browser</div>
+  <div class="va-field"><label>Callsign</label>
+    <input id="va-name" placeholder="how the desk greets you"></div>
+  <div class="va-field"><label>Default capital (USD)</label>
+    <input id="va-cap" inputmode="decimal" placeholder="10,000"></div>
+  <div class="va-field"><label>Default risk profile</label>
+    <select id="va-prof"><option value="">—</option>
+    <option>conservative</option><option>balanced</option><option>aggressive</option></select></div>
+  <div class="va-field"><label>Default horizon</label>
+    <select id="va-hz"><option value="">—</option><option>1D</option>
+    <option>1W</option><option>3M</option><option>6M</option><option>2Y</option></select></div>
+  <div class="va-field"><label>Tiingo API key (optional — upgrades the data cross-check)</label>
+    <input id="va-tiingo" type="password" placeholder="free at tiingo.com"></div>
+  <div class="va-row">
+    <span class="primary" id="va-save">SAVE</span>
+    <span id="va-export">EXPORT ALL</span>
+    <span id="va-import">IMPORT</span>
+    <span id="va-close2">CLOSE</span>
+  </div>
+  <div class="va-note">EXPORT ALL copies your entire desk state (account,
+  holdings, horizon) as one JSON — paste it into Vig on any machine.
+  Pipeline note: the daily refresh reads TIINGO_API_KEY from the
+  environment — after saving here, also run once in Terminal:<br>
+  <code>launchctl setenv TIINGO_API_KEY &lt;your key&gt;</code></div>
+</div>`);
+
+  const acct = load();
+  $("va-name").value = acct.callsign || "";
+  $("va-cap").value = acct.capital || "";
+  $("va-prof").value = acct.profile || "";
+  $("va-hz").value = acct.horizon || "";
+  $("va-tiingo").value = acct.tiingo || "";
+  if (acct.callsign) {
+    const b = document.querySelector(".tagline b");
+    if (b) b.textContent = acct.callsign + "'s systematic desk";
+  }
+
+  $("va-btn").addEventListener("click", () => $("va-panel").classList.toggle("open"));
+  $("va-close2").addEventListener("click", () => $("va-panel").classList.remove("open"));
+  $("va-save").addEventListener("click", () => {
+    const a = { callsign: $("va-name").value.trim(),
+                capital: $("va-cap").value.trim(),
+                profile: $("va-prof").value,
+                horizon: $("va-hz").value,
+                tiingo: $("va-tiingo").value.trim() };
+    localStorage.setItem("vig_account", JSON.stringify(a));
+    if (a.horizon) localStorage.setItem("vig_hz", a.horizon);
+    location.reload();
+  });
+  $("va-export").addEventListener("click", () => {
+    navigator.clipboard.writeText(JSON.stringify({
+      account: load(),
+      holdings: JSON.parse(localStorage.getItem("vig_holdings") || "[]"),
+      hz: localStorage.getItem("vig_hz") || "1W",
+    }));
+  });
+  $("va-import").addEventListener("click", () => {
+    const j = prompt("Paste your Vig desk JSON:");
+    if (!j) return;
+    try {
+      const d = JSON.parse(j);
+      if (d.account) localStorage.setItem("vig_account", JSON.stringify(d.account));
+      if (d.holdings) localStorage.setItem("vig_holdings", JSON.stringify(d.holdings));
+      if (d.hz) localStorage.setItem("vig_hz", d.hz);
+      location.reload();
+    } catch { alert("invalid JSON"); }
+  });
+});
+})();
+</script>"""
+
 # Terminal behaviors, page-wide: numbered-key screen switching ("/" focuses
 # search), sticky-header offset tracking, and click-to-sort on every table.
 GLOBAL_JS = """
@@ -427,7 +536,7 @@ def page_shell(title: str, generated_at: str, active: str, body: str,
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta http-equiv="refresh" content="900">
-<title>{title}</title><style>{CSS}{PALETTE_CSS}</style></head><body>
+<title>{title}</title><style>{CSS}{PALETTE_CSS}{ACCOUNT_CSS}</style></head><body>
 <header>
   <div>
     <div class="wordmark">VIG</div>
@@ -446,6 +555,7 @@ documented edges (weekly IC ≈ 0.017; see RESEARCH_NOTES.md). Probabilities are
 calibrated conviction, not certainty. Not investment advice.</footer>
 <script src="instruments.js"></script>
 {PALETTE_JS}
+{ACCOUNT_JS}
 {GLOBAL_JS}
 </body></html>"""
 
@@ -462,6 +572,22 @@ def _tape(snapshot: pd.DataFrame) -> str:
                     f'{r["ret_1d"] * 100:+.2f}%</span> {side}{abs(r["target_position"]):.1f}</span>')
     row = "".join(bits)
     return f'<div class="tape"><div class="tape-inner">{row}{row}</div></div>'
+
+
+def _data_check_tile(dc: dict) -> str:
+    if not dc or not dc.get("n_checked"):
+        return ('<div class="htile"><div class="hlabel">Cross-source check</div>'
+                '<div class="hval"><span class="led warming"></span>inactive</div>'
+                '<div class="hdetail">verifies Yahoo returns against an '
+                'independent provider on each refresh — add a free Tiingo API '
+                'key in MYVIG to activate (keyless stooq is bot-walled)</div></div>')
+    flagged = (", ".join(dc["flagged"]) if dc.get("flagged")
+               else "no disagreements beyond tolerance")
+    return (f'<div class="htile"><div class="hlabel">Cross-source check '
+            f'({dc["source"]})</div>'
+            f'<div class="hval"><span class="led {dc["status"]}"></span>'
+            f'{dc["n_checked"] - dc["n_flagged"]}/{dc["n_checked"]} agree</div>'
+            f'<div class="hdetail">{flagged}</div></div>')
 
 
 def _health_panel(health: dict | None) -> str:
@@ -489,6 +615,7 @@ def _health_panel(health: dict | None) -> str:
   <div class="htile"><div class="hlabel">Data freshness</div>
     <div class="hval"><span class="led {data_led}"></span>{age} bday(s) old</div>
     <div class="hdetail">every prediction is scored once its 5-day horizon completes</div></div>
+  {_data_check_tile(health.get("data_check", {}))}
 </div>
 <div class="edgemath">EDGE MATH, HONESTLY — at the backtested best case (monthly
 config, net Sharpe ≈ 0.26) the full-Kelly growth rate is S²/2 ≈ <b>3.4%/yr</b>
@@ -758,10 +885,12 @@ def render_dashboard(result: dict) -> str:
         commentary = (f'<h2>Vig&rsquo;s commentary</h2>'
                       f'<div class="commentary">{_commentary_html(result["commentary"])}</div>')
 
+    health = dict(result.get("health") or {})
+    health["data_check"] = result.get("data_check", {})
     body = f"""
 <div class="tagline" style="margin-bottom:6px">data through
 <b>{result["data_through"]}</b> · universe <b>{result["xsec"]["n_universe"]}</b> names</div>
-{_health_panel(result.get("health"))}
+{_health_panel(health)}
 {_horizon_views(result)}
 {_positioning_panel(result.get("sectors", {}), result.get("factor_tilts", {}),
                     result.get("regime", {}))}

@@ -283,6 +283,12 @@ function addPosition() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  // MYVIG defaults
+  try {
+    const acct = JSON.parse(localStorage.getItem("vig_account") || "{}");
+    if (acct.capital) document.getElementById("cap").value = acct.capital;
+    if (DATA.profiles[acct.profile]) profile = acct.profile;
+  } catch {}
   document.getElementById("cap").addEventListener("input", () => render());
   document.querySelectorAll(".seg button").forEach(b =>
     b.addEventListener("click", () => { profile = b.dataset.p; render(); }));

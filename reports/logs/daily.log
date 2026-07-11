@@ -135,3 +135,125 @@ Traceback (most recent call last):
   File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/_client.py", line 389, in _validate_headers
     raise TypeError(
 TypeError: "Could not resolve authentication method. Expected one of api_key, auth_token, or credentials to be set. Or for one of the `X-Api-Key` or `Authorization` headers to be explicitly omitted"
+$LH: possibly delisted; no price data found  (1d 2005-01-01 -> 2026-07-10)
+
+1 Failed download:
+['LH']: possibly delisted; no price data found  (1d 2005-01-01 -> 2026-07-10)
+Refreshing multi-asset universe...
+status
+ok    82
+Refreshing S&P 500 universe...
+S&P 500 membership: 503 tickers
+status
+ok       502
+EMPTY      1
+Non-ok fetches:
+ ticker  n_rows status
+    LH       0  EMPTY
+Computing multi-asset snapshot...
+Computing the technical board (daily + 6-month modes)...
+Scoring the equity cross-section...
+  retraining for horizon 1D (h=1d)...
+  retraining for horizon 3M (h=63d)...
+  retraining for horizon 6M (h=126d)...
+  retraining for horizon 2Y (h=504d)...
+Updating the prediction ledger and model health...
+  model: green — edge intact — trailing 26w IC +0.027 (t=1.1)
+Grading the past year of top-3 calls...
+Building portfolio profiles...
+Fetching the wire (macro + picks)...
+  47 unique stories
+Building the security master...
+Requesting Vig's commentary...
+Traceback (most recent call last):
+  File "/Users/swarup44891/Downloads/Quant/scripts/update_dashboard.py", line 45, in <module>
+    main()
+  File "/Users/swarup44891/Downloads/Quant/scripts/update_dashboard.py", line 21, in main
+    result = run_daily(refresh=not args.skip_refresh, news=not args.no_news,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/swarup44891/Downloads/Quant/quark/insights/run.py", line 162, in run_daily
+    commentary = llm_commentary(
+                 ^^^^^^^^^^^^^^^
+  File "/Users/swarup44891/Downloads/Quant/quark/insights/brief.py", line 150, in llm_commentary
+    response = client.messages.create(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 1050, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/_base_client.py", line 1536, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/_base_client.py", line 1137, in request
+    response, prepared = self._attempt_request(
+                         ^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/_base_client.py", line 1282, in _attempt_request
+    request = self._build_request(options, retries_taken=retries_taken)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/_base_client.py", line 539, in _build_request
+    headers = self._build_headers(options, retries_taken=retries_taken)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/_base_client.py", line 469, in _build_headers
+    self._validate_headers(headers_dict, custom_headers)
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/_client.py", line 389, in _validate_headers
+    raise TypeError(
+TypeError: "Could not resolve authentication method. Expected one of api_key, auth_token, or credentials to be set. Or for one of the `X-Api-Key` or `Authorization` headers to be explicitly omitted"
+Refreshing multi-asset universe...
+status
+ok    82
+Refreshing S&P 500 universe...
+S&P 500 membership: 503 tickers
+status
+ok    503
+Computing multi-asset snapshot...
+Computing the technical board (daily + 6-month modes)...
+Scoring the equity cross-section...
+  retraining for horizon 1D (h=1d)...
+  retraining for horizon 3M (h=63d)...
+  retraining for horizon 6M (h=126d)...
+  retraining for horizon 2Y (h=504d)...
+Updating the prediction ledger and model health...
+  model: green — edge intact — trailing 26w IC +0.027 (t=1.1)
+Grading the past year of top-3 calls...
+Building portfolio profiles...
+Fetching the wire (macro + picks)...
+  43 unique stories
+Building the security master...
+Requesting Vig's commentary...
+Traceback (most recent call last):
+  File "/Users/swarup44891/Downloads/Quant/scripts/update_dashboard.py", line 45, in <module>
+    main()
+  File "/Users/swarup44891/Downloads/Quant/scripts/update_dashboard.py", line 21, in main
+    result = run_daily(refresh=not args.skip_refresh, news=not args.no_news,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/swarup44891/Downloads/Quant/quark/insights/run.py", line 162, in run_daily
+    commentary = llm_commentary(
+                 ^^^^^^^^^^^^^^^
+  File "/Users/swarup44891/Downloads/Quant/quark/insights/brief.py", line 150, in llm_commentary
+    response = client.messages.create(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 1050, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/_base_client.py", line 1536, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/_base_client.py", line 1137, in request
+    response, prepared = self._attempt_request(
+                         ^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/_base_client.py", line 1282, in _attempt_request
+    request = self._build_request(options, retries_taken=retries_taken)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/_base_client.py", line 539, in _build_request
+    headers = self._build_headers(options, retries_taken=retries_taken)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/_base_client.py", line 469, in _build_headers
+    self._validate_headers(headers_dict, custom_headers)
+  File "/opt/anaconda3/lib/python3.12/site-packages/anthropic/_client.py", line 389, in _validate_headers
+    raise TypeError(
+TypeError: "Could not resolve authentication method. Expected one of api_key, auth_token, or credentials to be set. Or for one of the `X-Api-Key` or `Authorization` headers to be explicitly omitted"

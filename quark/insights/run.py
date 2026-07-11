@@ -38,6 +38,23 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
         except Exception as exc:  # noqa: BLE001 — offline must not kill the brief
             print(f"[run] refresh failed ({exc}); continuing with existing data")
 
+    data_check: dict = {}
+    if refresh:
+        try:
+            print("Cross-verifying Yahoo against an independent source...")
+            from quark.data.providers import cross_verify, verification_summary
+            eq_all = load_sp500_tickers()
+            sample = eq_all[::15][:36]  # deterministic ~36-name sample
+            probe = load_prices(tickers=sample, start="2025-01-01")
+            rep = cross_verify(probe, sample)
+            rep.to_csv(config.REPORTS_DIR / "data_verification.csv", index=False)
+            data_check = verification_summary(rep)
+            print(f"  {data_check.get('n_checked', 0)} checked, "
+                  f"{data_check.get('n_flagged', 0)} flagged "
+                  f"({data_check.get('source', '?')})")
+        except Exception as exc:  # noqa: BLE001 — QA layer must not kill the run
+            print(f"[run] cross-verify failed ({exc}); continuing")
+
     print("Computing multi-asset snapshot...")
     ma_prices = clean_panel(load_prices(tickers=list(uni.index)))
     ma_volumes = load_prices(tickers=list(uni.index), field="volume")
@@ -191,6 +208,7 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
         "horizons": horizons,
         "horizon_validation": validation,
         "instruments": instruments,
+        "data_check": data_check,
         "commentary": commentary,
     }
 
