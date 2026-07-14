@@ -106,9 +106,10 @@ def main() -> None:
              f"Classic indicators (8 counted variants): best = {best}, "
              "Deflated Sharpe Ratio 0.19 — the best of 8\ncoin flips. Daily "
              "ML timing on 43 multi-asset instruments: AUC 0.518 does not "
-             "clear costs\n(net Sharpe −0.44, DSR ≈ 0). Stated limits: "
-             "survivorship-biased equity universe (current members),\n"
-             "non-back-adjusted futures, price-only index benchmark.",
+             "clear costs\n(net Sharpe −0.44, DSR ≈ 0). Survivorship bias "
+             "measured, not just disclaimed: a point-in-time rerun\nkeeps "
+             "the signal (IC +0.0124, t = 2.35) but halves the decile "
+             "spread — shipped numbers are upper bounds.",
              size=8.5, color=INK, va="top", linespacing=1.6)
 
     fig.text(0.09, 0.160, "Why the numbers can be trusted", size=11,

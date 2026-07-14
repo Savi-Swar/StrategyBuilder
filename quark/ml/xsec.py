@@ -100,8 +100,9 @@ def run_xsec_strategy(
     if membership is not None:
         # point-in-time index membership (e.g. month-end snapshots ffilled
         # to daily): a name is only tradable while actually in the index
-        elig &= (membership.reindex(index=elig.index, columns=elig.columns)
-                 .ffill().fillna(False).astype(bool))
+        elig &= (membership.astype(float)
+                 .reindex(index=elig.index, columns=elig.columns)
+                 .ffill().fillna(0.0).astype(bool))
 
     ys = label.stack().rename("y")
     ys.index.names = ["date", "ticker"]

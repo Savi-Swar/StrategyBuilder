@@ -4,6 +4,32 @@ Two research studies on a shared, unit-tested backtest engine, built to answer
 one question: **after you remove every standard source of backtest inflation,
 what is actually left?**
 
+The research ships as **Vig**, a self-grading personal terminal (below) —
+five screens of serverless HTML regenerated every morning by a scheduled job,
+launched from Spotlight, no cloud required.
+
+![Vig — the daily desk](reports/screens/vig_desk.png)
+
+**The desk:** a trust gate (live IC of the model's own predictions, scored
+after every horizon completes; realized decile spread; data freshness; an
+independent cross-source data check), your watchlist, and the day's top
+trades at a switchable horizon (1D/1W/3M/6M/2Y — each a separately retrained,
+separately walk-forward-validated model whose honest validation stats are
+quoted next to its picks).
+
+![Vig — the screener](reports/screens/vig_screener.png)
+
+**Also in the terminal:** a full S&P screener with model probabilities and
+factor percentiles; an analysis screen (news wire cross-referenced against
+the book's live stances + a two-horizon technical board); a graded record
+of every past model call with computed self-diagnosis — the same page hosts
+**your** trade journal, graded on P&L *and* same-window alpha vs the S&P,
+with a rule-based coach; and a portfolio builder (risk-parity core,
+no-leverage vol targeting, VaR, worst-drawdown episodes) with a holdings
+tracker that recommends rebalancing in dollars. `⌘K` opens any of ~580
+instruments as a full security page. Every number links back to the research
+below — signals ship with their evidence.
+
 - **Study 1 — Multi-asset time series.** 43 instruments (G10+EM FX, equity
   indices, commodity & bond futures, crypto), 2004–present. Classic indicator
   strategies and a walk-forward ML timing model, all vol-targeted and net of
@@ -28,15 +54,23 @@ what is actually left?**
    ~31→46 bps gross per 5 days), and a clean shuffled-label control
    (AUC 0.500, IC ≈ 0). The signal is almost entirely **long-side** — shorting
    large caps did not pay — and weekly turnover consumes most of it
-   (net Sharpe 0.04 weekly; 0.26 at monthly rebalance).
+   (net Sharpe 0.04 weekly; 0.26 at monthly rebalance). A pre-registered
+   no-trade band (enter the decile, exit only after rank decays 0.30) halves
+   the cost drag and lifts net Sharpe to 0.18 at weekly cadence — see the
+   turnover study in [RESEARCH_NOTES.md](RESEARCH_NOTES.md).
 2. **Classic indicators are dead after costs** on the multi-asset universe.
-   Best of 8 registered variants (tsmom_252) has a Deflated Sharpe Ratio of
-   0.19 — indistinguishable from the luck of picking the best of 8 coin flips.
+   Best of 8 registered variants (ma_cross_50_200) has a Deflated Sharpe Ratio
+   of 0.19 — indistinguishable from the luck of picking the best of 8 coin
+   flips.
 3. **The daily ML timing model failed honestly**: mean fold AUC 0.518 does not
    clear transaction costs (net Sharpe −0.44, DSR ≈ 0). Reported, not massaged.
 
 ![Study 2 tearsheet](reports/study2_tearsheet.png)
 ![Study 1 tearsheet](reports/study1_tearsheet.png)
+
+The whole argument on one page:
+[reports/quark_onepager.pdf](reports/quark_onepager.pdf)
+(`python scripts/make_onepager.py`).
 
 ## Why these numbers can be trusted
 
@@ -71,9 +105,13 @@ holiday-NaN artifact that silently voided 10% of forward-return windows — see
 
 Known limitations, stated rather than hidden:
 
-- **Survivorship bias (Study 2):** the universe is *today's* S&P 500 members,
-  which inflates the long side. Read Study 2 results as upper bounds; the
-  dollar-neutral spread nets out part (not all) of the common uplift.
+- **Survivorship bias (Study 2): measured, not just disclaimed.** The shipped
+  universe is *today's* S&P 500 members. A best-effort point-in-time rerun
+  (Wikipedia change history + 45% Yahoo recovery of delisted names,
+  `scripts/run_pit_study.py`) shows the signal survives — IC +0.0124
+  (t = 2.35) vs +0.0164 — but the decile spread halves and weekly net Sharpe
+  goes negative. Read the shipped numbers as upper bounds by roughly that
+  margin; details in [RESEARCH_NOTES.md](RESEARCH_NOTES.md).
 - Yahoo continuous futures (`=F`) are not back-adjusted → trend signals embed
   roll noise. Production would use ratio-back-adjusted series.
 - `^GSPC` is a price index: the buy-and-hold benchmark understates total
@@ -96,7 +134,7 @@ quark/
   ml/                features, targets, purged splits, timing pipeline, xsec study
   reports/           tearsheet + tables
 scripts/             refresh_data | run_baselines | run_ml | run_xsec | make_report
-tests/               62 tests, synthetic fixtures only — no DB needed
+tests/               64 tests, synthetic fixtures only — no DB needed
 legacy/              the original 2025 project, kept for the before/after story
 ```
 
@@ -104,12 +142,16 @@ legacy/              the original 2025 project, kept for the before/after story
 
 ```bash
 pip install -e .
-python -m pytest                     # 62 tests, <2s, no data required
+python -m pytest                     # 64 tests, <2s, no data required
 python scripts/refresh_data.py       # ~550 tickers from Yahoo -> Quark.db
 python scripts/run_baselines.py      # classic registry + DSR verdict
 python scripts/run_ml.py             # Study 1: folds, shuffled control, corr-to-momentum
 python scripts/run_xsec.py           # Study 2: IC, deciles, shuffled control
 python scripts/make_report.py        # tearsheets + results table
+python scripts/run_turnover_study.py # no-trade-band study (pre-registered)
+python scripts/build_pit_universe.py # point-in-time membership + recovery
+python scripts/run_pit_study.py      # survivorship bias, measured
+python scripts/make_onepager.py      # one-page PDF summary
 ```
 
 Every number in this README is regenerated by the last four commands.

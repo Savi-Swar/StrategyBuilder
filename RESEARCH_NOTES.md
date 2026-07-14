@@ -148,14 +148,73 @@ Found and fixed (all with regression tests):
    the backfilled IC history is survivorship-tilted and should be read as an
    upper bound (current-members universe; see Study 2 caveat).
 
+## Turnover study — no-trade bands (2026-07-15)
+
+Turnover was the binding constraint on Study 2 (45.8x/yr, 229 bps/yr cost
+drag at weekly re-formation). Hysteresis variants: ENTER unchanged (extreme
+decile), EXIT only once the name's rank decays past a gap. **Trial
+accounting: 3 exit gaps (0.15 / 0.20 / 0.30) pre-registered before results;
+all reported; nothing else tried.** All variants score the SAME stored
+walk-forward predictions (one model fit), so differences are the weight
+rule, not refit noise. Script: `scripts/run_turnover_study.py` →
+`reports/turnover_study.csv`.
+
+| variant | net Sharpe | ann turnover | cost drag | avg names |
+|---|---|---|---|---|
+| weekly re-formation (base) | 0.04 | 45.8x | 229 bps/yr | 93 |
+| band, exit gap 0.15 | 0.13 | 31.7x | 159 bps/yr | 124 |
+| band, exit gap 0.20 | 0.17 | 28.6x | 143 bps/yr | 134 |
+| band, exit gap 0.30 | 0.18 | 23.3x | 117 bps/yr | 157 |
+
+Read: monotone improvement with band width — cost saved exceeds signal
+staleness cost throughout the registered range, and max drawdown falls too
+(−23% → −18%). The widest band converges toward the monthly-rebalance result
+(Sharpe 0.26) by a different mechanism (hold longer vs trade less often).
+Honest caveat: still thin economics on a survivorship-biased universe; this
+is a turnover result, not an alpha result.
+
+## Point-in-time universe — best-effort reconstruction (2026-07-15)
+
+Built from Wikipedia's constituent-changes table walked backward from
+today's 503 members (`scripts/build_pit_universe.py` →
+`reports/pit_membership.csv`: month-end snapshots 2005+, 845 ever-member
+names). Two stated gaps, direction of bias known:
+
+1. Wikipedia's table is titled *"Selected changes"* — near-complete
+   recently, sparser before ~2010 (407 events since 1976 vs a true rate of
+   ~25/yr). Missing events leave the backward walk wrong for those names.
+2. Yahoo drops most delisted tickers: recovery of ever-member names absent
+   from the DB was **153/342 (45%)** (`reports/pit_recovery_report.csv`).
+   The unrecovered 189 skew toward the worst outcomes (bankruptcy,
+   distressed acquisition) — exactly the names survivorship bias deletes —
+   so even the PIT run remains optimistic. It bounds the bias; it does not
+   eliminate it.
+
+Comparison run (`scripts/run_pit_study.py`, identical pipeline, membership
+mask ANDed into eligibility; results in `reports/pit_study.csv`):
+
+| | IC | IC t | D10−D1 gross | net Sharpe (weekly) | names/wk |
+|---|---|---|---|---|---|
+| current members (shipped) | +0.0164 | 3.19 | 16 bps | +0.04 | 471 |
+| point-in-time (best-effort) | +0.0124 | 2.35 | 9 bps | −0.17 | 439 |
+
+**Read: the signal survives point-in-time treatment — the bias does not.**
+Cross-sectional predictability remains statistically real (t=2.35 on 757
+non-overlapping weeks) but ~25% weaker, the decile spread roughly halves,
+and the weekly-rebalance net economics go negative: survivorship was
+carrying them. The honest claim after this study is "genuine but modest
+cross-sectional predictive power; net profitability requires the turnover
+discipline above AND is still overstated by residual survivorship in the
+45%-recovered PIT panel." Headline IC in the README keeps the shipped
+config for continuity with the live ledger, with this study linked as the
+bias measurement.
+
 ## Future work (ordered by expected value)
 
-1. Point-in-time S&P universe from Wikipedia change history (kills the main
-   bias qualifier on Study 2).
-2. Position buffering / no-trade bands (turnover is the binding constraint in
-   both studies).
-3. Ratio-back-adjusted continuous futures for Study 1.
-4. Meta-labeling: use the Study 2 model to size a momentum base signal
+1. Ratio-back-adjusted continuous futures for Study 1.
+2. Meta-labeling: use the Study 2 model to size a momentum base signal
    instead of generating positions directly.
-5. Revive the legacy cointegration pairs idea inside the tested engine
+3. Revive the legacy cointegration pairs idea inside the tested engine
    (needs two-leg position semantics).
+4. A true PIT universe (CRSP/Norgate) if this ever gets a data budget —
+   the free reconstruction above is at its ceiling.
