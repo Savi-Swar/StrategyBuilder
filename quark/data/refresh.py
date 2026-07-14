@@ -119,6 +119,29 @@ def get_sp500_members() -> pd.DataFrame:
     return members
 
 
+def get_sp500_changes() -> pd.DataFrame:
+    """Historical index add/remove events from Wikipedia's changes table.
+
+    HONESTY NOTE: the table is titled "Selected changes" — it is near-complete
+    for recent years but sparser going back (~400 rows vs the true ~25
+    changes/yr since the 1990s). A point-in-time universe built from it is a
+    best-effort reconstruction, not CRSP. The gap is quantified in
+    RESEARCH_NOTES.md rather than hidden.
+    """
+    req = urllib.request.Request(WIKI_SP500, headers={"User-Agent": UA})
+    with urllib.request.urlopen(req) as resp:
+        html = resp.read().decode("utf-8")
+    raw = pd.read_html(io.StringIO(html))[1]
+    raw.columns = ["date", "added", "added_name", "removed", "removed_name",
+                   "reason"]
+    out = raw.assign(date=pd.to_datetime(raw["date"], format="%B %d, %Y",
+                                         errors="coerce"))
+    out = out.dropna(subset=["date"]).sort_values("date")
+    for col in ("added", "removed"):
+        out[col] = out[col].str.replace(".", "-", regex=False)
+    return out.reset_index(drop=True)
+
+
 def fetch_sp500_universe(db_path=None, start: str = "2005-01-01") -> pd.DataFrame:
     """Fetch daily adjusted OHLCV for all current S&P 500 members and store
     membership + prices. Returns the fetch report."""

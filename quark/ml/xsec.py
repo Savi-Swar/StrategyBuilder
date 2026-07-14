@@ -81,6 +81,7 @@ def run_xsec_strategy(
     rebal_every: int = 1,
     seed: int = config.SEED,
     shuffle_labels: bool = False,
+    membership: pd.DataFrame | None = None,
 ) -> XSecResult:
     returns = compute_returns(prices)
     fwd = forward_return(returns, horizon)
@@ -96,6 +97,11 @@ def run_xsec_strategy(
 
     rebal = rebalance_dates(prices.index)[::rebal_every]
     elig = eligibility(prices, volumes)
+    if membership is not None:
+        # point-in-time index membership (e.g. month-end snapshots ffilled
+        # to daily): a name is only tradable while actually in the index
+        elig &= (membership.reindex(index=elig.index, columns=elig.columns)
+                 .ffill().fillna(False).astype(bool))
 
     ys = label.stack().rename("y")
     ys.index.names = ["date", "ticker"]
