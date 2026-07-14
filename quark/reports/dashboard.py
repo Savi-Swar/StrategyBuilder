@@ -474,11 +474,14 @@ document.addEventListener("DOMContentLoaded", () => {
   <div class="va-row">
     <span class="primary" id="va-save">SAVE</span>
     <span id="va-export">EXPORT ALL</span>
+    <span id="va-backup">BACKUP &#8595;</span>
     <span id="va-import">IMPORT</span>
     <span id="va-close2">CLOSE</span>
   </div>
   <div class="va-note">EXPORT ALL copies your entire desk state (account,
-  holdings, horizon) as one JSON — paste it into Vig on any machine.
+  holdings, watchlist, journal, horizon) as one JSON — paste it into Vig on
+  any machine. BACKUP downloads the same JSON as a dated file; IMPORT
+  restores either.
   Pipeline note: the daily refresh reads TIINGO_API_KEY from the
   environment — after saving here, also run once in Terminal:<br>
   <code>launchctl setenv TIINGO_API_KEY &lt;your key&gt;</code></div>
@@ -507,14 +510,23 @@ document.addEventListener("DOMContentLoaded", () => {
     if (a.horizon) localStorage.setItem("vig_hz", a.horizon);
     location.reload();
   });
+  const deskState = () => JSON.stringify({
+    account: load(),
+    holdings: JSON.parse(localStorage.getItem("vig_holdings") || "[]"),
+    watchlist: JSON.parse(localStorage.getItem("vig_watchlist") || "[]"),
+    journal: JSON.parse(localStorage.getItem("vig_journal") || "[]"),
+    hz: localStorage.getItem("vig_hz") || "1W",
+  });
   $("va-export").addEventListener("click", () => {
-    navigator.clipboard.writeText(JSON.stringify({
-      account: load(),
-      holdings: JSON.parse(localStorage.getItem("vig_holdings") || "[]"),
-      watchlist: JSON.parse(localStorage.getItem("vig_watchlist") || "[]"),
-      journal: JSON.parse(localStorage.getItem("vig_journal") || "[]"),
-      hz: localStorage.getItem("vig_hz") || "1W",
-    }));
+    navigator.clipboard.writeText(deskState());
+  });
+  $("va-backup").addEventListener("click", () => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([deskState()],
+                                          { type: "application/json" }));
+    a.download = "vig_backup_" + new Date().toISOString().slice(0, 10) + ".json";
+    a.click();
+    URL.revokeObjectURL(a.href);
   });
   $("va-import").addEventListener("click", () => {
     const j = prompt("Paste your Vig desk JSON:");

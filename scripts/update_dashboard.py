@@ -26,19 +26,22 @@ def main() -> None:
     print("Top trades: " + ", ".join(
         f"{t['side']} {t['ticker']} (p={t['prob']:.3f})" for t in result["trades"]))
 
-    # morning push: the one-line desk summary a terminal would give you
-    try:
-        import subprocess
-        h = result.get("health", {})
-        trades_line = " · ".join(f"{t['side']} {t['ticker']}"
-                                 for t in result["trades"])
-        msg = (f"{trades_line} — edge {h.get('model_status', '?')}"
-               f" (26w IC {h.get('ic_mean', float('nan')):+.3f})")
-        subprocess.run(["osascript", "-e",
-                        f'display notification "{msg}" with title "Vig — desk is set"'],
-                       check=False, capture_output=True, timeout=10)
-    except Exception:  # noqa: BLE001 — notification is garnish
-        pass
+    # morning push, event alerts, Sunday digest, state backup
+    from quark.insights.alerts import (backup_state, notify, run_alerts,
+                                       weekly_digest)
+    h = result.get("health", {})
+    trades_line = " · ".join(f"{t['side']} {t['ticker']}"
+                             for t in result["trades"])
+    notify("Vig — desk is set",
+           f"{trades_line} — edge {h.get('model_status', '?')}"
+           f" (26w IC {h.get('ic_mean', float('nan')):+.3f})")
+    events = run_alerts(result)
+    for e in events:
+        print("ALERT:", e)
+    digest = weekly_digest(result)
+    if digest:
+        print(f"Digest:    {digest}")
+    backup_state()
 
 
 if __name__ == "__main__":
