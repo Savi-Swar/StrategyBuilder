@@ -479,9 +479,9 @@ document.addEventListener("DOMContentLoaded", () => {
     <span id="va-close2">CLOSE</span>
   </div>
   <div class="va-note">EXPORT ALL copies your entire desk state (account,
-  holdings, watchlist, journal, horizon) as one JSON — paste it into Vig on
-  any machine. BACKUP downloads the same JSON as a dated file; IMPORT
-  restores either.
+  holdings, watchlist, journal, horizon — including your Tiingo key, so
+  treat the JSON like a password) — paste it into Vig on any machine.
+  BACKUP downloads the same JSON as a dated file; IMPORT restores either.
   Pipeline note: the daily refresh reads TIINGO_API_KEY from the
   environment — after saving here, also run once in Terminal:<br>
   <code>launchctl setenv TIINGO_API_KEY &lt;your key&gt;</code></div>
@@ -518,7 +518,10 @@ document.addEventListener("DOMContentLoaded", () => {
     hz: localStorage.getItem("vig_hz") || "1W",
   });
   $("va-export").addEventListener("click", () => {
-    navigator.clipboard.writeText(deskState());
+    navigator.clipboard.writeText(deskState()).then(
+      () => { $("va-export").textContent = "COPIED ✓";
+              setTimeout(() => $("va-export").textContent = "EXPORT ALL", 1500); },
+      () => alert("clipboard blocked — use BACKUP instead"));
   });
   $("va-backup").addEventListener("click", () => {
     const a = document.createElement("a");
@@ -526,7 +529,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                           { type: "application/json" }));
     a.download = "vig_backup_" + new Date().toISOString().slice(0, 10) + ".json";
     a.click();
-    URL.revokeObjectURL(a.href);
+    // Safari aborts the download if the URL is revoked synchronously
+    setTimeout(() => URL.revokeObjectURL(a.href), 10000);
   });
   $("va-import").addEventListener("click", () => {
     const j = prompt("Paste your Vig desk JSON:");
@@ -619,7 +623,7 @@ def page_shell(title: str, generated_at: str, active: str, body: str,
 {tape_html}
 <div class="wrap">{body}</div>
 <footer><span class="muted">keys: <b>⌘K</b> any ticker or command ·
-<b>1–4</b> screens · <b>/</b> search · click a ticker for its security page ·
+<b>1–5</b> screens · <b>/</b> search · click a ticker for its security page ·
 click any column header to sort</span><br><br>
 Research tooling output — signals from backtested models with modest,
 documented edges (weekly IC ≈ 0.017; see RESEARCH_NOTES.md). Probabilities are
@@ -896,7 +900,7 @@ def _validation_line(label: str, validation: dict) -> str:
                 'horizon — treat picks as unproven</span>')
     tone = "pos" if v["ic_t"] > 2 else ("muted" if v["ic_t"] > 1 else "neg")
     return (f'walk-forward IC <b class="{tone}">{v["ic_mean"]:+.4f}</b> '
-            f'(t={v["ic_t"]:+.1f}, n={v["n_periods"]} non-overlapping periods) '
+            f'(t={v["ic_t"]:+.1f}, n={v["n_periods"]} periods) '
             f'— every horizon is a counted trial')
 
 

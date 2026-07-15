@@ -2,11 +2,14 @@
 
 Alerts fire only on CHANGES (gate flips, new data flags) — the daily
 top-trades notification already covers the routine. State is persisted in
-reports/state.json between runs; small run artifacts are git-committed so
-the ledger and briefs are versioned automatically.
+reports/state.json between runs. Small run artifacts are committed to the
+LOCAL git history (current branch, never pushed): that versions the ledger
+against accidental edits, not against disk loss — offsite backup is the
+MYVIG BACKUP button or your own push.
 """
 
 import json
+import math
 import subprocess
 from datetime import date
 
@@ -17,34 +20,53 @@ from quark import config
 STATE_PATH = config.REPORTS_DIR / "state.json"
 
 
+def _fmt_ic(v) -> str:
+    return f"{v:+.3f}" if isinstance(v, (int, float)) and math.isfinite(v) \
+        else "n/a"
+
+
 def _snapshot(result: dict) -> dict:
     h = result.get("health", {})
+    data_check = result.get("data_check", {})
     return {
         "date": str(date.today()),
         "model_status": h.get("model_status"),
         "ic_mean": h.get("ic_mean"),
-        "data_flags": sorted(result.get("data_check", {}).get("flagged", [])),
+        # None (not []) when cross-verification didn't run: "no information"
+        # must not read as "no flags", or flags would re-alert as new after
+        # every provider outage
+        "data_flags": (sorted(data_check.get("flagged", []))
+                       if data_check else None),
         "top": [f"{t['side']} {t['ticker']}" for t in result.get("trades", [])],
     }
 
 
 def diff_events(prev: dict, cur: dict) -> list[str]:
+    if not isinstance(prev, dict) or not prev:
+        return []  # first run or corrupt state: no baseline, no alerts
     events = []
     ps, cs = prev.get("model_status"), cur.get("model_status")
     if ps and cs and ps != cs:
-        sev = "⚠️" if cs in ("yellow", "red") else "✓"
+        sev = "✓" if cs == "green" else "⚠️"
         events.append(f"{sev} trust gate {ps} → {cs} "
-                      f"(26w IC {cur.get('ic_mean', float('nan')):+.3f})")
-    new_flags = set(cur.get("data_flags", [])) - set(prev.get("data_flags", []))
-    if new_flags:
-        events.append("⚠️ data cross-check flagged: " + ", ".join(sorted(new_flags)))
+                      f"(26w IC {_fmt_ic(cur.get('ic_mean'))})")
+    pf, cf = prev.get("data_flags"), cur.get("data_flags")
+    if pf is not None and cf is not None:
+        new_flags = set(cf) - set(pf)
+        if new_flags:
+            events.append("⚠️ data cross-check flagged: "
+                          + ", ".join(sorted(new_flags)))
     return events
 
 
 def notify(title: str, msg: str) -> None:
     try:
+        # escape for the AppleScript string literal: a stray quote in a
+        # ticker or detail string must not kill (or script) the notification
+        t = title.replace("\\", "\\\\").replace('"', '\\"')
+        m = msg.replace("\\", "\\\\").replace('"', '\\"')
         subprocess.run(["osascript", "-e",
-                        f'display notification "{msg}" with title "{title}"'],
+                        f'display notification "{m}" with title "{t}"'],
                        check=False, capture_output=True, timeout=10)
     except Exception:  # noqa: BLE001 — notifications are garnish
         pass
@@ -54,8 +76,9 @@ def run_alerts(result: dict) -> list[str]:
     prev = {}
     if STATE_PATH.exists():
         try:
-            prev = json.loads(STATE_PATH.read_text())
-        except json.JSONDecodeError:
+            loaded = json.loads(STATE_PATH.read_text())
+            prev = loaded if isinstance(loaded, dict) else {}
+        except (json.JSONDecodeError, OSError):
             prev = {}
     cur = _snapshot(result)
     events = diff_events(prev, cur)
@@ -71,7 +94,7 @@ def weekly_digest(result: dict) -> str | None:
         return None
     h = result.get("health", {})
     review = result.get("review", {})
-    trades = review.get("trades")
+    trades = review.get("trades") if isinstance(review, dict) else None
     lines = [f"# Vig — week ending {date.today().isoformat()}", ""]
     lines.append(f"**Trust gate:** {h.get('model_status', '?')} — "
                  f"{h.get('model_detail', '')}")
@@ -96,17 +119,30 @@ def weekly_digest(result: dict) -> str | None:
     return str(path)
 
 
+BACKUP_PATHS = ["reports/ledger", "reports/briefs", "reports/digests",
+                "reports/state.json", "reports/data_verification.csv"]
+
+
 def backup_state(root=None) -> None:
-    """Version the small run artifacts in git — the ledger IS the track
-    record; losing it would be losing the desk's memory."""
-    root = str(root or config.ROOT)
+    """Locally version the small run artifacts — the ledger IS the track
+    record; this protects it from accidental edits (offsite safety is the
+    user's push / MYVIG BACKUP, stated in the module doc)."""
+    from pathlib import Path
+    rootp = Path(root or config.ROOT)
     try:
-        subprocess.run(["git", "-C", root, "add",
-                        "reports/ledger", "reports/briefs", "reports/digests",
-                        "reports/state.json", "reports/data_verification.csv"],
-                       check=False, capture_output=True, timeout=30)
-        subprocess.run(["git", "-C", root, "commit", "-q",
-                        "-m", f"vig: daily state {date.today().isoformat()}"],
-                       check=False, capture_output=True, timeout=30)
+        # only paths that exist: `git add a b` (and `git commit -- a b`)
+        # abort staging/committing EVERYTHING if any pathspec is missing,
+        # and reports/digests doesn't exist until the first Sunday
+        present = [p for p in BACKUP_PATHS if (rootp / p).exists()]
+        for path in present:
+            subprocess.run(["git", "-C", str(rootp), "add", path],
+                           check=False, capture_output=True, timeout=30)
+        # commit ONLY these paths — a bare `git commit` would sweep whatever
+        # the user happens to have staged into the bot commit (audit-found)
+        if present:
+            subprocess.run(["git", "-C", str(rootp), "commit", "-q",
+                            "-m", f"vig: daily state {date.today().isoformat()}",
+                            "--"] + present,
+                           check=False, capture_output=True, timeout=30)
     except Exception:  # noqa: BLE001
         pass

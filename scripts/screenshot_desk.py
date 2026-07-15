@@ -20,6 +20,10 @@ def main() -> None:
     with sync_playwright() as p:
         browser = p.chromium.launch()
         for page_file, out_name, w, h in SHOTS:
+            if not (DASH / page_file).exists():
+                print(f"skip {page_file}: dashboard not generated yet "
+                      "(run scripts/update_dashboard.py first)")
+                continue
             pg = browser.new_page(viewport={"width": w, "height": h},
                                   device_scale_factor=2)
             pg.goto((DASH / page_file).as_uri())

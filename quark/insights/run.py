@@ -47,7 +47,9 @@ def run_daily(refresh: bool = True, news: bool = True, llm: bool = True) -> dict
             sample = eq_all[::15][:36]  # deterministic ~36-name sample
             probe = load_prices(tickers=sample, start="2025-01-01")
             rep = cross_verify(probe, sample)
-            rep.to_csv(config.REPORTS_DIR / "data_verification.csv", index=False)
+            if rep is not None and not rep.empty:
+                rep.to_csv(config.REPORTS_DIR / "data_verification.csv",
+                           index=False)
             data_check = verification_summary(rep)
             print(f"  {data_check.get('n_checked', 0)} checked, "
                   f"{data_check.get('n_flagged', 0)} flagged "

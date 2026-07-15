@@ -26,21 +26,24 @@ def main() -> None:
     print("Top trades: " + ", ".join(
         f"{t['side']} {t['ticker']} (p={t['prob']:.3f})" for t in result["trades"]))
 
-    # morning push, event alerts, Sunday digest, state backup
-    from quark.insights.alerts import (backup_state, notify, run_alerts,
-                                       weekly_digest)
+    # morning push, event alerts, Sunday digest, state backup — outputs are
+    # already written above; nothing here may fail the daily job
+    from quark.insights.alerts import (_fmt_ic, backup_state, notify,
+                                       run_alerts, weekly_digest)
     h = result.get("health", {})
     trades_line = " · ".join(f"{t['side']} {t['ticker']}"
                              for t in result["trades"])
     notify("Vig — desk is set",
            f"{trades_line} — edge {h.get('model_status', '?')}"
-           f" (26w IC {h.get('ic_mean', float('nan')):+.3f})")
-    events = run_alerts(result)
-    for e in events:
-        print("ALERT:", e)
-    digest = weekly_digest(result)
-    if digest:
-        print(f"Digest:    {digest}")
+           f" (26w IC {_fmt_ic(h.get('ic_mean'))})")
+    try:
+        for e in run_alerts(result):
+            print("ALERT:", e)
+        digest = weekly_digest(result)
+        if digest:
+            print(f"Digest:    {digest}")
+    except Exception as exc:  # noqa: BLE001
+        print(f"alerts/digest skipped: {exc}")
     backup_state()
 
 
