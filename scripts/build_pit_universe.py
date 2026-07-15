@@ -16,14 +16,24 @@ import sqlite3
 import pandas as pd
 
 from quark import config
-from quark.data.refresh import (get_sp500_changes, get_sp500_members,
-                                refresh_tickers)
+from quark.data.refresh import (get_sp500_changes, get_sp500_date_added,
+                                get_sp500_members, refresh_tickers)
 
 SNAP_START = "2005-01-31"
 
 
-def build_membership(current: set[str], changes: pd.DataFrame) -> pd.DataFrame:
-    """Month-end membership snapshots, newest -> oldest backward walk."""
+def build_membership(current: set[str], changes: pd.DataFrame,
+                     date_added: pd.Series | None = None) -> pd.DataFrame:
+    """Month-end membership snapshots, newest -> oldest backward walk.
+
+    Rename defense (audit-found): the walk is keyed on symbols, and a
+    corporate rename (FB->META) produces no add/remove rows under the
+    current symbol — the backward walk would therefore keep META "in the
+    index" back to 2005. For any CURRENT symbol the changes table never
+    touches, membership is clipped at that symbol's "Date added" from the
+    members table. Symbols with change events keep the walk's answer (it
+    correctly handles leave-and-rejoin histories the date column can't).
+    """
     month_ends = pd.date_range(SNAP_START, pd.Timestamp.today(), freq="ME")
     ch = changes.sort_values("date", ascending=False)
     members = set(current)
@@ -39,17 +49,33 @@ def build_membership(current: set[str], changes: pd.DataFrame) -> pd.DataFrame:
                 members.add(r["removed"])
             i += 1
         rows.extend((me, t) for t in sorted(members))
-    return pd.DataFrame(rows, columns=["month_end", "ticker"])
+    out = pd.DataFrame(rows, columns=["month_end", "ticker"])
+
+    if date_added is not None:
+        touched = (set(changes["added"].dropna())
+                   | set(changes["removed"].dropna()))
+        clip = date_added[~date_added.index.isin(touched)
+                          & date_added.notna()
+                          & date_added.index.isin(current)]
+        floor = out["ticker"].map(clip)
+        keep = floor.isna() | (out["month_end"] >= floor)
+        n_cut = int((~keep).sum())
+        n_names = out.loc[~keep, "ticker"].nunique()
+        print(f"Rename clip: removed {n_cut} pre-addition snapshot rows "
+              f"across {n_names} untouched current symbols")
+        out = out[keep].reset_index(drop=True)
+    return out
 
 
 def main() -> None:
     changes = get_sp500_changes()
     current = set(get_sp500_members()["ticker"])
+    date_added = get_sp500_date_added()
     print(f"{len(changes)} change events "
           f"({changes['date'].min().date()} → {changes['date'].max().date()}), "
           f"{len(current)} current members")
 
-    pit = build_membership(current, changes)
+    pit = build_membership(current, changes, date_added)
     out = config.REPORTS_DIR / "pit_membership.csv"
     pit.to_csv(out, index=False)
     n_names = pit["ticker"].nunique()

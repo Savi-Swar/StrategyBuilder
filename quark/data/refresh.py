@@ -119,6 +119,23 @@ def get_sp500_members() -> pd.DataFrame:
     return members
 
 
+def get_sp500_date_added() -> pd.Series:
+    """ticker -> date the CURRENT symbol was (last) added to the index, from
+    the members table's "Date added" column. This is the defense against
+    ticker renames: FB->META never shows up in the changes table under the
+    current symbol, so a backward walk keyed on current symbols would keep
+    META "in the index" back to 2005 (caught by audit). The column reflects
+    the latest addition, so a leave-and-rejoin name loses its earlier stint
+    — over-conservative, stated in RESEARCH_NOTES."""
+    req = urllib.request.Request(WIKI_SP500, headers={"User-Agent": UA})
+    with urllib.request.urlopen(req) as resp:
+        html = resp.read().decode("utf-8")
+    t = pd.read_html(io.StringIO(html))[0]
+    tickers = t["Symbol"].str.replace(".", "-", regex=False)
+    dates = pd.to_datetime(t["Date added"], errors="coerce")
+    return pd.Series(dates.values, index=tickers)
+
+
 def get_sp500_changes() -> pd.DataFrame:
     """Historical index add/remove events from Wikipedia's changes table.
 

@@ -72,6 +72,46 @@ def _decile_weights(preds_row: pd.Series, top_frac: float) -> pd.Series:
     return w
 
 
+def apply_membership(elig: pd.DataFrame, membership: pd.DataFrame) -> pd.DataFrame:
+    """AND point-in-time membership snapshots into eligibility.
+
+    Snapshots may sit on non-trading dates (calendar month-ends — ~2/7 land
+    on weekends). Reindexing straight to trading days would DROP those rows
+    and ffill across them, leaving membership stale by an extra month; align
+    on the union of both calendars first so every snapshot governs the
+    trading days that follow it. Before the first snapshot: not a member.
+    """
+    m = membership.astype(float)
+    m = m.reindex(m.index.union(elig.index)).ffill()
+    return elig & (m.reindex(index=elig.index, columns=elig.columns)
+                   .fillna(0.0).astype(bool))
+
+
+def hysteresis_weights(predictions: pd.DataFrame, exit_gap: float) -> pd.DataFrame:
+    """No-trade-band book: ENTER in the extreme decile (same boundary as
+    `_decile_weights`), EXIT only once the name's cross-sectional rank has
+    decayed past `exit_gap` (or it leaves the prediction universe). Sides
+    stay equal-weighted at ±50% gross, so only the churn rule differs from
+    weekly re-formation."""
+    longs: set = set()
+    shorts: set = set()
+    rows = {}
+    for dt, row in predictions.iterrows():
+        pct = row.rank(pct=True).dropna()
+        longs = {t for t in longs
+                 if t in pct.index and pct[t] > 0.90 - exit_gap}
+        shorts = {t for t in shorts
+                  if t in pct.index and pct[t] <= 0.10 + exit_gap}
+        longs |= set(pct.index[pct > 0.90])
+        shorts |= set(pct.index[pct <= 0.10])
+        w = pd.Series(0.0, index=predictions.columns)
+        if longs and shorts:
+            w[list(longs)] = 0.5 / len(longs)
+            w[list(shorts)] = -0.5 / len(shorts)
+        rows[dt] = w
+    return pd.DataFrame(rows).T
+
+
 def run_xsec_strategy(
     prices: pd.DataFrame,
     volumes: pd.DataFrame,
@@ -98,11 +138,7 @@ def run_xsec_strategy(
     rebal = rebalance_dates(prices.index)[::rebal_every]
     elig = eligibility(prices, volumes)
     if membership is not None:
-        # point-in-time index membership (e.g. month-end snapshots ffilled
-        # to daily): a name is only tradable while actually in the index
-        elig &= (membership.astype(float)
-                 .reindex(index=elig.index, columns=elig.columns)
-                 .ffill().fillna(0.0).astype(bool))
+        elig = apply_membership(elig, membership)
 
     ys = label.stack().rename("y")
     ys.index.names = ["date", "ticker"]
