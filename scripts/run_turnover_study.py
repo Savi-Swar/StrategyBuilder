@@ -25,32 +25,10 @@ from quark.backtest.metrics import summary_stats
 from quark.data.loader import compute_returns, load_prices
 from quark.data.quality import clean_panel, quality_report
 from quark.data.refresh import load_sp500_tickers
-from quark.ml.xsec import run_xsec_strategy
+from quark.ml.xsec import hysteresis_weights, run_xsec_strategy
 from quark.universe import EQUITY_COST_BPS
 
 EXIT_GAPS = [0.15, 0.20, 0.30]  # pre-registered; do not add post hoc
-
-
-def band_weights(predictions: pd.DataFrame, exit_gap: float) -> pd.DataFrame:
-    """Hysteresis book: enter in the extreme decile, hold until rank decays
-    past the gap (or the name leaves the prediction universe)."""
-    longs: set = set()
-    shorts: set = set()
-    rows = {}
-    for dt, row in predictions.iterrows():
-        pct = row.rank(pct=True).dropna()
-        longs = {t for t in longs
-                 if t in pct.index and pct[t] > 0.90 - exit_gap}
-        shorts = {t for t in shorts
-                  if t in pct.index and pct[t] <= 0.10 + exit_gap}
-        longs |= set(pct.index[pct > 0.90])
-        shorts |= set(pct.index[pct <= 0.10])
-        w = pd.Series(0.0, index=predictions.columns)
-        if longs and shorts:
-            w[list(longs)] = 0.5 / len(longs)
-            w[list(shorts)] = -0.5 / len(shorts)
-        rows[dt] = w
-    return pd.DataFrame(rows).T
 
 
 def main() -> None:
@@ -70,10 +48,15 @@ def main() -> None:
         daily = (weights_rebal.reindex(prices.index).ffill(limit=7)
                  .fillna(0.0))
         bt = run_weights_backtest(daily, returns, cost_bps=EQUITY_COST_BPS)
-        r = bt.portfolio[bt.portfolio.index >= oos_start]
+        oos = bt.portfolio.index >= oos_start
+        r = bt.portfolio[oos]
         s = summary_stats(r)
-        s["ann_turnover"] = bt.stats["ann_turnover"]
-        s["cost_drag_ann"] = bt.stats["cost_drag_ann"]
+        # annualize turnover/costs over the OOS window the strategy actually
+        # trades in — engine stats span the full panel (2005+), diluting
+        # both by ~1.48x (audit-found)
+        n_years = int(oos.sum()) / config.ANN_FACTOR
+        s["ann_turnover"] = float(bt.turnover[oos].sum() / n_years)
+        s["cost_drag_ann"] = float(bt.costs.sum(axis=1)[oos].sum() / n_years)
         s["avg_names_held"] = float(
             (weights_rebal != 0).sum(axis=1).mean())
         print(f"  {name:<22} sharpe {s['sharpe']:+.2f}  "
@@ -88,7 +71,7 @@ def main() -> None:
                          lambda r: _base_weights(r), axis=1))]
     for gap in EXIT_GAPS:
         rows.append(evaluate(f"band_exit_{int(gap * 100)}",
-                             band_weights(res.predictions, gap)))
+                             hysteresis_weights(res.predictions, gap)))
 
     table = pd.DataFrame(rows)
     out = config.REPORTS_DIR / "turnover_study.csv"

@@ -57,8 +57,14 @@ def main() -> None:
             "shuffled_control": summary_stats(shuf_r),
         }
     ).T
-    table["ann_turnover"] = [bt.stats["ann_turnover"], bt_m.stats["ann_turnover"],
-                             bt_shuf.stats["ann_turnover"]]
+    # annualize turnover over the OOS window (engine stats span the full
+    # panel, where weights are zero pre-2012 — diluting by ~1.48x)
+    def _oos_turnover(b):
+        m = b.portfolio.index.isin(oos)
+        return float(b.turnover[m].sum() / (m.sum() / config.ANN_FACTOR))
+
+    table["ann_turnover"] = [_oos_turnover(bt), _oos_turnover(bt_m),
+                             _oos_turnover(bt_shuf)]
 
     config.REPORTS_DIR.mkdir(exist_ok=True)
     res.fold_stats.to_csv(config.REPORTS_DIR / "xsec_fold_stats.csv", index=False)
