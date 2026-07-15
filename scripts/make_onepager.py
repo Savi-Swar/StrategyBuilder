@@ -45,18 +45,19 @@ def main() -> None:
     if band_path.exists():
         band = pd.read_csv(band_path, index_col=0)
     band_line = ""
-    if band is not None and "band_exit_30" in band.index:
-        band_line = ("\na pre-registered no-trade band (hold until rank "
-                     "decays 0.30) lifts it to "
-                     f"{band.loc['band_exit_30', 'sharpe']:.2f} at half the "
-                     "cost drag.")
+    if band is not None and len(band) >= 4:
+        gaps = band[band.index.str.startswith("band_exit")]["sharpe"]
+        band_line = ("\nno-trade bands lift it to "
+                     f"{gaps.min():.2f}–{gaps.max():.2f}, monotone across "
+                     "the three registered exit gaps, at ~half the cost "
+                     "drag.")
     fig.text(0.09, 0.888,
              "A gradient-boosted cross-sectional model over ~500 S&P 500 "
              "stocks predicts next-week relative\nreturns: weekly rank IC = "
-             f"{ic.mean():+.4f} (t = {ic_t:.2f}, n = {len(ic)} "
-             "non-overlapping weeks), near-monotonic decile\nspread. "
-             "Economics are thin after costs — the honest headline is "
-             "predictive power, not easy money:\nnet Sharpe "
+             f"{ic.mean():+.4f} (t = {ic_t:.2f}, n = {len(ic)} weekly obs; "
+             "lag-1 autocorr ≈ 0, Newey–West t identical),\nnear-monotonic "
+             "decile spread. Economics are thin after costs — the honest "
+             "headline is predictive\npower, not easy money: net Sharpe "
              f"{xsec.loc['ls_weekly_h5_net', 'sharpe']:.2f} weekly, "
              f"{xsec.loc['ls_monthly_h21_net', 'sharpe']:.2f} monthly;"
              f"{band_line}\nControls: shuffled-label AUC 0.500 / IC ≈ 0; "
@@ -96,20 +97,30 @@ def main() -> None:
         for s in ("left", "bottom"):
             ax.spines[s].set_color(DIM)
 
-    # Honest failures + method table. Benchmarks are not strategy trials —
-    # exclude them before naming the best classic variant.
-    strat = base[~base.index.str.contains("buy_hold|GSPC|_lag2|_with_stocks")]
-    best = strat["sharpe"].idxmax()
+    # Honest failures. Every number below is read from a committed artifact
+    # (baselines_meta.json, ml_fold_stats.csv, ml_results.csv, pit_study.csv)
+    # — hand-transcription is how PDFs drift from the repo.
+    import json
+    meta = json.loads((R / "baselines_meta.json").read_text())
+    ml_auc = pd.read_csv(R / "ml_fold_stats.csv")["auc"].mean()
+    ml_sharpe = pd.read_csv(R / "ml_results.csv", index_col=0).loc["ml_oos",
+                                                                   "sharpe"]
+    pit = pd.read_csv(R / "pit_study.csv", index_col=0)
+    cur, pt = pit.loc["current_members"], pit.loc["pit_bestEffort"]
+    pit_t = pt["ic_t"]
+    spread_cut = 1 - pt["spread_bps"] / cur["spread_bps"]
     fig.text(0.09, 0.285, "What failed, reported anyway", size=11,
              weight="bold", color=INK)
     fig.text(0.09, 0.262,
-             f"Classic indicators (8 counted variants): best = {best}, "
-             "Deflated Sharpe Ratio 0.19 — the best of 8\ncoin flips. Daily "
-             "ML timing on 43 multi-asset instruments: AUC 0.518 does not "
-             "clear costs\n(net Sharpe −0.44, DSR ≈ 0). Survivorship bias "
-             "measured, not just disclaimed: a point-in-time rerun\nkeeps "
-             "the signal (IC +0.0124, t = 2.35) but halves the decile "
-             "spread — shipped numbers are upper bounds.",
+             f"Classic indicators ({meta['n_trials']} counted variants): "
+             f"best = {meta['best']}, Deflated Sharpe Ratio "
+             f"{meta['dsr']:.2f} — the best\nof {meta['n_trials']} coin "
+             "flips. Daily ML timing on 78 multi-asset instruments: AUC "
+             f"{ml_auc:.3f} does not clear costs\n(net Sharpe "
+             f"{ml_sharpe:.2f}, DSR ≈ 0). Survivorship bias measured, not "
+             "just disclaimed: a point-in-time rerun keeps\nthe signal (IC "
+             f"{pt['ic_mean']:+.4f}, t = {pit_t:.2f}) but cuts the decile "
+             f"spread {spread_cut:.0%} — shipped numbers are upper bounds.",
              size=8.5, color=INK, va="top", linespacing=1.6)
 
     fig.text(0.09, 0.160, "Why the numbers can be trusted", size=11,
@@ -123,7 +134,7 @@ def main() -> None:
                   "a missing cost rate raises, never defaults to free"),
         ("Selection", "every variant in a counted registry; best-of-family "
                       "Sharpe deflated (Bailey & López de Prado DSR)"),
-        ("Verification", "64 unit tests on synthetic fixtures; independent "
+        ("Verification", "68 unit tests on synthetic fixtures; independent "
                          "cross-source price verification in the daily job"),
     ]
     y = 0.138

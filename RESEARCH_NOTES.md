@@ -31,21 +31,27 @@ that could have been a degree of freedom is written down.
 
 ## Study 1 — multi-asset time series
 
+(Numbers below updated 2026-07-15 to the committed post-audit artifacts —
+the original 43-instrument run was superseded when the universe grew to 82
+instruments (78 headline after excluding the 4 hindsight-picked mega-caps)
+and the cross-gap returns fix landed; earlier vintages of this section
+quoted tsmom_252/DSR 0.29/AUC 0.513/Sharpe −0.71 from the smaller universe.)
+
 - 8 classic variants registered (3 tsmom lookbacks, 2 MA crosses, RSI
   reversion, MACD, Bollinger reversion). **Net of costs, none survive**:
-  best is tsmom_252 (net CAGR ~1%, Sharpe 0.37 on the 2012+ window), and its
-  **DSR is 0.29 with N=8 trials** — consistent with selecting the luckiest of
-  8 skill-less variants. The 2004–2011 in-sample-free period doesn't rescue
-  it either.
-- Turnover of vol-targeted tsmom (~11x gross/yr) is dominated by daily vol
-  rescaling, not signal flips. Position buffering would cut it — future work,
-  noted not implemented.
-- **ML timing model: honest failure.** Pooled HGB classifier, 17 features,
-  purged walk-forward, 15 annual folds: mean AUC 0.513 (best fold 2020 at
-  0.556 — vol-regime predictability, interesting), shuffled control 0.503.
-  After causal signal calibration and costs: net Sharpe −0.71, DSR ≈ 0.
-  Conclusion: daily-horizon timing with standard price features does not
-  clear ~2–10 bps costs on this universe. We report it and move on.
+  best is ma_cross_50_200 (net Sharpe 0.13 on the full window), and its
+  **DSR is 0.193 with N=8 trials** — consistent with selecting the luckiest
+  of 8 skill-less variants (reports/baselines.csv).
+- Turnover of vol-targeted tsmom (~29x gross/yr per-instrument sum) is
+  dominated by daily vol rescaling, not signal flips. Position buffering
+  would cut it — future work, noted not implemented.
+- **ML timing model: honest failure.** Pooled HGB classifier, purged
+  walk-forward, annual folds: mean AUC 0.518, shuffled control ≈ 0.5.
+  After causal signal calibration and costs: net Sharpe −0.44 on the
+  model's own OOS window (−0.455 in the common-window comparison table —
+  same failure, two windows), DSR ≈ 0. Conclusion: daily-horizon timing
+  with standard price features does not clear ~2–10 bps costs on this
+  universe. We report it and move on.
 - Design decision: classifier probabilities cluster near 0.5, so raw 2p−1
   signals run far below the vol target while paying full turnover. Fixed by
   dividing each instrument's forecast by its *trailing* forecast std
@@ -64,11 +70,14 @@ that could have been a degree of freedom is written down.
   model predicts winners-vs-losers, not the market).
 - **Trial accounting: exactly 2 configs run, both reported.**
   (h=5, weekly) was pre-declared primary; (h=21, monthly) secondary.
-- Results: weekly IC 0.0165 (t=3.22, n=756) — genuine cross-sectional
+- Results (committed artifacts, post-returns-fix): weekly IC 0.0172
+  (t=3.35, n=756 weekly obs; ~18% of adjacent forward windows overlap 1–2
+  days on holiday weeks, but the IC series' lag-1 autocorrelation is −0.002
+  so the Newey–West t is identical at 3.35) — genuine cross-sectional
   predictability. Decile spread near-monotonic, ~16 bps/week top-vs-bottom
-  gross. Net economics modest: Sharpe 0.05 weekly (turnover eats the edge at
-  5 bps/side), 0.26 monthly. Shuffled control clean (AUC 0.498, IC −0.004,
-  Sharpe −1.5 = pure costs).
+  gross. Net economics modest: Sharpe 0.04 weekly (turnover eats the edge
+  at 5 bps/side), 0.26 monthly. Shuffled control clean (AUC ≈ 0.5, IC ≈ 0,
+  negative net Sharpe = pure costs).
 - The spread is **long-side driven**: bottom deciles do not underperform the
   middle. Consistent with the post-2010 literature — shorting large caps on
   price signals doesn't pay.
@@ -150,7 +159,7 @@ Found and fixed (all with regression tests):
 
 ## Turnover study — no-trade bands (2026-07-15)
 
-Turnover was the binding constraint on Study 2 (45.8x/yr, 229 bps/yr cost
+Turnover was the binding constraint on Study 2 (67.9x/yr, 340 bps/yr cost
 drag at weekly re-formation). Hysteresis variants: ENTER unchanged (extreme
 decile), EXIT only once the name's rank decays past a gap. **Trial
 accounting: 3 exit gaps (0.15 / 0.20 / 0.30) pre-registered before results;
@@ -161,17 +170,25 @@ rule, not refit noise. Script: `scripts/run_turnover_study.py` →
 
 | variant | net Sharpe | ann turnover | cost drag | avg names |
 |---|---|---|---|---|
-| weekly re-formation (base) | 0.04 | 45.8x | 229 bps/yr | 93 |
-| band, exit gap 0.15 | 0.13 | 31.7x | 159 bps/yr | 124 |
-| band, exit gap 0.20 | 0.17 | 28.6x | 143 bps/yr | 134 |
-| band, exit gap 0.30 | 0.18 | 23.3x | 117 bps/yr | 157 |
+| weekly re-formation (base) | 0.04 | 67.9x | 340 bps/yr | 93 |
+| band, exit gap 0.15 | 0.13 | 47.1x | 236 bps/yr | 124 |
+| band, exit gap 0.20 | 0.17 | 42.5x | 212 bps/yr | 134 |
+| band, exit gap 0.30 | 0.18 | 34.6x | 173 bps/yr | 157 |
+
+(Turnover/cost figures are annualized over the OOS window the strategy
+actually trades in — an earlier vintage divided by the full 2005+ panel
+length, understating both by ~1.48x; audit-found, fixed.)
 
 Read: monotone improvement with band width — cost saved exceeds signal
 staleness cost throughout the registered range, and max drawdown falls too
 (−23% → −18%). The widest band converges toward the monthly-rebalance result
 (Sharpe 0.26) by a different mechanism (hold longer vs trade less often).
-Honest caveat: still thin economics on a survivorship-biased universe; this
-is a turnover result, not an alpha result.
+Honest caveats: (1) still thin economics on a survivorship-biased universe —
+a turnover result, not an alpha result; (2) the registration is not
+git-verifiable — the gap list and the results entered the repo in the same
+commit, so it rests on the author's word; treat the MONOTONE PATTERN across
+all three gaps (0.13 / 0.17 / 0.18), not the best single number, as the
+evidence. Quoting only the 0.18 would be selecting the max of 3 trials.
 
 ## Point-in-time universe — best-effort reconstruction (2026-07-15)
 
@@ -183,12 +200,37 @@ names). Two stated gaps, direction of bias known:
 1. Wikipedia's table is titled *"Selected changes"* — near-complete
    recently, sparser before ~2010 (407 events since 1976 vs a true rate of
    ~25/yr). Missing events leave the backward walk wrong for those names.
+   Cross-check: after the rename clip (gap 3 below), reconstructed
+   membership counts sit in [452, 504] — the early-year shortfall (~454 in
+   2005 vs the true ~500) is renamed members' earlier stints lost under old
+   symbols. Under-inclusion is the SAFE direction: a missing true member
+   shrinks the panel; a falsely-included survivor (the pre-clip failure
+   mode, e.g. META "in the index" 2005) manufactures survivorship alpha.
 2. Yahoo drops most delisted tickers: recovery of ever-member names absent
    from the DB was **153/342 (45%)** (`reports/pit_recovery_report.csv`).
    The unrecovered 189 skew toward the worst outcomes (bankruptcy,
    distressed acquisition) — exactly the names survivorship bias deletes —
    so even the PIT run remains optimistic. It bounds the bias; it does not
    eliminate it.
+3. Ticker renames (audit-found): the changes table records events under
+   historical symbols, so a rename like FB→META produces no event under the
+   current symbol and the backward walk kept META "in the index" back to
+   2005 — a survivor eligible before it existed. Defense: any current
+   symbol the changes table never touches is clipped at its "Date added"
+   from the members table. Cost of the defense: a leave-and-rejoin name
+   with no recorded events loses its earlier stint (over-conservative).
+   Ticker reuse across different companies (e.g. CEG 2005/2022) is
+   self-limiting — the old company has no Yahoo data, so it can't become
+   eligible.
+4. Engine delisting convention: a held name whose price series ends earns
+   exactly zero afterward and pays a normal exit cost at the next
+   rebalance. Real delistings pay the terminal move (often ≈−100% for
+   longs, a gain for shorts). This adds optimism to the PIT run on top of
+   the recovery gap; both push the same direction — the measured bias is a
+   floor.
+5. Month-end snapshot granularity: a name removed on the 3rd stays
+   "a member" until the next month-end (and additions enter late). Removals
+   correlate with distress, so this too is mildly optimistic.
 
 Comparison run (`scripts/run_pit_study.py`, identical pipeline, membership
 mask ANDed into eligibility; results in `reports/pit_study.csv`):
@@ -196,11 +238,16 @@ mask ANDed into eligibility; results in `reports/pit_study.csv`):
 | | IC | IC t | D10−D1 gross | net Sharpe (weekly) | names/wk |
 |---|---|---|---|---|---|
 | current members (shipped) | +0.0164 | 3.19 | 16 bps | +0.04 | 471 |
-| point-in-time (best-effort) | +0.0124 | 2.35 | 9 bps | −0.17 | 439 |
+| point-in-time (best-effort) | +0.0127 | 2.38 | 10 bps | −0.19 | 438 |
+
+(Vintage note: the current-members baseline here — IC +0.0164, t=3.19,
+n=757 — differs slightly from the headline +0.0172/t=3.35/n=756 because the
+DB gained a week of data between runs; same code, same config. Deltas
+between rows of the same run are the meaningful comparison.)
 
 **Read: the signal survives point-in-time treatment — the bias does not.**
-Cross-sectional predictability remains statistically real (t=2.35 on 757
-non-overlapping weeks) but ~25% weaker, the decile spread roughly halves,
+Cross-sectional predictability remains statistically real (t=2.38 on 757
+weeks) but ~23% weaker, the decile spread drops ~40%,
 and the weekly-rebalance net economics go negative: survivorship was
 carrying them. The honest claim after this study is "genuine but modest
 cross-sectional predictive power; net profitability requires the turnover

@@ -60,6 +60,12 @@ def main() -> None:
     config.REPORTS_DIR.mkdir(exist_ok=True)
     table.to_csv(config.REPORTS_DIR / "baselines.csv")
     pd.concat(daily, axis=1).to_csv(config.REPORTS_DIR / "baseline_daily_returns.csv")
+    # persist the DSR verdict so downstream docs (one-pager) read a committed
+    # artifact instead of a hand-transcribed number
+    import json
+    (config.REPORTS_DIR / "baselines_meta.json").write_text(json.dumps(
+        {"best": best, "dsr": round(float(dsr["dsr"]), 4),
+         "n_trials": int(dsr["n_trials"])}))
 
     with pd.option_context("display.width", 160, "display.float_format", "{:.3f}".format):
         print("\n=== Classic baselines, net of costs (headline universe) ===")
