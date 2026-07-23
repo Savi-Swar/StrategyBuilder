@@ -1,14 +1,17 @@
-# Quark — systematic trading research, done honestly
+# Quark
 
-One question: **after you remove every standard source of backtest inflation,
-what is actually left?**
+I wanted to know how much of a good backtest survives once you remove the
+usual sources of inflation. The answer, for me, was about 70 registered
+experiments and 15 dead strategies, including the one I liked most. One
+strategy made it through everything: ranking 77 futures, FX and crypto
+instruments against each other, 0.85 walk-forward Sharpe, positive in 12 of
+15 years.
 
-~70 registered experiments. 15 strategies killed by their own tests, including
-the flagship. One survivor (cross-asset relative value, 0.85 walk-forward
-Sharpe). Every number net of costs, out of sample, with the trial count
-attached. The full decision log is in [RESEARCH_NOTES.md](RESEARCH_NOTES.md);
-the distilled findings in [KNOWLEDGE_BASE.md](KNOWLEDGE_BASE.md); the story in
-[RESEARCH_STORY.md](RESEARCH_STORY.md).
+All results are net of costs and out of sample, and each comes with its
+trial count. The full decision log is in
+[RESEARCH_NOTES.md](RESEARCH_NOTES.md). Findings are condensed in
+[KNOWLEDGE_BASE.md](KNOWLEDGE_BASE.md), and
+[RESEARCH_STORY.md](RESEARCH_STORY.md) tells it start to finish.
 
 The research ships as **Vig**, a self-grading personal terminal (below) —
 five screens of serverless HTML regenerated every morning by a scheduled job,
@@ -47,32 +50,36 @@ below — signals ship with their evidence.
 
 ## The July 2026 campaign
 
-Three days, ~70 registered trials, 11 cited literature reviews
-(`reports/deep_research_*.md`). What happened, in order:
+Three days of concentrated work, logged trial by trial in
+RESEARCH_NOTES.md, with 11 cited literature reviews under
+`reports/deep_research_*.md`.
 
-- The flagship's edge was traced to its source. Point-in-time membership cut
-  it; walk-forward config selection (choose the config on trailing data only,
-  measure forward) cut the rest: **0.28 in-sample became 0.05 honest**. The
-  signal is statistically real (IC t≈2.2–2.4). The money is not.
-- New data built from primary sources — EDGAR fundamentals, Form-4 insider
-  filings, overnight/intraday decomposition — pushed composite IC to
-  **t=3.9** on a 5,594-name panel. Large-cap economics stayed thin anyway.
-- The survivor: rank 77 instruments across 7 asset classes against each
-  other. **Walk-forward net Sharpe 0.85**, shuffled-label control clean,
-  12/15 years positive.
-- Prediction markets: a 55-trial betting backtest killed favorite-longshot
-  harvesting (frozen config scored *below* the efficient-market Monte-Carlo
-  null, percentile 2.4). Own calibration study of 3,341 resolved markets
-  found the 2026 bias runs backwards (slope 0.87) — and the reverse trade
-  also loses net of spreads (−21.7%/bet, t=−4.6). Both directions die to
-  the toll. The only structural winner is the market maker.
-- A live paper operation now runs the three mechanisms that can't be
-  backtested: order-book arbitrage detection every 30 minutes, maker
-  adverse-selection simulation, and position tracking of the top 30 wallets
-  (public on-chain). Verdicts land on their own schedule.
+I traced my flagship signal's edge to its source. Rebuilding the index
+membership point-in-time removed part of it. Then I added a harder test:
+choose the strategy configuration using trailing data only, the way you
+would have to in practice, and measure forward. In-sample Sharpe of 0.28
+came out at 0.05. The signal itself is statistically real, with an IC
+t-stat around 2.2 to 2.4. It just doesn't pay.
 
-Rule of the house: kill everything that deserves to die, size what survives
-as if the estimate is wrong.
+Building new features from primary sources (EDGAR fundamentals, Form 4
+insider filings, overnight vs intraday returns) raised the composite IC to
+t=3.9 on a 5,594-name panel. Still didn't pay in large caps.
+
+Prediction markets got the same treatment. A 55-trial betting backtest
+killed favorite-longshot harvesting; the frozen configuration scored below
+an efficient-market Monte Carlo null, at the 2.4th percentile. I then
+measured calibration directly on 3,341 resolved Polymarket markets and
+found the 2026 bias pointing the opposite way from the 2021-25 literature
+(slope 0.87). The reverse trade loses too, minus 21.7% per bet after
+spreads. Whichever direction you bet, the spread is wider than the
+mispricing. The market maker is the only participant who nets positive,
+so a live paper operation now tests that side: an arbitrage detector
+running against real order books every 30 minutes, a maker simulation that
+tracks adverse selection, and a tracker following the public on-chain
+positions of the top 30 wallets.
+
+House rule: if a strategy can be killed by its own tests, kill it, and
+size whatever survives as if the estimate is wrong.
 
 ## Headline results (all out-of-sample 2012+, all net of costs)
 
