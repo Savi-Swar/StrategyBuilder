@@ -1,8 +1,14 @@
 # Quark — systematic trading research, done honestly
 
-Two research studies on a shared, unit-tested backtest engine, built to answer
-one question: **after you remove every standard source of backtest inflation,
+One question: **after you remove every standard source of backtest inflation,
 what is actually left?**
+
+~70 registered experiments. 15 strategies killed by their own tests, including
+the flagship. One survivor (cross-asset relative value, 0.85 walk-forward
+Sharpe). Every number net of costs, out of sample, with the trial count
+attached. The full decision log is in [RESEARCH_NOTES.md](RESEARCH_NOTES.md);
+the distilled findings in [KNOWLEDGE_BASE.md](KNOWLEDGE_BASE.md); the story in
+[RESEARCH_STORY.md](RESEARCH_STORY.md).
 
 The research ships as **Vig**, a self-grading personal terminal (below) —
 five screens of serverless HTML regenerated every morning by a scheduled job,
@@ -39,40 +45,34 @@ below — signals ship with their evidence.
   stocks ranked weekly by a gradient-boosted model; dollar-neutral extreme
   deciles, net of costs, purged walk-forward.
 
-## 2026-07 campaign — the honest search widened
+## The July 2026 campaign
 
-A two-day research push (logged in full in [RESEARCH_NOTES.md](RESEARCH_NOTES.md);
-~50 registered trials, ten adversarially-verified literature reviews) chased the
-flagship's near-zero net edge to its source and kept only what survived a
-walk-forward *config-selection* gate — the harshest test in the repo.
+Three days, ~70 registered trials, 11 cited literature reviews
+(`reports/deep_research_*.md`). What happened, in order:
 
-- **Cost-aware construction (Garleanu-Pedersen partial rebalancing)** lifted the
-  weekly book, but a point-in-time membership rerun showed most of the gain was
-  survivorship: honest S&P net Sharpe plateaued ~0.1–0.28 *in-sample-selected*,
-  and **collapsed to ~0.05 under walk-forward config selection** — the flagship's
-  economic edge is not distinguishable from zero at honest selection, though the
-  IC (t≈2.2–2.4) is real. Stated plainly rather than buried.
-- **New free data families** (EDGAR fundamentals + Form-4 insider flow + overnight/
-  intraday decomposition) raised composite IC to **t=3.9** on a 5,594-name broad
-  panel — the strongest statistic in the repo — but large-cap economics stayed thin.
-- **The survivor: a cross-sectional book across 77 instruments and 7 asset classes**
-  (the Study-1 universe traded *relative-value* instead of time-series) —
-  **walk-forward net Sharpe 0.85**, shuffled-control clean, 12/15 years positive,
-  ~+0.08 correlated to the equity book. The edge was never in the most-arbitraged
-  pond; it was in cross-asset relative value at a scale institutions under-fish.
-- **A forward storm detector** (learns the pre-move state from price texture alone):
-  out-of-sample AUC 0.76, 2.6× top-decile lift, positive 11/11 years. The learned
-  "calm before the storm" is *exhaustion* — crashed-and-stabilised high-vol names —
-  not serenity.
-- **Ten cited literature reviews** (`reports/deep_research_*.md`): net-of-cost
-  construction, the factor zoo's large-cap decay, the working mathematics
-  (fundamental law, fractional Kelly), market history, the engineering body, risk
-  & game theory, the masters of niche-edge extraction, and prediction-market
-  microstructure. Sizing doctrine adopted from Benter/Thorp: shrink the edge, then
-  ~1/5-Kelly.
+- The flagship's edge was traced to its source. Point-in-time membership cut
+  it; walk-forward config selection (choose the config on trailing data only,
+  measure forward) cut the rest: **0.28 in-sample became 0.05 honest**. The
+  signal is statistically real (IC t≈2.2–2.4). The money is not.
+- New data built from primary sources — EDGAR fundamentals, Form-4 insider
+  filings, overnight/intraday decomposition — pushed composite IC to
+  **t=3.9** on a 5,594-name panel. Large-cap economics stayed thin anyway.
+- The survivor: rank 77 instruments across 7 asset classes against each
+  other. **Walk-forward net Sharpe 0.85**, shuffled-label control clean,
+  12/15 years positive.
+- Prediction markets: a 55-trial betting backtest killed favorite-longshot
+  harvesting (frozen config scored *below* the efficient-market Monte-Carlo
+  null, percentile 2.4). Own calibration study of 3,341 resolved markets
+  found the 2026 bias runs backwards (slope 0.87) — and the reverse trade
+  also loses net of spreads (−21.7%/bet, t=−4.6). Both directions die to
+  the toll. The only structural winner is the market maker.
+- A live paper operation now runs the three mechanisms that can't be
+  backtested: order-book arbitrage detection every 30 minutes, maker
+  adverse-selection simulation, and position tracking of the top 30 wallets
+  (public on-chain). Verdicts land on their own schedule.
 
-The through-line is unchanged: **kill everything that deserves to die, size what
-survives as if the estimate is wrong.**
+Rule of the house: kill everything that deserves to die, size what survives
+as if the estimate is wrong.
 
 ## Headline results (all out-of-sample 2012+, all net of costs)
 
