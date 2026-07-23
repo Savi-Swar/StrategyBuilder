@@ -739,3 +739,49 @@ tradability requires the full return distribution net of costs/borrow in
 exactly the universe where costs bite hardest. Next gate before any use:
 expected-return study of top-decile states. Detector saved as screening
 instrument: scripts/run_storm_detector.py.
+
+## 2026-07-24 — Polymarket betting backtest: 50-variant campaign — FAMILY FALSIFIED
+
+Framework: Jan-Feb steering (4 configs), Mar-Jul scored. Frozen v7 vault
+run first: **−$2,111 on 181 bets, MC percentile 2.4%** — significantly
+WORSE than the efficient-market null. Then (vault reopened as development,
+honestly labeled) 50-variant sweep across stretch-strength k, thresholds,
+category sets, horizons, cluster modes. RESULTS: best of 50 = +$50 (zero,
+after 50 looks); median −$1,750. MARGINALS (the real deliverable):
+- FLB stretch k: monotone WORSE with strength (−0.5→+$16, 1.5→−$2,302);
+  every positive-k cell significantly below null (MC 0.03-0.17). **The
+  published FLB (2021-25 window) does not exist as a harvestable edge in
+  our Mar-Jul 2026 tail markets — consistent with the documented 2026
+  institutional entry (SIG/DRW/Wintermute) compressing exactly this bias,
+  and with our own KB warning ("FLB frequently does not survive costs").**
+- Politics = the poison category (adding it: −$1,426 median); "other"
+  worse (−$3,032). geo+tech alone ≈ null (−$146).
+- **Cluster caps robustly save money in EVERY configuration** (none
+  −$2,693 → theme −$590): risk rails are permanent doctrine, confirmed.
+- CLV was negative-to-flat from January — the gold-standard metric called
+  the verdict months before P&L did. Believe CLV over P&L, always.
+NOT TESTED by this sweep (still-live hypotheses for live-forward paper):
+the telegraph/slope signal (momentum in probability space — our own
+discovered pattern, absent from this static-entry sweep), pure arbitrage
+(monitor logs 9-10 live mispricings/snapshot), maker/LP-reward quoting,
+whale-following (collector accruing since 7/23). Next clean test = August
+forward, live paper, via monitors — the only untainted data there is.
+Trials: 4 dev + 1 vault + 50 sweep = 55, all logged. $0 real lost;
+family killed for ~$0.15 of compute. The machine works.
+
+## 2026-07-24 overnight — calibration convergence: ALL tape roads lead to the maker
+
+Center calibration (3,341 liquid resolved markets, 5d-out): slope 0.87 —
+the 2026 market is mildly OVERCONFIDENT (longshots 7.4% real vs 5.3%
+implied **; favorites 87.5% vs 94.4% **) — REVERSED from the 2021-25
+literature. But the reverse harvest is also dead: buying the cheap side
+<25c nets −21.7%/bet (t=−4.6, n=1,855) — the longshot spread wall
+(750bps half) exceeds the bias. Combined with the 55-trial favorite-side
+falsification: the tape pays NOTHING net in either direction; the only
+structural winner is the spread-charger. THE MAKER MECHANISM IS THE POND'S
+ANSWER — now proven by convergence (sweep marginals + vault + calibration
++ live shadow-book observation of the #1 wallet quoting both sides).
+NOTE: true tail (<$100k vol) still unfetched (gamma pagination depth
+blocks it) — tail calibration remains open. Desk built and running:
+arb-sim 30min, shadow-book (maker-noise filtered) + maker-sim + grader
+2x daily, DESK_REPORT.md auto-writes.

@@ -1,0 +1,500 @@
+date,month,cat,q,side,mkt,cost,pmod,stake,won,pnl,clv,end
+2026-01-01,2026-01,other,Will the Los Angeles Rams win the NFC West?,NO,0.87,0.878,0.899,100.0,1,13.9,-0.008,2026-01-06T12:00:00Z
+2026-01-01,2026-01,other,Will Telstar 1963 win on 2026-01-11?,NO,0.76,0.772,0.79,66.28,1,19.57,-0.012,2026-01-11T13:30:00Z
+2026-01-01,2026-01,other,Will Arsenal FC win on 2026-01-11?,YES,0.785,0.797,0.816,78.15,1,19.9,0.003,2026-01-11T14:00:00Z
+2026-01-01,2026-01,other,Will the Tampa Bay Buccaneers win the NFC South?,NO,0.775,0.787,0.806,73.53,1,19.9,-0.152,2026-01-06T12:00:00Z
+2026-01-01,2026-01,other,Will FC Bayern München win on 2026-01-11?,YES,0.86,0.868,0.89,100.73,1,15.32,0.007,2026-01-11T16:30:00Z
+2026-01-02,2026-01,geo,Will Russia announce a Christmas truce?,NO,0.915,0.92,0.945,201.77,1,17.55,0.015,2026-01-07T00:00:00Z
+2026-01-02,2026-01,other,Will FC Internazionale Milano win on 2026-01-07?,YES,0.715,0.727,0.742,47.08,1,17.68,-0.022,2026-01-07T19:45:00Z
+2026-01-02,2026-01,other,Will SSC Napoli win on 2026-01-07?,YES,0.69,0.702,0.715,37.0,0,-37.0,0.023,2026-01-07T17:30:00Z
+2026-01-02,2026-01,other,Will Manchester City FC win on 2026-01-07?,YES,0.705,0.717,0.731,42.87,0,-42.87,-0.022,2026-01-07T19:30:00Z
+2026-01-02,2026-01,other,Will Hellas Verona FC win on 2026-01-07?,NO,0.88,0.888,0.908,100.44,1,12.67,0.017,2026-01-07T17:30:00Z
+2026-01-02,2026-01,other,Will Liverpool FC win on 2026-01-12?,YES,0.81,0.818,0.841,100.57,1,22.38,0.022,2026-01-12T19:45:00Z
+2026-01-03,2026-01,geo,Will a White Spoon win season 2 of Culinary Class Wars?,YES,0.735,0.747,0.773,171.28,1,58.01,0.168,2026-01-13T00:00:00Z
+2026-01-03,2026-01,other,Will Liverpool FC win on 2026-01-08?,NO,0.815,0.823,0.846,101.37,1,21.8,0.012,2026-01-08T20:00:00Z
+2026-01-03,2026-01,other,Will AC Milan win on 2026-01-08?,YES,0.685,0.697,0.71,35.16,0,-35.16,-0.007,2026-01-08T19:45:00Z
+2026-01-03,2026-01,other,Will Arsenal FC vs. Liverpool FC end in a draw?,NO,0.785,0.797,0.816,78.85,0,-78.85,-0.012,2026-01-08T20:00:00Z
+2026-01-04,2026-01,other,Will FC Bayern München win on 2026-01-14?,YES,0.765,0.777,0.795,68.79,1,19.74,-0.002,2026-01-14T19:30:00Z
+2026-01-05,2026-01,other,Will AC Milan win on 2026-01-15?,YES,0.695,0.707,0.721,38.76,1,16.06,-0.322,2026-01-15T19:45:00Z
+2026-01-05,2026-01,other,"US x Venezuela military engagement by January 15, 2026?",NO,0.895,0.903,0.922,100.81,0,-100.81,-0.008,2026-01-15T00:00:00Z
+2026-01-06,2026-01,other,Will Arsenal FC win on 2026-01-11?,YES,0.785,0.797,0.816,77.73,1,19.8,0.003,2026-01-11T14:00:00Z
+2026-01-06,2026-01,other,Will FC Bayern München win on 2026-01-11?,YES,0.865,0.873,0.894,100.0,1,14.55,0.002,2026-01-11T16:30:00Z
+2026-01-06,2026-01,other,Will Telstar 1963 win on 2026-01-11?,NO,0.755,0.767,0.785,64.0,1,19.44,-0.007,2026-01-11T13:30:00Z
+2026-01-06,2026-01,other,Will Paris Saint-Germain FC win on 2026-01-16?,YES,0.67,0.682,0.693,29.05,1,13.55,0.003,2026-01-16T20:00:00Z
+2026-01-07,2026-01,other,Will SSC Napoli win on 2026-01-17?,YES,0.725,0.737,0.753,51.02,1,18.2,-0.057,2026-01-17T17:00:00Z
+2026-01-07,2026-01,other,Will Liverpool FC win on 2026-01-12?,YES,0.825,0.833,0.856,100.65,1,20.18,0.007,2026-01-12T19:45:00Z
+2026-01-07,2026-01,other,Will Nottingham Forest FC win on 2026-01-17?,NO,0.835,0.843,0.866,100.86,1,18.78,0.002,2026-01-17T17:30:00Z
+2026-01-07,2026-01,other,Will Juventus FC win on 2026-01-12?,YES,0.775,0.787,0.806,73.9,1,20.0,-0.002,2026-01-12T19:45:00Z
+2026-01-07,2026-01,other,Will Liverpool FC win on 2026-01-17?,YES,0.82,0.828,0.851,101.24,0,-101.24,-0.033,2026-01-17T15:00:00Z
+2026-01-07,2026-01,other,Will FC Bayern München win on 2026-01-17?,YES,0.665,0.677,0.688,27.18,1,12.97,-0.062,2026-01-17T17:30:00Z
+2026-01-07,2026-01,other,Will Manchester United FC win on 2026-01-17?,NO,0.76,0.772,0.79,66.43,0,-66.43,-0.037,2026-01-17T12:30:00Z
+2026-01-07,2026-01,other,Will Manchester United FC vs. Manchester City FC end in a draw?,NO,0.78,0.792,0.811,75.28,1,19.77,-0.042,2026-01-17T12:30:00Z
+2026-01-07,2026-01,other,Will Real Madrid CF win on 2026-01-17?,YES,0.855,0.863,0.885,99.89,1,15.86,-0.008,2026-01-17T13:00:00Z
+2026-01-08,2026-01,geo,Will a White Spoon win season 2 of Culinary Class Wars?,YES,0.905,0.91,0.937,200.1,1,19.79,0.005,2026-01-13T00:00:00Z
+2026-01-08,2026-01,politics,Will André Ventura qualify for the second round of the 2026 Portugal p,YES,0.685,0.697,0.733,198.52,1,86.3,0.123,2026-01-18T00:00:00Z
+2026-01-08,2026-01,other,Will AC Milan win on 2026-01-18?,YES,0.695,0.707,0.721,38.94,1,16.14,0.048,2026-01-18T19:45:00Z
+2026-01-08,2026-01,politics,Will João Cotrim de Figueiredo qualify for the second round of the 202,NO,0.775,0.787,0.833,202.55,1,54.82,-0.107,2026-01-18T00:00:00Z
+2026-01-08,2026-01,geo,Will BV Borussia 09 Dortmund win on 2026-01-13?,YES,0.72,0.732,0.756,154.87,1,56.7,-0.022,2026-01-13T19:30:00Z
+2026-01-08,2026-01,other,Will Real Sociedad de Fútbol win on 2026-01-18?,NO,0.82,0.828,0.851,102.39,0,-102.39,0.007,2026-01-18T20:00:00Z
+2026-01-08,2026-01,other,Will Club Atlético de Madrid win on 2026-01-18?,YES,0.745,0.757,0.774,60.25,1,19.34,-0.042,2026-01-18T15:15:00Z
+2026-01-09,2026-01,other,Will FC Internazionale Milano win on 2026-01-14?,YES,0.85,0.858,0.88,101.56,1,16.81,0.002,2026-01-14T19:45:00Z
+2026-01-09,2026-01,other,Will Brighton & Hove Albion FC vs. AFC Bournemouth end in a draw?,NO,0.765,0.777,0.795,69.67,0,-69.67,-0.017,2026-01-19T20:00:00Z
+2026-01-09,2026-01,other,Will SSC Napoli win on 2026-01-14?,YES,0.745,0.757,0.774,60.05,0,-60.05,-0.022,2026-01-14T17:30:00Z
+2026-01-09,2026-01,other,Will FC Bayern München win on 2026-01-14?,YES,0.77,0.782,0.801,71.11,1,19.82,-0.007,2026-01-14T19:30:00Z
+2026-01-09,2026-01,other,Will AFC Bournemouth win on 2026-01-19?,NO,0.755,0.767,0.785,64.32,1,19.54,-0.012,2026-01-19T20:00:00Z
+2026-01-10,2026-01,geo,Will BV Borussia 09 Dortmund win on 2026-01-20?,NO,0.66,0.672,0.689,46.78,1,22.83,-0.037,2026-01-20T20:00:00Z
+2026-01-10,2026-01,other,Will Manchester City FC win on 2026-01-20?,YES,0.685,0.697,0.71,34.98,0,-34.98,0.008,2026-01-20T17:45:00Z
+2026-01-10,2026-01,other,Will Real Madrid CF win on 2026-01-20?,YES,0.78,0.792,0.811,76.03,1,19.97,-0.027,2026-01-20T20:00:00Z
+2026-01-10,2026-01,other,"US x Venezuela military engagement by January 15, 2026?",NO,0.895,0.903,0.922,100.9,0,-100.9,-0.008,2026-01-15T00:00:00Z
+2026-01-10,2026-01,other,Will FK Bodø/Glimt win on 2026-01-20?,NO,0.835,0.843,0.866,99.89,0,-99.89,0.022,2026-01-20T17:45:00Z
+2026-01-10,2026-01,other,Will Oregon win the 2026 College Football National Championship?,NO,0.781,0.793,0.812,75.37,1,19.62,-0.0295,2026-01-20T00:00:00Z
+2026-01-10,2026-01,other,Will FC Barcelona win on 2026-01-15?,YES,0.715,0.727,0.742,46.17,1,17.34,0.078,2026-01-15T20:00:00Z
+2026-01-10,2026-01,other,Will Ole Miss win the 2026 College Football National Championship?,NO,0.866,0.874,0.895,99.26,1,14.31,-0.008,2026-01-20T00:00:00Z
+2026-01-11,2026-01,other,Will Newcastle United FC win on 2026-01-21?,YES,0.665,0.677,0.688,26.96,1,12.86,-0.002,2026-01-21T20:00:00Z
+2026-01-11,2026-01,other,Will Paris Saint-Germain FC win on 2026-01-16?,YES,0.685,0.697,0.71,34.45,1,14.98,-0.012,2026-01-16T20:00:00Z
+2026-01-11,2026-01,other,Will Sport Lisboa e Benfica win on 2026-01-21?,NO,0.78,0.792,0.811,75.27,1,19.77,0.003,2026-01-21T20:00:00Z
+2026-01-11,2026-01,geo,Odds of Khamenei out as Supreme Leader of Iran by January 31 over 50% ,NO,0.835,0.843,0.875,199.77,1,37.2,0.102,2026-01-16T00:00:00Z
+2026-01-11,2026-01,other,Will Qarabağ Ağdam FK win on 2026-01-21?,NO,0.69,0.702,0.715,36.64,0,-36.64,-0.002,2026-01-21T17:45:00Z
+2026-01-11,2026-01,other,Will Chelsea FC win on 2026-01-21?,YES,0.83,0.838,0.861,99.89,1,19.31,0.012,2026-01-21T20:00:00Z
+2026-01-11,2026-01,other,Will Juventus FC vs. Sport Lisboa e Benfica end in a draw?,NO,0.74,0.752,0.769,57.28,1,18.89,-0.007,2026-01-21T20:00:00Z
+2026-01-11,2026-01,other,Will FC Barcelona win on 2026-01-21?,YES,0.71,0.722,0.737,44.65,1,17.19,0.023,2026-01-21T20:00:00Z
+2026-01-11,2026-01,other,Will PSV win on 2026-01-21?,NO,0.835,0.843,0.866,100.44,1,18.71,0.002,2026-01-21T20:00:00Z
+2026-01-11,2026-01,other,Will FC Bayern München win on 2026-01-21?,YES,0.875,0.883,0.904,100.63,1,13.33,-0.008,2026-01-21T20:00:00Z
+2026-01-12,2026-01,other,Will Manchester United FC vs. Manchester City FC end in a draw?,NO,0.765,0.777,0.795,69.01,1,19.8,-0.027,2026-01-17T12:30:00Z
+2026-01-12,2026-01,other,Will Feyenoord Rotterdam win on 2026-01-22?,YES,0.695,0.707,0.721,38.88,1,16.11,-0.022,2026-01-22T17:45:00Z
+2026-01-12,2026-01,other,Will Real Madrid CF win on 2026-01-17?,YES,0.855,0.863,0.885,101.12,1,16.05,-0.008,2026-01-17T13:00:00Z
+2026-01-12,2026-01,other,Will Nottingham Forest FC win on 2026-01-17?,NO,0.855,0.863,0.885,101.28,1,16.08,-0.018,2026-01-17T17:30:00Z
+2026-01-12,2026-01,other,Will Liverpool FC win on 2026-01-17?,YES,0.795,0.807,0.826,83.91,0,-83.91,-0.012,2026-01-17T15:00:00Z
+2026-01-12,2026-01,other,Will Al Hilal Saudi Club win on 2026-01-22?,YES,0.775,0.787,0.806,73.58,1,19.92,0.043,2026-01-22T17:30:00Z
+2026-01-12,2026-01,other,Will Manchester United FC win on 2026-01-17?,NO,0.745,0.757,0.774,59.92,0,-59.92,-0.022,2026-01-17T12:30:00Z
+2026-01-12,2026-01,other,Will SC Freiburg win on 2026-01-22?,YES,0.85,0.858,0.88,100.2,1,16.58,-0.033,2026-01-22T17:45:00Z
+2026-01-12,2026-01,other,Will SSC Napoli win on 2026-01-17?,YES,0.68,0.692,0.704,32.82,1,14.61,-0.012,2026-01-17T17:00:00Z
+2026-01-13,2026-01,other,Will ACF Fiorentina win on 2026-01-18?,NO,0.735,0.747,0.764,55.34,0,-55.34,-0.027,2026-01-18T14:00:00Z
+2026-01-13,2026-01,other,Will Alex Honnold not complete a free solo of Taipei 101 by January 31,NO,0.855,0.863,0.885,99.96,1,15.87,0.057,2026-01-23T00:00:00Z
+2026-01-13,2026-01,other,Will FC Internazionale Milano win on 2026-01-23?,YES,0.805,0.813,0.836,100.12,1,23.03,0.032,2026-01-23T19:45:00Z
+2026-01-13,2026-01,other,Will AC Milan win on 2026-01-18?,YES,0.77,0.782,0.801,71.05,1,19.81,-0.027,2026-01-18T19:45:00Z
+2026-01-13,2026-01,other,Will Alex Honnold free solo Taipei 101 in between 1 hour and 15 minute,NO,0.75,0.762,0.78,62.0,1,19.37,-0.127,2026-01-23T00:00:00Z
+2026-01-13,2026-01,politics,Will André Ventura qualify for the second round of the 2026 Portugal p,YES,0.665,0.677,0.709,167.23,1,79.78,0.143,2026-01-18T00:00:00Z
+2026-01-13,2026-01,other,Will Club Atlético de Madrid win on 2026-01-18?,YES,0.745,0.757,0.774,60.36,1,19.37,-0.042,2026-01-18T15:15:00Z
+2026-01-13,2026-01,other,Will Real Sociedad de Fútbol win on 2026-01-18?,NO,0.82,0.828,0.851,101.73,0,-101.73,0.007,2026-01-18T20:00:00Z
+2026-01-13,2026-01,other,Will Alex Honnold free solo Taipei 101 in between 1 hour and 30 minute,NO,0.855,0.863,0.885,100.72,0,-100.72,-0.108,2026-01-23T00:00:00Z
+2026-01-13,2026-01,other,Will Paris Saint-Germain FC win on 2026-01-23?,YES,0.74,0.752,0.769,57.07,1,18.82,-0.017,2026-01-23T19:00:00Z
+2026-01-13,2026-01,other,Will Alex Honnold free solo Taipei 101 in between 1 hour and 1 hour an,NO,0.918,0.923,0.941,99.9,1,8.33,-0.0285,2026-01-23T00:00:00Z
+2026-01-13,2026-01,other,Will Alex Honnold free solo Taipei 101?,YES,0.86,0.868,0.89,99.98,1,15.2,0.057,2026-01-23T00:00:00Z
+2026-01-14,2026-01,geo,Will BV Borussia 09 Dortmund win on 2026-01-24?,YES,0.685,0.697,0.718,113.05,1,49.14,-0.227,2026-01-24T17:30:00Z
+2026-01-14,2026-01,other,Will AFC Bournemouth win on 2026-01-19?,NO,0.755,0.767,0.785,64.31,1,19.54,-0.012,2026-01-19T20:00:00Z
+2026-01-14,2026-01,other,Will Burnley FC win on 2026-01-24?,NO,0.755,0.767,0.785,64.44,1,19.58,-0.027,2026-01-24T15:00:00Z
+2026-01-14,2026-01,other,Will FC Bayern München win on 2026-01-24?,YES,0.76,0.772,0.79,66.86,0,-66.86,0.123,2026-01-24T14:30:00Z
+2026-01-14,2026-01,other,Will Manchester City FC win on 2026-01-24?,YES,0.855,0.863,0.885,100.35,1,15.93,-0.058,2026-01-24T15:00:00Z
+2026-01-14,2026-01,other,Will Brighton & Hove Albion FC vs. AFC Bournemouth end in a draw?,NO,0.755,0.767,0.785,64.24,0,-64.24,-0.007,2026-01-19T20:00:00Z
+2026-01-14,2026-01,other,Will Sevilla FC win on 2026-01-24?,NO,0.695,0.707,0.721,38.46,0,-38.46,-0.032,2026-01-24T17:30:00Z
+2026-01-15,2026-01,other,Will Manchester City FC win on 2026-01-20?,YES,0.705,0.717,0.731,42.28,0,-42.28,-0.012,2026-01-20T17:45:00Z
+2026-01-15,2026-01,geo,"Will Netflix say ""Warner Bros"" during earnings call?",YES,0.81,0.818,0.851,198.11,1,44.08,0.087,2026-01-20T21:45:00Z
+2026-01-15,2026-01,politics,Will André Ventura win the 2026 Portugal presidential election?,NO,0.943,0.948,0.974,199.0,1,11.03,0.0255,2026-01-25T14:00:00Z
+2026-01-15,2026-01,other,Will Manchester United FC win on 2026-01-25?,NO,0.875,0.883,0.904,99.61,0,-99.61,-0.048,2026-01-25T16:30:00Z
+2026-01-15,2026-01,politics,Will Luís Marques Mendes win the 2026 Portugal presidential election?,NO,0.925,0.93,0.963,197.22,1,14.84,0.0665,2026-01-25T14:00:00Z
+2026-01-15,2026-01,politics,Will João Cotrim Figueiredo win the 2026 Portugal presidential electio,NO,0.801,0.809,0.86,197.52,1,46.48,0.19,2026-01-25T14:00:00Z
+2026-01-15,2026-01,other,Will Club Atlético de Madrid win on 2026-01-25?,YES,0.775,0.787,0.806,72.58,1,19.64,-0.037,2026-01-25T13:00:00Z
+2026-01-15,2026-01,other,Will FC Barcelona win on 2026-01-25?,YES,0.895,0.903,0.922,99.42,1,10.68,-0.023,2026-01-25T15:15:00Z
+2026-01-15,2026-01,politics,Will António José Seguro win the 2026 Portugal presidential election?,YES,0.655,0.667,0.698,150.59,1,75.01,0.306,2026-01-25T14:00:00Z
+2026-01-15,2026-01,other,Will FK Bodø/Glimt win on 2026-01-20?,NO,0.865,0.873,0.894,100.28,0,-100.28,-0.008,2026-01-20T17:45:00Z
+2026-01-15,2026-01,other,Will Indiana win the 2026 College Football National Championship?,YES,0.74,0.752,0.769,56.82,1,18.74,-0.01,2026-01-20T00:00:00Z
+2026-01-15,2026-01,politics,Will André Ventura win the 1st round of the 2026 Portugal presidential,NO,0.635,0.647,0.673,120.09,1,65.52,0.3525,2026-01-25T00:00:00Z
+2026-01-15,2026-01,other,Will Miami Florida win the 2026 College Football National Championship,NO,0.746,0.758,0.776,60.18,1,19.16,-0.01,2026-01-20T00:00:00Z
+2026-01-15,2026-01,geo,Will BV Borussia 09 Dortmund win on 2026-01-20?,NO,0.655,0.667,0.683,40.8,1,20.37,-0.032,2026-01-20T20:00:00Z
+2026-01-15,2026-01,other,Will Oregon win the 2026 College Football National Championship?,NO,0.764,0.776,0.794,68.37,1,19.74,-0.012,2026-01-20T00:00:00Z
+2026-01-15,2026-01,other,Will Ole Miss win the 2026 College Football National Championship?,NO,0.866,0.874,0.895,100.71,1,14.52,-0.008,2026-01-20T00:00:00Z
+2026-01-15,2026-01,politics,Will João Cotrim Figueiredo win the 1st round of the 2026 Portugal pre,NO,0.909,0.914,0.953,201.71,1,18.86,0.085,2026-01-25T00:00:00Z
+2026-01-15,2026-01,other,Will Real Madrid CF win on 2026-01-20?,YES,0.765,0.777,0.795,69.2,1,19.86,-0.012,2026-01-20T20:00:00Z
+2026-01-15,2026-01,other,Will Aston Villa FC win on 2026-01-25?,NO,0.72,0.732,0.748,49.28,0,-49.28,0.003,2026-01-25T14:00:00Z
+2026-01-16,2026-01,other,Will the Broncos win the AFC Championship?,NO,0.755,0.767,0.785,64.39,1,19.56,-0.097,2026-01-26T12:00:00Z
+2026-01-16,2026-01,other,Will FC Barcelona win on 2026-01-21?,YES,0.73,0.742,0.758,53.41,1,18.57,0.003,2026-01-21T20:00:00Z
+2026-01-16,2026-01,other,Will Chelsea FC win on 2026-01-21?,YES,0.845,0.853,0.875,101.13,1,17.43,-0.003,2026-01-21T20:00:00Z
+2026-01-16,2026-01,other,Will Juventus FC vs. Sport Lisboa e Benfica end in a draw?,NO,0.745,0.757,0.774,60.22,1,19.33,-0.012,2026-01-21T20:00:00Z
+2026-01-16,2026-01,other,Will PSV win on 2026-01-21?,NO,0.84,0.848,0.871,101.5,1,18.19,-0.003,2026-01-21T20:00:00Z
+2026-01-16,2026-01,other,Will the Patriots win the AFC Championship?,NO,0.708,0.72,0.734,44.25,0,-44.25,-0.383,2026-01-26T12:00:00Z
+2026-01-16,2026-01,other,Will the 49ers win the 2026 NFC Championship?,NO,0.904,0.909,0.929,101.24,1,10.14,-0.0225,2026-01-26T12:00:00Z
+2026-01-16,2026-01,other,Will the Bills win the AFC Championship?,NO,0.74,0.752,0.769,58.0,1,19.13,-0.017,2026-01-26T12:00:00Z
+2026-01-16,2026-01,other,Will Sport Lisboa e Benfica win on 2026-01-21?,NO,0.795,0.807,0.826,83.98,1,20.09,-0.012,2026-01-21T20:00:00Z
+2026-01-16,2026-01,other,Will Qarabağ Ağdam FK win on 2026-01-21?,NO,0.69,0.702,0.715,37.18,0,-37.18,-0.002,2026-01-21T17:45:00Z
+2026-01-16,2026-01,other,Will Leeds United FC win on 2026-01-26?,NO,0.67,0.682,0.693,29.35,1,13.68,-0.002,2026-01-26T20:00:00Z
+2026-01-16,2026-01,other,Will FC Bayern München win on 2026-01-21?,YES,0.875,0.883,0.904,101.5,1,13.45,-0.008,2026-01-21T20:00:00Z
+2026-01-17,2026-01,other,Will SC Freiburg win on 2026-01-22?,YES,0.84,0.848,0.871,101.63,1,18.22,-0.023,2026-01-22T17:45:00Z
+2026-01-17,2026-01,other,Will Feyenoord Rotterdam win on 2026-01-22?,YES,0.69,0.702,0.715,37.21,1,15.8,-0.017,2026-01-22T17:45:00Z
+2026-01-17,2026-01,other,Will Al Hilal Saudi Club win on 2026-01-22?,YES,0.755,0.767,0.785,65.18,1,19.8,0.063,2026-01-22T17:30:00Z
+2026-01-18,2026-01,tech_econ,Will NVIDIA (NVDA) finish week of January 19 above $155?,YES,0.962,0.967,0.976,204.34,1,6.97,0.0285,2026-01-23T21:00:00Z
+2026-01-18,2026-01,geo,"Israel strikes Iran by January 23, 2026?",NO,0.951,0.956,0.972,204.48,1,9.41,-0.0315,2026-01-23T00:00:00Z
+2026-01-18,2026-01,other,Will Alex Honnold free solo Taipei 101 in between 1 hour and 1 hour an,NO,0.897,0.905,0.924,102.33,1,10.68,-0.011,2026-01-23T00:00:00Z
+2026-01-18,2026-01,other,Will Alex Honnold free solo Taipei 101?,YES,0.91,0.915,0.935,102.44,1,9.52,0.01,2026-01-23T00:00:00Z
+2026-01-18,2026-01,other,Will Paris Saint-Germain FC win on 2026-01-23?,YES,0.75,0.762,0.78,63.23,1,19.75,-0.027,2026-01-23T19:00:00Z
+2026-01-18,2026-01,other,Will Alex Honnold free solo Taipei 101 in between 1 hour and 30 minute,NO,0.795,0.807,0.826,84.98,0,-84.98,-0.052,2026-01-23T00:00:00Z
+2026-01-18,2026-01,other,Will Alex Honnold not complete a free solo of Taipei 101 by January 31,NO,0.92,0.925,0.943,101.88,1,8.26,-0.005,2026-01-23T00:00:00Z
+2026-01-18,2026-01,other,Will Alex Honnold free solo Taipei 101 in between 1 hour and 15 minute,NO,0.73,0.742,0.758,53.95,1,18.76,-0.107,2026-01-23T00:00:00Z
+2026-01-18,2026-01,other,Will FC Internazionale Milano win on 2026-01-23?,YES,0.86,0.868,0.89,102.15,1,15.53,-0.023,2026-01-23T19:45:00Z
+2026-01-18,2026-01,other,Will Club Atlético de Madrid win on 2026-01-28?,YES,0.78,0.792,0.811,77.25,0,-77.25,-0.037,2026-01-28T20:00:00Z
+2026-01-18,2026-01,other,Will FC Bayern München win on 2026-01-28?,YES,0.715,0.727,0.742,47.31,1,17.76,-0.132,2026-01-28T20:00:00Z
+2026-01-18,2026-01,other,Will Sport Lisboa e Benfica win on 2026-01-28?,NO,0.82,0.828,0.851,101.71,0,-101.71,-0.043,2026-01-28T20:00:00Z
+2026-01-18,2026-01,tech_econ,Fed decreases interest rates by 25 bps after January 2026 meeting?,NO,0.957,0.962,0.972,201.4,1,8.06,0.032,2026-01-28T00:00:00Z
+2026-01-18,2026-01,other,Will Paris Saint-Germain FC win on 2026-01-28?,YES,0.675,0.687,0.699,31.06,0,-31.06,-0.052,2026-01-28T20:00:00Z
+2026-01-18,2026-01,other,Will FC Barcelona win on 2026-01-28?,YES,0.85,0.858,0.88,100.47,1,16.63,0.007,2026-01-28T20:00:00Z
+2026-01-19,2026-01,other,Will Nottingham Forest FC win on 2026-01-29?,YES,0.715,0.727,0.742,46.88,1,17.61,-0.132,2026-01-29T20:00:00Z
+2026-01-19,2026-01,other,Will FC Red Bull Salzburg win on 2026-01-29?,NO,0.73,0.742,0.758,53.33,1,18.54,0.118,2026-01-29T20:00:00Z
+2026-01-19,2026-01,other,Will Manchester City FC win on 2026-01-24?,YES,0.815,0.823,0.846,101.0,1,21.72,-0.018,2026-01-24T15:00:00Z
+2026-01-19,2026-01,other,Will Burnley FC win on 2026-01-24?,NO,0.75,0.762,0.78,62.41,1,19.49,-0.022,2026-01-24T15:00:00Z
+2026-01-19,2026-01,other,Will FC Bayern München win on 2026-01-24?,YES,0.905,0.91,0.93,101.41,0,-101.41,-0.015,2026-01-24T14:30:00Z
+2026-01-19,2026-01,other,Will Sevilla FC win on 2026-01-24?,NO,0.695,0.707,0.721,38.66,0,-38.66,-0.032,2026-01-24T17:30:00Z
+2026-01-19,2026-01,other,Will Aston Villa FC win on 2026-01-29?,YES,0.715,0.727,0.742,46.59,1,17.5,-0.047,2026-01-29T20:00:00Z
+2026-01-20,2026-01,other,Will Club Atlético de Madrid win on 2026-01-25?,YES,0.75,0.762,0.78,61.78,1,19.3,-0.012,2026-01-25T13:00:00Z
+2026-01-20,2026-01,other,Will FC Barcelona win on 2026-01-25?,YES,0.885,0.893,0.913,100.37,1,12.03,-0.013,2026-01-25T15:15:00Z
+2026-01-20,2026-01,other,Will Phan Van Giang be elected General Secretary of the Vietnamese Com,NO,0.95,0.955,0.967,100.5,1,4.79,-0.003,2026-01-25T00:00:00Z
+2026-01-20,2026-01,other,Will Racing Club de Lens win on 2026-01-30?,YES,0.685,0.697,0.71,34.8,1,15.13,-0.007,2026-01-30T19:45:00Z
+2026-01-20,2026-01,politics,Will António José Seguro win the 2026 Portugal presidential election?,YES,0.963,0.968,0.985,201.39,1,6.76,0.006,2026-01-25T14:00:00Z
+2026-01-20,2026-01,politics,Will André Ventura win the 2026 Portugal presidential election?,NO,0.965,0.97,0.987,201.52,1,6.34,0.0035,2026-01-25T14:00:00Z
+2026-01-20,2026-01,other,Will Aston Villa FC win on 2026-01-25?,NO,0.745,0.757,0.774,59.93,0,-59.93,-0.022,2026-01-25T14:00:00Z
+2026-01-20,2026-01,other,Will Manchester United FC win on 2026-01-25?,NO,0.845,0.853,0.875,100.23,0,-100.23,-0.018,2026-01-25T16:30:00Z
+2026-01-20,2026-01,other,Will To Lam be elected General Secretary of the Vietnamese Communist P,YES,0.941,0.946,0.96,99.22,1,5.66,-0.0125,2026-01-25T00:00:00Z
+2026-01-21,2026-01,politics,Will Trump meet with Volodymyr Zelenskyy in January 2026?,NO,0.795,0.807,0.853,85.51,0,-85.51,-0.8005,2026-01-31T00:00:00Z
+2026-01-21,2026-01,other,Will anyone be charged over Daycare fraud in Minnesota by January 31?,NO,0.945,0.95,0.963,98.43,1,5.18,0.0355,2026-01-31T00:00:00Z
+2026-01-21,2026-01,other,Will TIME's Person of the Year for 2025 be a woman?,NO,0.907,0.912,0.933,98.48,1,9.44,-0.005,2026-01-31T00:00:00Z
+2026-01-21,2026-01,other,Will the 49ers win the 2026 NFC Championship?,NO,0.886,0.894,0.914,98.57,1,11.63,-0.008,2026-01-26T12:00:00Z
+2026-01-21,2026-01,tech_econ,Will Apple be the second-largest company in the world by market cap on,NO,0.885,0.893,0.913,197.38,1,23.65,0.0665,2026-01-31T00:00:00Z
+2026-01-21,2026-01,other,Will Venezuela give the US oil by January 31?,YES,0.837,0.845,0.868,98.92,1,18.15,-0.008,2026-01-31T00:00:00Z
+2026-01-21,2026-01,geo,Another US strike on Venezuela by December 31?,NO,0.695,0.707,0.729,122.65,0,-122.65,-0.052,2026-01-31T00:00:00Z
+2026-01-21,2026-01,other,Will the Bills win the AFC Championship?,NO,0.735,0.747,0.764,53.89,1,18.25,-0.012,2026-01-26T12:00:00Z
+2026-01-21,2026-01,other,ICE shooter charged by March 31?,NO,0.835,0.843,0.866,98.06,1,18.26,0.022,2026-01-31T00:00:00Z
+2026-01-21,2026-01,other,Will MrBeast's next video get between 30 and 35 million views on day 1,NO,0.801,0.809,0.833,98.24,1,23.12,-0.008,2026-01-31T00:00:00Z
+2026-01-21,2026-01,other,Will the Broncos win the AFC Championship?,NO,0.685,0.697,0.71,34.09,1,14.82,-0.027,2026-01-26T12:00:00Z
+2026-01-21,2026-01,other,Will Leeds United FC win on 2026-01-26?,NO,0.685,0.697,0.71,34.14,1,14.84,-0.017,2026-01-26T20:00:00Z
+2026-01-21,2026-01,geo,U.S. strike on Somalia by January 31?,YES,0.655,0.667,0.683,80.93,1,40.41,0.068,2026-01-31T00:00:00Z
+2026-01-21,2026-01,geo,U.S. strike on Somalia by January 31?,YES,0.81,0.818,0.851,198.35,1,44.13,-0.008,2026-01-31T00:00:00Z
+2026-01-21,2026-01,other,"US x Venezuela military engagement by January 31, 2026?",NO,0.815,0.823,0.846,99.62,0,-99.62,-0.008,2026-01-31T00:00:00Z
+2026-01-21,2026-01,other,Will Alphabet be the second-largest company in the world by market cap,YES,0.879,0.887,0.908,98.62,1,12.5,0.0725,2026-01-31T00:00:00Z
+2026-01-21,2026-01,politics,Will the Supreme Court rule on Trump's tarriffs by January 31?,YES,0.7,0.712,0.751,197.49,0,-197.49,-0.709,2026-01-31T00:00:00Z
+2026-01-21,2026-01,other,Will MrBeast's next video get between 35 and 40 million views on day 1,YES,0.9,0.905,0.926,96.77,1,10.1,-0.005,2026-01-31T00:00:00Z
+2026-01-21,2026-01,other,Will María Corina Machado enter Venezuela by January 31?,NO,0.895,0.903,0.922,96.87,1,10.41,0.074,2026-01-31T00:00:00Z
+2026-01-21,2026-01,other,Will Google Gemini 3 score at least 40% on Humanity’s Last Exam by Jan,NO,0.855,0.863,0.885,96.98,1,15.39,0.1075,2026-01-31T00:00:00Z
+2026-01-21,2026-01,other,Will Google Gemini 3 score at least 50% on the FrontierMath Benchmark?,NO,0.909,0.914,0.934,97.13,1,9.08,0.075,2026-01-31T00:00:00Z
+2026-01-21,2026-01,other,Will MrBeast's next video get between 40 and 45 million views on day 1,NO,0.903,0.908,0.929,97.22,1,9.79,-0.005,2026-01-31T00:00:00Z
+2026-01-21,2026-01,other,Will the Patriots win the AFC Championship?,YES,0.689,0.701,0.714,35.19,1,15.01,-0.0375,2026-01-26T12:00:00Z
+2026-01-21,2026-01,other,U.S. Government Funding Lapse on January 31?,NO,0.675,0.687,0.699,30.04,0,-30.04,-0.552,2026-01-31T00:00:00Z
+2026-01-22,2026-01,other,Over $40M committed to the Ranger public sale?,YES,0.954,0.959,0.97,97.17,1,4.21,-0.005,2026-02-01T05:00:00Z
+2026-01-22,2026-01,other,Over $60M committed to the Ranger public sale?,YES,0.825,0.833,0.856,97.21,1,19.49,-0.008,2026-02-01T05:00:00Z
+2026-01-22,2026-01,geo,Will Golden (Ejae and Mark Sonnenblick) win Song of the Year at the 68,YES,0.709,0.721,0.744,135.8,0,-135.8,-0.0305,2026-02-01T00:00:00Z
+2026-01-22,2026-01,other,Will Carlos Alcaraz win the 2026 Australian Open?,NO,0.685,0.697,0.71,33.25,0,-33.25,-0.112,2026-02-01T00:00:00Z
+2026-01-22,2026-01,other,Will Getafe CF win on 2026-02-01?,NO,0.675,0.687,0.699,29.5,1,13.44,-0.022,2026-02-01T17:30:00Z
+2026-01-22,2026-01,politics,Will Laura Virginia Fernández Delgado win the 2026 Costa Rican preside,YES,0.875,0.883,0.926,191.7,1,25.4,0.062,2026-02-01T00:00:00Z
+2026-01-22,2026-01,other,Will Rayo Vallecano de Madrid win on 2026-02-01?,NO,0.885,0.893,0.913,96.1,1,11.52,0.032,2026-02-01T13:00:00Z
+2026-01-22,2026-01,other,Will Tottenham Hotspur FC win on 2026-02-01?,NO,0.785,0.797,0.816,74.94,1,19.09,-0.002,2026-02-01T16:30:00Z
+2026-01-22,2026-01,other,Over $50M committed to the Ranger public sale?,YES,0.885,0.893,0.913,96.41,1,11.55,-0.008,2026-02-01T05:00:00Z
+2026-01-22,2026-01,other,Will Real Madrid CF win on 2026-02-01?,YES,0.765,0.777,0.795,66.1,1,18.97,0.008,2026-02-01T13:00:00Z
+2026-01-22,2026-01,geo,Will Abracadabra (Lady Gaga) win Song of the Year at the 68th Annual G,NO,0.953,0.958,0.974,193.43,1,8.48,-0.029,2026-02-01T00:00:00Z
+2026-01-22,2026-01,other,Over $70M committed to the Ranger public sale?,YES,0.7,0.712,0.726,39.2,1,15.85,-0.012,2026-02-01T05:00:00Z
+2026-01-22,2026-01,politics,Will Álvaro Roberto Ramos Chaves win the 2026 Costa Rican presidential,NO,0.956,0.961,0.982,193.92,1,7.87,-0.004,2026-02-01T00:00:00Z
+2026-01-22,2026-01,other,Over $120M committed to the Ranger public sale?,NO,0.76,0.772,0.79,64.23,1,18.97,-0.012,2026-02-01T05:00:00Z
+2026-01-22,2026-01,other,Will Juventus FC win on 2026-02-01?,YES,0.665,0.677,0.688,26.36,1,12.58,-0.012,2026-02-01T19:45:00Z
+2026-01-22,2026-01,other,Will Brentford FC win on 2026-02-01?,NO,0.735,0.747,0.764,53.6,0,-53.6,-0.012,2026-02-01T14:00:00Z
+2026-01-22,2026-01,other,Will Novak Djokovic win the 2026 Australian Open?,NO,0.945,0.95,0.963,96.82,1,5.1,0.023,2026-02-01T00:00:00Z
+2026-01-23,2026-01,other,Will Sport Lisboa e Benfica win on 2026-01-28?,NO,0.795,0.807,0.826,80.12,0,-80.12,-0.022,2026-01-28T20:00:00Z
+2026-01-23,2026-01,other,Will Club Atlético de Madrid win on 2026-01-28?,YES,0.745,0.757,0.774,57.1,0,-57.1,-0.002,2026-01-28T20:00:00Z
+2026-01-23,2026-01,other,Will FC Barcelona win on 2026-01-28?,YES,0.855,0.863,0.885,95.5,1,15.16,0.002,2026-01-28T20:00:00Z
+2026-01-24,2026-01,other,Will FC Barcelona win on 2026-02-03?,YES,0.735,0.747,0.764,52.66,1,17.84,0.093,2026-02-03T20:00:00Z
+2026-01-24,2026-01,other,Will Bologna FC 1909 win on 2026-02-03?,NO,0.73,0.742,0.758,50.7,1,17.63,-0.002,2026-02-03T19:45:00Z
+2026-01-24,2026-01,other,Will Aston Villa FC win on 2026-01-29?,YES,0.68,0.692,0.704,31.4,1,13.97,-0.012,2026-01-29T20:00:00Z
+2026-01-24,2026-01,other,Will FC Red Bull Salzburg win on 2026-01-29?,NO,0.865,0.873,0.894,96.14,1,13.99,-0.013,2026-01-29T20:00:00Z
+2026-01-25,2026-01,other,Will Racing Club de Lens win on 2026-01-30?,YES,0.69,0.702,0.715,35.19,1,14.94,-0.012,2026-01-30T19:45:00Z
+2026-01-26,2026-01,other,Will MrBeast's next video get between 35 and 40 million views on day 1,YES,0.9,0.905,0.926,96.43,1,10.06,-0.005,2026-01-31T00:00:00Z
+2026-01-26,2026-01,other,Will MrBeast's next video get between 25 and 30 million views on day 1,YES,0.781,0.793,0.812,73.57,1,19.15,-0.012,2026-01-31T00:00:00Z
+2026-01-26,2026-01,other,ICE shooter charged by March 31?,NO,0.865,0.873,0.894,96.72,1,14.07,-0.008,2026-01-31T00:00:00Z
+2026-01-26,2026-01,geo,U.S. strike on Somalia by January 31?,YES,0.81,0.818,0.851,193.73,1,43.1,-0.008,2026-01-31T00:00:00Z
+2026-01-26,2026-01,other,Will MrBeast's next video get between 40 and 45 million views on day 1,NO,0.903,0.908,0.929,97.29,1,9.8,-0.005,2026-01-31T00:00:00Z
+2026-01-26,2026-01,other,Will Venezuela give the US oil by January 31?,YES,0.837,0.845,0.868,97.39,1,17.86,-0.008,2026-01-31T00:00:00Z
+2026-01-26,2026-01,other,Will xQc beat Forsen's Minecraft speedrun record by January 31?,NO,0.855,0.863,0.885,97.57,0,-97.57,-0.013,2026-01-31T00:00:00Z
+2026-01-26,2026-01,other,Will Google Gemini 3 score at least 40% on Humanity’s Last Exam by Jan,NO,0.951,0.956,0.968,96.6,1,4.5,0.015,2026-01-31T00:00:00Z
+2026-01-26,2026-01,other,Will Google Gemini 3 score at least 40% on the FrontierMath Benchmark?,NO,0.895,0.903,0.922,96.64,1,10.38,0.0615,2026-01-31T00:00:00Z
+2026-01-26,2026-01,geo,U.S. strike on Somalia by January 31?,YES,0.615,0.627,0.637,42.92,1,25.53,0.3725,2026-01-31T00:00:00Z
+2026-01-26,2026-01,geo,"Will the US next strike Iran on January 30, 2026 (ET)?",NO,0.963,0.968,0.98,194.0,1,6.41,0.0005,2026-01-31T00:00:00Z
+2026-01-26,2026-01,other,U.S. Government Funding Lapse on January 31?,YES,0.805,0.813,0.836,97.06,1,22.33,0.052,2026-01-31T00:00:00Z
+2026-01-26,2026-01,other,Will María Corina Machado enter Venezuela by March 31?,NO,0.725,0.737,0.753,49.4,1,17.63,-0.052,2026-01-31T00:00:00Z
+2026-01-26,2026-01,other,"US forces in Venezuela again by June 30, 2026?",NO,0.805,0.813,0.836,97.46,0,-97.46,-0.008,2026-01-31T00:00:00Z
+2026-01-26,2026-01,other,Will MrBeast's next video get between 30 and 35 million views on day 1,NO,0.801,0.809,0.833,96.49,1,22.71,-0.008,2026-01-31T00:00:00Z
+2026-01-26,2026-01,geo,U.S. strike on Somalia by January 31?,YES,0.735,0.747,0.773,164.35,1,55.67,-0.012,2026-01-31T00:00:00Z
+2026-01-26,2026-01,other,"US x Venezuela military engagement by January 31, 2026?",NO,0.815,0.823,0.846,97.27,0,-97.27,-0.008,2026-01-31T00:00:00Z
+2026-01-26,2026-01,other,Will TIME's Person of the Year for 2025 be a woman?,NO,0.907,0.912,0.933,96.3,1,9.23,-0.005,2026-01-31T00:00:00Z
+2026-01-26,2026-01,politics,Will Trump talk to Vladimir Putin in January?,NO,0.835,0.843,0.892,107.27,1,19.98,0.087,2026-01-31T00:00:00Z
+2026-01-26,2026-01,other,U.S. anti-cartel ground operation in Mexico by January 31?,NO,0.958,0.963,0.973,96.59,0,-96.59,0.014,2026-01-31T00:00:00Z
+2026-01-26,2026-01,geo,Another US strike on Venezuela by December 31?,NO,0.64,0.652,0.666,64.41,0,-64.41,0.003,2026-01-31T00:00:00Z
+2026-01-27,2026-01,other,Will Pisa SC win on 2026-02-06?,NO,0.755,0.767,0.785,60.71,1,18.44,-0.042,2026-02-06T19:45:00Z
+2026-01-27,2026-01,other,Over $40M committed to the Ranger public sale?,YES,0.954,0.959,0.97,95.17,1,4.12,-0.005,2026-02-01T05:00:00Z
+2026-01-27,2026-01,other,Will Novak Djokovic win the 2026 Australian Open?,NO,0.925,0.93,0.947,95.21,1,7.17,0.043,2026-02-01T00:00:00Z
+2026-01-27,2026-01,geo,Will Abracadabra (Lady Gaga) win Song of the Year at the 68th Annual G,NO,0.942,0.947,0.966,190.56,1,10.77,-0.0175,2026-02-01T00:00:00Z
+2026-01-27,2026-01,other,Over $70M committed to the Ranger public sale?,YES,0.7,0.712,0.726,38.62,1,15.62,-0.012,2026-02-01T05:00:00Z
+2026-01-27,2026-01,other,Over $60M committed to the Ranger public sale?,YES,0.825,0.833,0.856,95.54,1,19.15,-0.008,2026-02-01T05:00:00Z
+2026-01-27,2026-01,politics,Will Laura Virginia Fernández Delgado win the 2026 Costa Rican preside,YES,0.905,0.91,0.949,191.47,1,18.94,0.035,2026-02-01T00:00:00Z
+2026-01-27,2026-01,other,Will Real Madrid CF win on 2026-02-01?,YES,0.755,0.767,0.785,61.31,1,18.62,0.018,2026-02-01T13:00:00Z
+2026-01-27,2026-01,other,Over $50M committed to the Ranger public sale?,YES,0.885,0.893,0.913,96.11,1,11.52,-0.008,2026-02-01T05:00:00Z
+2026-01-27,2026-01,other,Will Rayo Vallecano de Madrid win on 2026-02-01?,NO,0.915,0.92,0.939,96.23,1,8.37,0.005,2026-02-01T13:00:00Z
+2026-01-27,2026-01,geo,Will Golden (Ejae and Mark Sonnenblick) win Song of the Year at the 68,YES,0.738,0.75,0.776,167.17,0,-167.17,-0.0595,2026-02-01T00:00:00Z
+2026-01-27,2026-01,other,Will Getafe CF win on 2026-02-01?,NO,0.68,0.692,0.704,30.95,1,13.78,-0.027,2026-02-01T17:30:00Z
+2026-01-27,2026-01,other,Will Brentford FC win on 2026-02-01?,NO,0.755,0.767,0.785,60.57,0,-60.57,-0.032,2026-02-01T14:00:00Z
+2026-01-27,2026-01,other,Will Tottenham Hotspur FC win on 2026-02-01?,NO,0.805,0.813,0.836,94.17,1,21.66,-0.018,2026-02-01T16:30:00Z
+2026-01-27,2026-01,other,Over $120M committed to the Ranger public sale?,NO,0.76,0.772,0.79,62.47,1,18.45,-0.012,2026-02-01T05:00:00Z
+2026-01-28,2026-01,other,Will Arsenal FC win on 2026-02-07?,YES,0.78,0.792,0.811,71.4,1,18.75,0.013,2026-02-07T15:00:00Z
+2026-01-28,2026-01,other,Will Tottenham Hotspur FC win on 2026-02-07?,NO,0.8,0.808,0.831,94.76,1,22.52,0.007,2026-02-07T12:30:00Z
+2026-01-28,2026-01,other,Will FC Barcelona win on 2026-02-07?,YES,0.83,0.838,0.861,94.98,1,18.36,0.017,2026-02-07T15:15:00Z
+2026-01-29,2026-01,other,Will the New England Patriots win Super Bowl 2026?,NO,0.683,0.696,0.708,32.39,1,14.18,-0.0125,2026-02-08T12:00:00Z
+2026-01-29,2026-01,other,Will FC Barcelona win on 2026-02-03?,YES,0.805,0.813,0.836,95.31,1,21.92,0.027,2026-02-03T20:00:00Z
+2026-01-29,2026-01,other,Will Drake Maye win the Super Bowl LX MVP?,NO,0.735,0.747,0.764,52.6,1,17.81,-0.007,2026-02-08T23:55:00Z
+2026-01-29,2026-01,other,Will Paris Saint-Germain FC win on 2026-02-08?,YES,0.69,0.702,0.715,34.98,1,14.85,-0.017,2026-02-08T19:45:00Z
+2026-01-29,2026-01,other,Will Jaxon Smith-Njigba win the Super Bowl LX MVP?,NO,0.87,0.878,0.899,95.85,1,13.32,-0.028,2026-02-08T23:55:00Z
+2026-01-29,2026-01,other,Will the Los Angeles Rams win Super Bowl 2026?,NO,0.833,0.841,0.864,95.99,1,18.15,-0.008,2026-02-08T12:00:00Z
+2026-01-29,2026-01,other,Will FC Internazionale Milano win on 2026-02-08?,YES,0.71,0.722,0.737,42.83,1,16.49,-0.047,2026-02-08T17:00:00Z
+2026-01-29,2026-01,other,Will the San Francisco 49ers win Super Bowl 2026?,NO,0.945,0.95,0.963,96.33,1,5.12,-0.005,2026-02-08T12:00:00Z
+2026-01-29,2026-01,politics,Will the Liberal Democratic Party win the most seats in the 2026 Japan,YES,0.962,0.967,0.985,192.77,1,6.58,0.0285,2026-02-08T00:00:00Z
+2026-01-29,2026-01,politics,Will People’s Party (PPLE) win the most seats in the 2026 Thai legisla,YES,0.61,0.622,0.641,82.56,0,-82.56,0.083,2026-02-08T00:00:00Z
+2026-01-29,2026-01,other,Will the Buffalo Bills win Super Bowl 2026?,NO,0.845,0.853,0.875,95.63,1,16.48,-0.008,2026-02-08T12:00:00Z
+2026-01-29,2026-01,politics,Will Pheu Thai Party (PT) win the most seats in the 2026 Thai legislat,NO,0.961,0.966,0.985,191.58,1,6.74,0.0175,2026-02-08T00:00:00Z
+2026-01-29,2026-01,other,Will Seguro win all of Portugal's districts?,YES,0.775,0.787,0.806,70.11,1,18.98,0.058,2026-02-08T00:00:00Z
+2026-01-29,2026-01,other,Will António José Seguro win the second round by 40–50%?,NO,0.8,0.808,0.831,96.05,1,22.82,-0.033,2026-02-08T00:00:00Z
+2026-01-29,2026-01,other,Will the Seattle Seahawks win Super Bowl 2026?,YES,0.683,0.696,0.708,32.77,1,14.35,-0.014,2026-02-08T12:00:00Z
+2026-01-29,2026-01,other,Will António José Seguro win the second round by 10–20%?,NO,0.93,0.935,0.951,96.42,1,6.7,0.044,2026-02-08T00:00:00Z
+2026-01-29,2026-01,politics,Will Bhumjaithai Party (BJT) win the most seats in the 2026 Thai legis,NO,0.645,0.657,0.685,130.69,0,-130.69,0.068,2026-02-08T00:00:00Z
+2026-01-29,2026-01,other,Will FC Bayern München win on 2026-02-08?,YES,0.755,0.767,0.785,60.83,1,18.48,-0.002,2026-02-08T16:30:00Z
+2026-01-29,2026-01,other,Will the Baltimore Ravens win Super Bowl 2026?,NO,0.957,0.962,0.972,95.36,1,3.82,-0.005,2026-02-08T12:00:00Z
+2026-01-29,2026-01,other,Will António José Seguro win the second round by 20–30%?,NO,0.795,0.807,0.826,78.91,1,18.87,0.008,2026-02-08T00:00:00Z
+2026-01-29,2026-01,other,Will the Philadelphia Eagles win Super Bowl 2026?,NO,0.895,0.903,0.922,95.59,1,10.27,-0.008,2026-02-08T12:00:00Z
+2026-01-29,2026-01,other,Will Real Madrid CF win on 2026-02-08?,YES,0.665,0.677,0.688,25.95,1,12.38,-0.042,2026-02-08T20:00:00Z
+2026-01-29,2026-01,other,Will Bologna FC 1909 win on 2026-02-03?,NO,0.74,0.752,0.769,54.84,1,18.09,-0.012,2026-02-03T19:45:00Z
+2026-01-30,2026-01,other,Will Travis Scott perform during the Super Bowl LX halftime show?,NO,0.879,0.887,0.907,96.0,1,12.29,-0.075,2026-02-09T00:00:00Z
+2026-01-30,2026-01,other,Will Atalanta BC win on 2026-02-09?,YES,0.715,0.727,0.742,44.78,1,16.82,-0.002,2026-02-09T17:30:00Z
+2026-01-30,2026-01,other,Will AS Roma win on 2026-02-09?,YES,0.68,0.692,0.704,31.49,1,14.02,-0.047,2026-02-09T19:45:00Z
+2026-01-31,2026-01,other,Will Chelsea FC win on 2026-02-10?,YES,0.675,0.687,0.699,29.72,0,-29.72,-0.062,2026-02-10T19:30:00Z
+2026-01-31,2026-01,other,Will West Ham United FC win on 2026-02-10?,NO,0.78,0.792,0.811,72.58,1,19.06,-0.017,2026-02-10T20:15:00Z
+2026-01-31,2026-01,other,Will Manchester United FC win on 2026-02-10?,YES,0.67,0.682,0.693,27.89,0,-27.89,-0.127,2026-02-10T20:15:00Z
+2026-02-02,2026-02,politics,Will Bangladesh Jamaat-e-Islami win the most seats in the Bangladesh p,NO,0.875,0.883,0.926,192.09,1,25.45,-0.003,2026-02-12T00:00:00Z
+2026-02-02,2026-02,politics,Will Bangladesh Nationalist Party win the most seats in the Bangladesh,YES,0.88,0.888,0.93,192.6,1,24.29,0.002,2026-02-12T00:00:00Z
+2026-02-03,2026-02,politics,"Will Trump say ""Transgender"" this week? (February 8)",YES,0.73,0.742,0.785,193.08,1,67.14,-0.047,2026-02-08T00:00:00Z
+2026-02-03,2026-02,politics,Will Bhumjaithai Party (BJT) win the most seats in the 2026 Thai legis,NO,0.675,0.687,0.721,176.75,0,-176.75,0.038,2026-02-08T00:00:00Z
+2026-02-03,2026-02,politics,Will People’s Party (PPLE) win the most seats in the 2026 Thai legisla,YES,0.625,0.637,0.66,101.56,0,-101.56,0.068,2026-02-08T00:00:00Z
+2026-02-03,2026-02,politics,Will Pheu Thai Party (PT) win the most seats in the 2026 Thai legislat,NO,0.957,0.962,0.982,188.86,1,7.56,0.022,2026-02-08T00:00:00Z
+2026-02-03,2026-02,geo,Will BV Borussia 09 Dortmund win on 2026-02-13?,YES,0.645,0.657,0.672,68.19,1,35.6,-0.017,2026-02-13T19:30:00Z
+2026-02-07,2026-02,politics,Will Bangladesh Jamaat-e-Islami win the most seats in the Bangladesh p,NO,0.86,0.868,0.914,189.72,1,28.85,0.012,2026-02-12T00:00:00Z
+2026-02-07,2026-02,politics,Will Bangladesh Nationalist Party win the most seats in the Bangladesh,YES,0.86,0.868,0.914,190.3,1,28.94,0.022,2026-02-12T00:00:00Z
+2026-02-08,2026-02,geo,Will BV Borussia 09 Dortmund win on 2026-02-13?,YES,0.65,0.662,0.678,73.5,1,37.53,-0.022,2026-02-13T19:30:00Z
+2026-02-08,2026-02,geo,Will the Bank of Russia make no change to the key rate after the Febru,YES,0.73,0.742,0.767,49.94,0,-49.94,-0.012,2026-02-13T00:00:00Z
+2026-02-08,2026-02,geo,Will Kevin Warsh be formally nominated to be Chair of the Federal Rese,NO,0.745,0.757,0.784,173.64,1,55.74,0.123,2026-02-18T00:00:00Z
+2026-02-08,2026-02,geo,Will Matthew Stafford win the 2025–26 NFL MVP award?,YES,0.914,0.919,0.945,191.74,1,16.79,-0.005,2026-02-18T00:00:00Z
+2026-02-08,2026-02,geo,Will Drake Maye win the 2025–26 NFL MVP award?,NO,0.912,0.917,0.943,192.08,1,17.27,-0.005,2026-02-18T00:00:00Z
+2026-02-08,2026-02,geo,"US x Iran meeting by February 13, 2026?",NO,0.715,0.727,0.751,140.75,0,-140.75,-0.012,2026-02-13T00:00:00Z
+2026-02-13,2026-02,geo,Will the Bank of Israel decrease the Bank of Israel Interest Rate afte,NO,0.915,0.92,0.945,48.86,1,4.25,-0.325,2026-02-23T00:00:00Z
+2026-02-13,2026-02,geo,Will Matthew Stafford win the 2025–26 NFL MVP award?,YES,0.914,0.919,0.945,189.7,1,16.61,-0.005,2026-02-18T00:00:00Z
+2026-02-13,2026-02,geo,Will Kevin Warsh be formally nominated to be Chair of the Federal Rese,NO,0.875,0.883,0.912,190.03,1,25.18,-0.003,2026-02-18T00:00:00Z
+2026-02-13,2026-02,geo,Will Drake Maye win the 2025–26 NFL MVP award?,NO,0.912,0.917,0.943,190.53,1,17.13,-0.005,2026-02-18T00:00:00Z
+2026-02-15,2026-02,tech_econ,Judy Shelton Fed Chair Nomination Odds >5% by Feb 20?,NO,0.964,0.969,0.978,190.87,1,6.11,0.005,2026-02-20T00:00:00Z
+2026-02-15,2026-02,geo,Will BV Borussia 09 Dortmund win on 2026-02-25?,YES,0.605,0.617,0.625,34.01,0,-34.01,-0.322,2026-02-25T17:45:00Z
+2026-02-16,2026-02,politics,Will Hannah Spencer win the Gorton and Denton by-election?,YES,0.69,0.702,0.739,190.32,1,80.79,0.023,2026-02-26T00:00:00Z
+2026-02-16,2026-02,geo,Will BV Borussia 09 Dortmund win on 2026-02-21?,NO,0.665,0.677,0.695,88.28,1,42.12,0.008,2026-02-21T17:30:00Z
+2026-02-18,2026-02,geo,Iran strike on US military by February 28?,NO,0.885,0.893,0.92,143.91,0,-143.91,0.037,2026-02-28T00:00:00Z
+2026-02-18,2026-02,politics,Will Trump admin release any more Epstein related files by January 24?,NO,0.785,0.797,0.843,189.9,1,48.37,-0.012,2026-02-28T00:00:00Z
+2026-02-18,2026-02,tech_econ,Will xAI have the best AI model at the end of February 2026?,NO,0.964,0.969,0.978,190.86,1,6.11,0.0275,2026-02-28T00:00:00Z
+2026-02-18,2026-02,tech_econ,Will Anthropic have the best AI model at the end of February 2026?,YES,0.672,0.684,0.696,57.07,1,26.31,0.255,2026-02-28T00:00:00Z
+2026-02-18,2026-02,tech_econ,Will Google have the best AI model at the end of February 2026?,NO,0.725,0.737,0.753,97.24,1,34.7,0.227,2026-02-28T00:00:00Z
+2026-02-20,2026-02,geo,Will BV Borussia 09 Dortmund win on 2026-02-25?,NO,0.685,0.697,0.718,69.92,1,30.39,0.008,2026-02-25T17:45:00Z
+2026-02-21,2026-02,tech_econ,Will Japan’s January 2026 unemployment rate be 2.4%?,NO,0.904,0.909,0.929,192.81,1,19.3,0.043,2026-03-03T00:00:00Z
+2026-02-21,2026-02,politics,Will James Talarico and Ken Paxton be the candidates for the Texas Sen,YES,0.61,0.622,0.641,82.69,1,50.25,-0.087,2026-03-03T00:00:00Z
+2026-02-21,2026-02,politics,Will Jasmine Crockett be the Democratic nominee for Senate in Texas?,NO,0.695,0.707,0.745,194.2,1,80.48,-0.057,2026-03-03T00:00:00Z
+2026-02-21,2026-02,politics,Will James Talarico be the Democratic nominee for Senate in Texas?,YES,0.695,0.707,0.745,195.81,1,81.15,-0.057,2026-03-03T00:00:00Z
+2026-02-21,2026-02,politics,Will Hannah Spencer win the Gorton and Denton by-election?,YES,0.645,0.657,0.685,133.72,1,69.81,0.068,2026-02-26T00:00:00Z
+2026-02-21,2026-02,politics,Will James Talarico and John Cornyn be the candidates for the Texas Se,NO,0.805,0.813,0.863,198.83,1,45.73,0.092,2026-03-03T00:00:00Z
+2026-02-23,2026-02,geo,Iran Strike on Israel by February 28?,NO,0.86,0.868,0.898,6.97,0,-6.97,0.037,2026-02-28T00:00:00Z
+2026-02-23,2026-02,tech_econ,Will Anthropic have the best AI model at the end of February 2026?,YES,0.961,0.966,0.976,199.61,1,7.03,-0.0265,2026-02-28T00:00:00Z
+2026-02-23,2026-02,politics,Will Gagan Kumar Thapa be the next Prime Minister of Nepal?,NO,0.765,0.777,0.823,199.75,1,57.33,0.003,2026-03-05T00:00:00Z
+2026-02-23,2026-02,politics,Will Pushpa Kamal Dahal (“Prachanda”) be the next Prime Minister of Ne,NO,0.953,0.958,0.98,200.9,1,8.81,0.0315,2026-03-05T00:00:00Z
+2026-02-23,2026-02,politics,Will Trump admin release any more Epstein related files by January 24?,NO,0.785,0.797,0.843,11.18,1,2.85,-0.012,2026-02-28T00:00:00Z
+2026-02-23,2026-02,tech_econ,Will Apple be the second-largest company in the world by market cap on,YES,0.695,0.707,0.721,77.45,1,32.1,0.27,2026-02-28T00:00:00Z
+2026-02-26,2026-02,politics,Will James Talarico and Ken Paxton be the candidates for the Texas Sen,YES,0.695,0.707,0.745,201.77,1,83.62,-0.172,2026-03-03T00:00:00Z
+2026-02-26,2026-02,tech_econ,Will Japan’s January 2026 unemployment rate be 2.4%?,NO,0.946,0.951,0.964,10.63,1,0.55,0.0015,2026-03-03T00:00:00Z
+2026-02-26,2026-02,politics,Will James Talarico and John Cornyn be the candidates for the Texas Se,NO,0.92,0.925,0.96,203.45,1,16.5,-0.02,2026-03-03T00:00:00Z
+2026-02-26,2026-02,politics,Will Jasmine Crockett be the Democratic nominee for Senate in Texas?,NO,0.795,0.807,0.853,203.78,1,48.74,-0.157,2026-03-03T00:00:00Z
+2026-02-26,2026-02,politics,Will James Talarico be the Democratic nominee for Senate in Texas?,YES,0.795,0.807,0.853,204.76,1,48.97,-0.157,2026-03-03T00:00:00Z
+2026-02-28,2026-02,politics,Will Gagan Kumar Thapa be the next Prime Minister of Nepal?,NO,0.645,0.657,0.685,139.34,1,72.74,0.123,2026-03-05T00:00:00Z
+2026-03-02,2026-03,geo,Will Iran strike Turkey in March?,NO,0.925,0.93,0.953,207.19,1,15.6,-0.078,2026-03-07T00:00:00Z
+2026-03-02,2026-03,geo,U.S. strike on Somalia by March 7?,YES,0.735,0.747,0.773,176.31,1,59.72,0.2515,2026-03-07T00:00:00Z
+2026-03-05,2026-03,geo,Will Train Dreams win Best Cinematography at the 98th Academy Awards?,NO,0.877,0.885,0.914,208.7,1,27.12,0.0625,2026-03-15T00:00:00Z
+2026-03-05,2026-03,geo,Will Michael B. Jordan win Best Actor at the 98th Academy Awards?,NO,0.654,0.666,0.682,84.69,0,-84.69,-0.135,2026-03-15T00:00:00Z
+2026-03-05,2026-03,geo,Will Sinners win Best Picture at the 98th Academy Awards?,NO,0.821,0.829,0.861,207.55,1,42.81,-0.026,2026-03-15T00:00:00Z
+2026-03-05,2026-03,geo,Will Ryan Coogler win Best Director at the 98th Academy Awards?,NO,0.942,0.947,0.966,208.4,1,11.66,-0.0015,2026-03-15T00:00:00Z
+2026-03-10,2026-03,geo,Will Ryan Coogler win Best Director at the 98th Academy Awards?,NO,0.928,0.933,0.956,208.64,1,14.98,0.0125,2026-03-15T00:00:00Z
+2026-03-10,2026-03,geo,Will Sinners win Best Picture at the 98th Academy Awards?,NO,0.772,0.784,0.813,208.94,1,57.39,0.0185,2026-03-15T00:00:00Z
+2026-03-10,2026-03,geo,Will Train Dreams win Best Cinematography at the 98th Academy Awards?,NO,0.915,0.92,0.945,210.08,1,18.27,0.0275,2026-03-15T00:00:00Z
+2026-03-12,2026-03,politics,Will the Freedom Movement (GS) win the most seats in the 2026 Slovenia,NO,0.865,0.873,0.918,210.45,0,-210.45,-0.223,2026-03-22T00:00:00Z
+2026-03-12,2026-03,politics,Will the Slovenian Democratic Party (SDS) win the most seats in the 20,YES,0.87,0.878,0.922,206.24,0,-206.24,-0.228,2026-03-22T00:00:00Z
+2026-03-12,2026-03,politics,Will Grégory Doucet win the 2026 Lyon mayoral election?,NO,0.911,0.916,0.954,202.12,0,-202.12,-0.7615,2026-03-22T00:00:00Z
+2026-03-12,2026-03,politics,Will Jean-Michel Aulas win the 2026 Lyon mayoral election?,YES,0.91,0.915,0.953,198.07,0,-198.07,-0.7605,2026-03-22T00:00:00Z
+2026-03-12,2026-03,politics,Will Janez Janša be the next Prime Minister of Slovenia?,YES,0.685,0.697,0.733,192.19,1,83.55,-0.032,2026-03-22T00:00:00Z
+2026-03-12,2026-03,politics,Will Anže Logar be the next Prime Minister of Slovenia?,NO,0.965,0.97,0.987,195.78,1,6.16,0.0125,2026-03-22T00:00:00Z
+2026-03-12,2026-03,politics,Will Robert Golob be the next Prime Minister of Slovenia?,NO,0.745,0.757,0.801,195.91,1,62.89,-0.072,2026-03-22T00:00:00Z
+2026-03-14,2026-03,politics,Will Troels Lund Poulsen be the next prime minister of Denmark after t,NO,0.78,0.792,0.838,197.16,1,51.78,0.028,2026-03-24T00:00:00Z
+2026-03-14,2026-03,politics,Will Lars Løkke Rasmussen be the next prime minister of Denmark after ,NO,0.952,0.957,0.98,198.2,1,8.91,0.004,2026-03-24T00:00:00Z
+2026-03-14,2026-03,politics,Will Alex Vanopslagh be the next prime minister of Denmark after the 2,NO,0.96,0.965,0.984,198.38,1,7.2,0.0115,2026-03-24T00:00:00Z
+2026-03-14,2026-03,politics,Will Mette Frederiksen be the next prime minister of Denmark after the,YES,0.68,0.692,0.727,188.47,1,83.89,0.073,2026-03-24T00:00:00Z
+2026-03-16,2026-03,geo,Will Ukraine win on 2026-03-26?,NO,0.685,0.697,0.718,113.01,1,49.13,-0.022,2026-03-26T19:45:00Z
+2026-03-16,2026-03,geo,Will Ukraine vs. Sweden end in a draw?,NO,0.69,0.702,0.723,88.17,1,37.43,0.003,2026-03-26T19:45:00Z
+2026-03-17,2026-03,politics,Will the Slovenian Democratic Party (SDS) win the most seats in the 20,YES,0.9,0.905,0.946,201.93,0,-201.93,-0.255,2026-03-22T00:00:00Z
+2026-03-17,2026-03,politics,Will the Freedom Movement (GS) win the most seats in the 2026 Slovenia,NO,0.91,0.915,0.953,197.89,0,-197.89,-0.265,2026-03-22T00:00:00Z
+2026-03-17,2026-03,politics,Will Benoît Payan win the Marseille mayor election?,YES,0.905,0.91,0.949,193.93,1,19.18,0.065,2026-03-22T00:00:00Z
+2026-03-17,2026-03,politics,Will Jean-Michel Aulas win the 2026 Lyon mayoral election?,NO,0.83,0.838,0.887,194.32,1,37.57,0.0075,2026-03-22T00:00:00Z
+2026-03-17,2026-03,politics,Will Robert Golob be the next Prime Minister of Slovenia?,NO,0.805,0.813,0.863,195.07,1,44.87,-0.128,2026-03-22T00:00:00Z
+2026-03-17,2026-03,politics,Will Janez Janša be the next Prime Minister of Slovenia?,YES,0.735,0.747,0.79,195.97,1,66.37,-0.082,2026-03-22T00:00:00Z
+2026-03-17,2026-03,politics,Will Anže Logar be the next Prime Minister of Slovenia?,NO,0.943,0.948,0.974,197.29,1,10.93,0.0345,2026-03-22T00:00:00Z
+2026-03-19,2026-03,politics,Will Troels Lund Poulsen be the next prime minister of Denmark after t,NO,0.845,0.853,0.901,197.51,1,34.04,-0.033,2026-03-24T00:00:00Z
+2026-03-19,2026-03,politics,Will Lars Løkke Rasmussen be the next prime minister of Denmark after ,NO,0.964,0.969,0.986,198.19,1,6.34,-0.008,2026-03-24T00:00:00Z
+2026-03-19,2026-03,politics,Will Mette Frederiksen be the next prime minister of Denmark after the,YES,0.785,0.797,0.843,198.32,1,50.51,-0.032,2026-03-24T00:00:00Z
+2026-03-21,2026-03,politics,"Will Trump say ""Third term"" in March?",NO,0.77,0.782,0.828,199.33,1,55.57,0.083,2026-03-31T00:00:00Z
+2026-03-21,2026-03,tech_econ,Tesla launches unsupervised full self driving (FSD) by March 31?,YES,0.945,0.95,0.963,200.44,1,10.55,-0.005,2026-03-31T00:00:00Z
+2026-03-21,2026-03,geo,Will the US conduct a cyberattack on Iran by March 31?,NO,0.88,0.888,0.916,200.65,1,25.31,0.0795,2026-03-31T00:00:00Z
+2026-03-21,2026-03,tech_econ,"GPT-5.3 released by March 31, 2026?",YES,0.95,0.955,0.967,201.16,1,9.59,-0.005,2026-03-31T00:00:00Z
+2026-03-21,2026-03,tech_econ,Will Apple be the second-largest company in the world by market cap on,NO,0.62,0.632,0.637,23.44,0,-23.44,-0.6235,2026-03-31T00:00:00Z
+2026-03-21,2026-03,geo,Will the U.S. tariff rate on China be between 15% and 25% on March 31?,NO,0.875,0.883,0.912,200.88,1,26.62,0.091,2026-03-31T00:00:00Z
+2026-03-21,2026-03,politics,Will Social Democratic Party win the most seats in the Løgting in the ,NO,0.92,0.925,0.96,201.41,1,16.33,0.0645,2026-03-26T00:00:00Z
+2026-03-21,2026-03,tech_econ,Will Anthropic have the best AI model for coding on March 31?,NO,0.958,0.963,0.973,201.74,1,7.75,0.0195,2026-03-31T00:00:00Z
+2026-03-21,2026-03,geo,Nothing Ever Happens: US Strike Edition,NO,0.695,0.707,0.729,124.93,1,51.77,-0.012,2026-03-31T00:00:00Z
+2026-03-21,2026-03,geo,"US strikes Yemen by March 31, 2026?",NO,0.774,0.786,0.814,202.93,1,55.25,-0.1145,2026-03-31T00:00:00Z
+2026-03-21,2026-03,politics,2026 U.S. Senate Election: Republican Odds under 40% by March 31?,NO,0.921,0.926,0.961,204.04,1,16.31,0.039,2026-03-31T00:00:00Z
+2026-03-22,2026-03,tech_econ,Will USD.AI launch a token by March 31?,YES,0.67,0.682,0.693,59.17,0,-59.17,-0.607,2026-04-01T04:00:00Z
+2026-03-26,2026-03,geo,Nothing Ever Happens: US Strike Edition,NO,0.695,0.707,0.729,125.72,1,52.1,-0.012,2026-03-31T00:00:00Z
+2026-03-26,2026-03,tech_econ,Will Anthropic have the best AI model for coding on March 31?,NO,0.952,0.957,0.968,204.22,1,9.29,0.026,2026-03-31T00:00:00Z
+2026-03-26,2026-03,politics,Will Trump talk to Xi Jinping in March?,NO,0.855,0.863,0.909,5.08,1,0.81,-0.138,2026-03-31T00:00:00Z
+2026-03-26,2026-03,tech_econ,"GPT-5.3 released by March 31, 2026?",YES,0.95,0.955,0.967,204.42,1,9.74,-0.005,2026-03-31T00:00:00Z
+2026-03-26,2026-03,tech_econ,Will Apple be the second-largest company in the world by market cap on,YES,0.93,0.935,0.951,204.62,1,14.22,0.0565,2026-03-31T00:00:00Z
+2026-03-26,2026-03,geo,"US strikes Yemen by March 31, 2026?",NO,0.885,0.893,0.92,204.9,1,24.55,-0.2215,2026-03-31T00:00:00Z
+2026-03-26,2026-03,politics,2026 U.S. Senate Election: Republican Odds under 40% by March 31?,NO,0.946,0.951,0.976,205.39,1,10.58,0.014,2026-03-31T00:00:00Z
+2026-03-27,2026-03,tech_econ,Will USD.AI launch a token by March 31?,NO,0.755,0.767,0.785,131.41,1,39.92,0.158,2026-04-01T04:00:00Z
+2026-03-28,2026-03,geo,US x Iran ceasefire by April 7?,NO,0.855,0.863,0.894,5.75,0,-5.75,0.032,2026-04-07T00:00:00Z
+2026-04-02,2026-04,politics,Hungary Election: TISZA wins a constitutional majority?,NO,0.73,0.742,0.767,169.07,0,-169.07,-0.012,2026-04-12T00:00:00Z
+2026-04-02,2026-04,politics,Will Tisza win the most national list votes in the 2026 Hungarian parl,YES,0.79,0.802,0.831,202.91,1,50.09,0.043,2026-04-12T00:00:00Z
+2026-04-02,2026-04,geo,US x Iran ceasefire by April 7?,NO,0.895,0.903,0.929,198.16,0,-198.16,-0.008,2026-04-07T00:00:00Z
+2026-04-02,2026-04,politics,Will Rafael López Aliaga finish in second place in the first round of ,NO,0.7,0.712,0.734,129.25,1,52.28,0.053,2026-04-12T00:00:00Z
+2026-04-02,2026-04,politics,Will Tisza win the national list vote in the 2026 Hungarian Parliament,NO,0.61,0.622,0.631,40.15,0,-40.15,-0.112,2026-04-12T00:00:00Z
+2026-04-02,2026-04,politics,Will Roberto Sánchez Palomino finish in second place in the first roun,NO,0.91,0.915,0.941,200.19,0,-200.19,-0.048,2026-04-12T00:00:00Z
+2026-04-02,2026-04,politics,Will Keiko Fujimori finish in first place in the first round of the 20,NO,0.865,0.873,0.903,196.18,0,-196.18,-0.653,2026-04-12T00:00:00Z
+2026-04-02,2026-04,politics,Will Carlos Álvarez win the 2026 Peruvian presidential election?,NO,0.938,0.943,0.963,192.26,1,11.73,-0.114,2026-04-12T00:00:00Z
+2026-04-02,2026-04,politics,Will Fidesz–KDNP win the most national list votes in the 2026 Hungaria,NO,0.745,0.757,0.784,175.34,1,56.29,0.073,2026-04-12T00:00:00Z
+2026-04-02,2026-04,politics,Will the next Prime Minister of Hungary be Viktor Orbán?,NO,0.655,0.667,0.683,79.33,1,39.6,0.018,2026-04-12T00:00:00Z
+2026-04-02,2026-04,politics,Will the next Prime Minister of Hungary be Péter Magyar?,YES,0.635,0.647,0.66,60.88,1,33.21,0.038,2026-04-12T00:00:00Z
+2026-04-07,2026-04,politics,Will the next Prime Minister of Hungary be Péter Magyar?,YES,0.655,0.667,0.683,79.92,1,39.9,0.018,2026-04-12T00:00:00Z
+2026-04-07,2026-04,politics,Will Carlos Álvarez win the 2026 Peruvian presidential election?,NO,0.684,0.697,0.717,110.04,1,47.95,0.132,2026-04-12T00:00:00Z
+2026-04-07,2026-04,politics,Will Rafael López Aliaga finish in second place in the first round of ,NO,0.735,0.747,0.773,167.25,1,56.64,0.018,2026-04-12T00:00:00Z
+2026-04-07,2026-04,politics,Hungary Election: TISZA wins a constitutional majority?,NO,0.75,0.762,0.789,186.49,0,-186.49,-0.032,2026-04-12T00:00:00Z
+2026-04-07,2026-04,politics,Will Fidesz–KDNP win the most national list votes in the 2026 Hungaria,NO,0.795,0.807,0.836,194.24,1,46.45,0.023,2026-04-12T00:00:00Z
+2026-04-07,2026-04,politics,Will Roberto Sánchez Palomino finish in second place in the first roun,NO,0.86,0.868,0.898,195.17,0,-195.17,-0.001,2026-04-12T00:00:00Z
+2026-04-07,2026-04,politics,Will Fidesz-KDNP win the national list vote in the 2026 Hungarian Parl,NO,0.931,0.936,0.958,191.26,1,12.97,0.039,2026-04-12T00:00:00Z
+2026-04-07,2026-04,politics,Will Tisza win the national list vote in the 2026 Hungarian Parliament,NO,0.6,0.612,0.619,30.01,0,-30.01,-0.102,2026-04-12T00:00:00Z
+2026-04-07,2026-04,politics,Will TISZA – Respect and Freedom Party (TISZA) win the most seats in t,YES,0.695,0.707,0.729,118.14,1,48.96,0.023,2026-04-12T00:00:00Z
+2026-04-07,2026-04,politics,Will Fidesz–KDNP win the most seats in the next Hungarian parliamentar,NO,0.695,0.707,0.729,118.74,1,49.21,0.038,2026-04-12T00:00:00Z
+2026-04-10,2026-04,politics,"Trump announces US x Iran ceasefire end by April 15, 2026?",NO,0.79,0.802,0.831,192.89,1,47.62,-0.012,2026-04-15T00:00:00Z
+2026-04-10,2026-04,politics,Will Trump praise Allah again by April 15?,NO,0.925,0.93,0.953,193.84,0,-193.84,-0.005,2026-04-15T00:00:00Z
+2026-04-13,2026-04,politics,Will Tamilaga Vettri Kazhagam (TVK) win the most seats in the 2026 Tam,NO,0.942,0.947,0.966,189.96,0,-189.96,-0.005,2026-04-23T00:00:00Z
+2026-04-13,2026-04,politics,Will the Dravida Munnetra Kazhagam (DMK) win the most seats in the 202,YES,0.755,0.767,0.794,181.23,0,-181.23,0.028,2026-04-23T00:00:00Z
+2026-04-13,2026-04,politics,Will the All India Anna Dravida Munnetra Kazhagam (ADMK) win the most ,NO,0.863,0.871,0.901,182.54,1,27.16,-0.029,2026-04-23T00:00:00Z
+2026-04-16,2026-04,politics,"Trump announces US x Iran ceasefire end by April 21, 2026?",NO,0.765,0.777,0.805,183.08,1,52.54,0.158,2026-04-21T00:00:00Z
+2026-04-16,2026-04,geo,Will BV Borussia 09 Dortmund win on 2026-04-26?,YES,0.645,0.657,0.672,66.43,1,34.68,0.048,2026-04-26T15:30:00Z
+2026-04-18,2026-04,politics,Will the All India Anna Dravida Munnetra Kazhagam (ADMK) win the most ,NO,0.863,0.871,0.901,184.83,1,27.5,-0.029,2026-04-23T00:00:00Z
+2026-04-18,2026-04,politics,Will Tamilaga Vettri Kazhagam (TVK) win the most seats in the 2026 Tam,NO,0.942,0.947,0.966,185.38,0,-185.38,-0.005,2026-04-23T00:00:00Z
+2026-04-18,2026-04,politics,Will the Dravida Munnetra Kazhagam (DMK) win the most seats in the 202,YES,0.735,0.747,0.773,154.36,0,-154.36,0.048,2026-04-23T00:00:00Z
+2026-04-19,2026-04,tech_econ,Will one person dissent the April Fed decision?,YES,0.735,0.747,0.764,98.33,1,33.3,0.098,2026-04-29T00:00:00Z
+2026-04-20,2026-04,tech_econ,Will Anthropic have the best AI model at the end of April 2026?,YES,0.905,0.91,0.93,179.25,1,17.73,0.025,2026-04-30T00:00:00Z
+2026-04-20,2026-04,tech_econ,Will OpenAI have the best AI model at the end of April 2026?,NO,0.928,0.933,0.95,179.6,1,12.79,0.0135,2026-04-30T00:00:00Z
+2026-04-20,2026-04,politics,Will Donald Trump announce that the United States blockade of the Stra,NO,0.95,0.955,0.972,179.86,1,8.47,-0.005,2026-04-30T00:00:00Z
+2026-04-20,2026-04,tech_econ,"Will GPT-5.5 be released on April 23, 2026?",YES,0.745,0.757,0.774,107.01,1,34.35,0.118,2026-04-30T00:00:00Z
+2026-04-21,2026-04,geo,Will BV Borussia 09 Dortmund win on 2026-04-26?,YES,0.68,0.692,0.712,97.2,1,43.26,0.013,2026-04-26T15:30:00Z
+2026-04-23,2026-04,geo,"US x Iran diplomatic meeting by April 28, 2026?",NO,0.615,0.627,0.637,40.27,1,23.96,-0.242,2026-04-28T00:00:00Z
+2026-04-24,2026-04,geo,"US x Iran diplomatic meeting by April 29, 2026?",NO,0.625,0.637,0.649,48.58,1,27.68,0.268,2026-04-29T00:00:00Z
+2026-04-24,2026-04,tech_econ,Will one person dissent the April Fed decision?,YES,0.725,0.737,0.753,84.29,1,30.08,0.108,2026-04-29T00:00:00Z
+2026-04-25,2026-04,geo,"Will Iran conduct a military action against Israel on April 8, 2026?",YES,0.94,0.945,0.964,94.36,1,5.54,-0.005,2026-04-30T00:00:00Z
+2026-04-25,2026-04,tech_econ,"Will GPT-5.5 be released on April 23, 2026?",YES,0.875,0.883,0.904,183.32,1,24.29,-0.008,2026-04-30T00:00:00Z
+2026-04-25,2026-04,tech_econ,Will OpenAI have the best AI model at the end of April 2026?,NO,0.903,0.908,0.929,183.81,1,18.51,0.0385,2026-04-30T00:00:00Z
+2026-04-25,2026-04,tech_econ,Will Anthropic have the best AI model at the end of April 2026?,YES,0.885,0.893,0.913,184.18,1,22.07,0.042,2026-04-30T00:00:00Z
+2026-04-28,2026-04,geo,Will BV Borussia 09 Dortmund win on 2026-05-08?,YES,0.63,0.642,0.654,53.51,1,29.84,0.003,2026-05-08T18:30:00Z
+2026-04-30,2026-04,geo,"US x Iran diplomatic meeting by May 5, 2026?",NO,0.915,0.92,0.945,90.86,1,7.9,0.0525,2026-05-05T00:00:00Z
+2026-05-03,2026-05,politics,Will Donald Trump announce that the United States blockade of the Stra,NO,0.955,0.96,0.975,185.38,1,7.72,0.0165,2026-05-08T00:00:00Z
+2026-05-05,2026-05,tech_econ,"Jerome Powell out as Fed Chair by May 15, 2026?",NO,0.765,0.777,0.795,127.06,0,-127.06,-0.042,2026-05-15T00:00:00Z
+2026-05-05,2026-05,geo,"US x Iran diplomatic meeting by May 15, 2026?",NO,0.825,0.833,0.846,92.13,1,18.47,0.1435,2026-05-15T00:00:00Z
+2026-05-05,2026-05,geo,Kevin Warsh confirmed as Fed Chair by May 15?,YES,0.947,0.952,0.959,56.3,1,2.87,0.0215,2026-05-15T00:00:00Z
+2026-05-09,2026-05,politics,Will Thomas Massie be the Republican nominee for KY-04?,YES,0.745,0.757,0.784,167.07,0,-167.07,-0.142,2026-05-19T00:00:00Z
+2026-05-09,2026-05,politics,Will Ed Gallrein be the Republican nominee for KY-04?,NO,0.749,0.761,0.788,168.51,0,-168.51,-0.158,2026-05-19T00:00:00Z
+2026-05-10,2026-05,politics,"Will Trump say ""Iran"" during events with Xi Jinping?",YES,0.73,0.742,0.767,84.57,0,-84.57,-0.007,2026-05-15T00:00:00Z
+2026-05-10,2026-05,politics,Will Donald Trump announce that the United States blockade of the Stra,NO,0.845,0.853,0.884,175.01,1,30.16,0.1275,2026-05-15T00:00:00Z
+2026-05-14,2026-05,politics,Will Thomas Massie be the Republican nominee for KY-04?,YES,0.685,0.697,0.718,99.13,0,-99.13,-0.082,2026-05-19T00:00:00Z
+2026-05-14,2026-05,politics,Will Ed Gallrein be the Republican nominee for KY-04?,NO,0.67,0.682,0.701,84.31,0,-84.31,-0.079,2026-05-19T00:00:00Z
+2026-05-16,2026-05,geo,Iran closes its airspace by May 21?,NO,0.825,0.833,0.846,113.88,1,22.83,0.037,2026-05-21T00:00:00Z
+2026-05-16,2026-05,politics,Will Ken Paxton win the 2026 Texas Republican Primary?,YES,0.615,0.627,0.637,38.24,1,22.75,0.318,2026-05-26T00:00:00Z
+2026-05-16,2026-05,politics,Will John Cornyn win the 2026 Texas Republican Primary?,NO,0.615,0.627,0.637,38.34,1,22.81,0.328,2026-05-26T00:00:00Z
+2026-05-17,2026-05,politics,Will Donald Trump announce that the United States blockade of the Stra,NO,0.905,0.91,0.937,173.32,1,17.14,0.015,2026-05-22T00:00:00Z
+2026-05-17,2026-05,politics,Will Trump announce a tariff reduction on China?,NO,0.82,0.828,0.861,173.66,1,36.07,0.077,2026-05-22T00:00:00Z
+2026-05-21,2026-05,politics,Ruben Rocha out as Governor of Sinaloa by May 31?,NO,0.771,0.783,0.811,174.38,1,48.33,0.15,2026-05-31T00:00:00Z
+2026-05-21,2026-05,politics,Will John Cornyn win the 2026 Texas Republican Primary?,NO,0.945,0.95,0.968,175.35,1,9.23,0.005,2026-05-26T00:00:00Z
+2026-05-21,2026-05,politics,Will Ken Paxton win the 2026 Texas Republican Primary?,YES,0.945,0.95,0.968,175.53,1,9.24,-0.005,2026-05-26T00:00:00Z
+2026-05-21,2026-05,geo,"Will Israel launch a ground operation in Iran by May 31, 2026?",NO,0.925,0.93,0.941,61.84,1,4.65,0.0415,2026-05-31T00:00:00Z
+2026-05-21,2026-05,tech_econ,Will Anthropic have the best AI model at the end of May 2026?,YES,0.963,0.968,0.977,175.81,1,5.91,0.021,2026-05-31T00:00:00Z
+2026-05-22,2026-05,geo,Iran closes its airspace by May 27?,NO,0.725,0.737,0.744,38.47,1,13.73,0.1105,2026-05-27T00:00:00Z
+2026-05-23,2026-05,politics,Will Tom Steyer advance from the 2026 California Governor primary elec,NO,0.73,0.742,0.767,144.41,1,50.21,-0.067,2026-06-02T00:00:00Z
+2026-05-23,2026-05,politics,Will Karen Bass & Spencer Pratt advance to the second round of the 202,YES,0.695,0.707,0.729,109.65,0,-109.65,-0.072,2026-06-02T00:00:00Z
+2026-05-23,2026-05,politics,Will Karen Bass & Nithya Raman advance to the second round of the 2026,NO,0.72,0.732,0.756,133.1,0,-133.1,0.013,2026-06-02T00:00:00Z
+2026-05-24,2026-05,politics,Will Park Wan-soo win the 2026 Gyeongsangnam Province Gubernatorial El,YES,0.62,0.632,0.643,42.08,1,24.5,-0.002,2026-06-03T06:00:00Z
+2026-05-24,2026-05,politics,Will Kim Tae-heum win the 2026 Chungcheongnam Province gubernatorial e,NO,0.777,0.789,0.818,172.84,1,46.08,0.0895,2026-06-03T00:00:00Z
+2026-05-24,2026-05,politics,Will Chong Won-oh win the 2026 Seoul Mayoral Election,YES,0.705,0.717,0.74,117.19,0,-117.19,0.108,2026-06-03T00:00:00Z
+2026-05-24,2026-05,politics,Will Yoo Jeong-bok win the 2026 Incheon mayoral election?,NO,0.959,0.964,0.977,171.42,1,6.49,0.006,2026-06-03T00:00:00Z
+2026-05-24,2026-05,politics,Will Oh Se-hoon win the 2026 Seoul Mayoral Election,NO,0.695,0.707,0.729,106.15,0,-106.15,0.118,2026-06-03T00:00:00Z
+2026-05-24,2026-05,politics,Will Kim Kyung-soo win the 2026 Gyeongsangnam Province Gubernatorial E,NO,0.62,0.632,0.643,41.37,1,24.09,-0.002,2026-06-03T06:00:00Z
+2026-05-24,2026-05,politics,Will Park Soo-hyun win the 2026 Chungcheongnam Province gubernatorial ,YES,0.75,0.762,0.789,160.59,1,50.02,0.104,2026-06-03T00:00:00Z
+2026-05-24,2026-05,politics,Will Choo Mi-ae win the 2026 Gyeonggi Province Gubernatorial Election?,YES,0.963,0.968,0.98,170.91,1,5.65,0.0105,2026-06-03T00:00:00Z
+2026-05-24,2026-05,politics,Will Kim Boo-kyum win the 2026 Daegu mayoral election?,NO,0.815,0.823,0.856,171.02,1,36.78,0.057,2026-06-03T00:00:00Z
+2026-05-25,2026-05,geo,US announces new Iran agreement/ceasefire extension by May 31?,YES,0.79,0.802,0.811,66.05,0,-66.05,-0.387,2026-05-30T00:00:00Z
+2026-05-26,2026-05,politics,Will Donald Trump announce that the United States blockade of the Stra,NO,0.7,0.712,0.734,110.17,1,44.56,0.178,2026-05-31T00:00:00Z
+2026-05-26,2026-05,politics,"Will Donald Trump dance on May 25, 2026?",NO,0.935,0.94,0.961,61.15,1,3.9,0.0595,2026-05-31T00:00:00Z
+2026-05-26,2026-05,politics,Will Trump agree to Iranian oil sanction relief by May 31?,NO,0.77,0.782,0.81,5.05,1,1.41,0.143,2026-05-31T00:00:00Z
+2026-05-26,2026-05,politics,Ruben Rocha out as Governor of Sinaloa by May 31?,NO,0.902,0.907,0.935,171.43,1,17.47,0.0255,2026-05-31T00:00:00Z
+2026-05-28,2026-05,politics,Will Tom Steyer advance from the 2026 California Governor primary elec,NO,0.615,0.627,0.637,38.1,1,22.67,0.048,2026-06-02T00:00:00Z
+2026-05-28,2026-05,politics,Will Karen Bass & Nithya Raman advance to the second round of the 2026,NO,0.85,0.858,0.889,172.24,0,-172.24,-0.113,2026-06-02T00:00:00Z
+2026-05-28,2026-05,politics,Will Civil Contract win the most seats in the 2026 Armenian National A,YES,0.925,0.93,0.953,168.79,1,12.7,0.044,2026-06-07T00:00:00Z
+2026-05-28,2026-05,politics,Will Karen Bass & Spencer Pratt advance to the second round of the 202,YES,0.73,0.742,0.767,138.55,0,-138.55,-0.107,2026-06-02T00:00:00Z
+2026-05-28,2026-05,politics,Will Roberto Sánchez Palomino win the 2026 Peruvian presidential elect,NO,0.713,0.725,0.749,119.71,1,45.41,0.0135,2026-06-07T00:00:00Z
+2026-05-28,2026-05,politics,Will Keiko Fujimori win the 2026 Peruvian presidential election?,YES,0.715,0.727,0.751,122.29,1,45.92,0.018,2026-06-07T00:00:00Z
+2026-05-28,2026-05,geo,Israel announces Lebanon ceasefire extension by June 7?,NO,0.76,0.772,0.78,35.16,0,-35.16,-0.7705,2026-06-07T00:00:00Z
+2026-05-29,2026-05,politics,Will Kim Boo-kyum win the 2026 Daegu mayoral election?,NO,0.895,0.903,0.929,167.4,1,17.98,-0.023,2026-06-03T00:00:00Z
+2026-05-29,2026-05,politics,Will Chong Won-oh win the 2026 Seoul Mayoral Election,YES,0.765,0.777,0.805,167.76,0,-167.76,0.048,2026-06-03T00:00:00Z
+2026-05-29,2026-05,politics,Will Choo Kyung-ho win the 2026 Daegu mayoral election?,YES,0.895,0.903,0.929,164.4,1,17.66,-0.018,2026-06-03T00:00:00Z
+2026-05-29,2026-05,politics,Will Kim Tae-heum win the 2026 Chungcheongnam Province gubernatorial e,NO,0.846,0.854,0.885,164.75,1,28.28,0.0255,2026-06-03T00:00:00Z
+2026-05-29,2026-05,politics,Will Park Soo-hyun win the 2026 Chungcheongnam Province gubernatorial ,YES,0.85,0.858,0.889,165.32,1,27.36,0.0085,2026-06-03T00:00:00Z
+2026-05-29,2026-05,politics,Will Yoo Jeong-bok win the 2026 Incheon mayoral election?,NO,0.956,0.961,0.975,165.87,1,6.82,0.009,2026-06-03T00:00:00Z
+2026-05-29,2026-05,politics,Will Oh Se-hoon win the 2026 Seoul Mayoral Election,NO,0.755,0.767,0.794,161.61,0,-161.61,0.058,2026-06-03T00:00:00Z
+2026-06-02,2026-06,politics,Will Donald Trump announce that the United States blockade of the Stra,NO,0.875,0.883,0.912,162.77,1,21.57,0.062,2026-06-07T00:00:00Z
+2026-06-02,2026-06,politics,Will Civil Contract win the most seats in the 2026 Armenian National A,YES,0.925,0.93,0.953,163.2,1,12.28,0.044,2026-06-07T00:00:00Z
+2026-06-02,2026-06,geo,"US x Iran permanent peace deal by June 7, 2026?",NO,0.935,0.94,0.949,128.29,1,8.19,0.013,2026-06-07T00:00:00Z
+2026-06-02,2026-06,politics,Will Keiko Fujimori win the 2026 Peruvian presidential election?,YES,0.755,0.767,0.794,159.28,1,48.39,-0.022,2026-06-07T00:00:00Z
+2026-06-02,2026-06,politics,Will Roberto Sánchez Palomino win the 2026 Peruvian presidential elect,NO,0.758,0.77,0.797,162.84,1,48.78,-0.031,2026-06-07T00:00:00Z
+2026-06-09,2026-06,politics,Will President Trump attend the NBA Finals?,YES,0.956,0.961,0.975,165.56,1,6.81,0.039,2026-06-19T00:00:00Z
+2026-06-10,2026-06,geo,Israel closes its airspace by June 15?,NO,0.895,0.903,0.914,149.48,1,16.06,0.066,2026-06-15T00:00:00Z
+2026-06-10,2026-06,geo,Will Iran close its airspace by June 14?,NO,0.695,0.707,0.712,16.54,1,6.85,0.2425,2026-06-15T03:59:00Z
+2026-06-11,2026-06,politics,Will Ivan Cepeda Castro win the 2026 Colombian presidential election?,NO,0.855,0.863,0.894,166.15,1,26.38,0.042,2026-06-21T14:00:00Z
+2026-06-11,2026-06,politics,Will Abelardo de la Espriella  win the 2026 Colombian presidential ele,YES,0.865,0.873,0.903,166.68,1,24.25,0.042,2026-06-21T14:00:00Z
+2026-06-16,2026-06,politics,Will Ivan Cepeda Castro win the 2026 Colombian presidential election?,NO,0.885,0.893,0.92,167.16,1,20.03,0.012,2026-06-21T14:00:00Z
+2026-06-16,2026-06,politics,Will Abelardo de la Espriella  win the 2026 Colombian presidential ele,YES,0.885,0.893,0.92,167.56,1,20.08,0.022,2026-06-21T14:00:00Z
+2026-06-16,2026-06,geo,Will IR Iran win on 2026-06-21?,NO,0.885,0.893,0.904,146.44,1,17.55,-0.008,2026-06-21T19:00:00Z
+2026-06-16,2026-06,geo,"US x Iran diplomatic meeting by June 21, 2026?",YES,0.885,0.893,0.904,21.88,1,2.62,-0.0195,2026-06-21T00:00:00Z
+2026-06-20,2026-06,politics,"Will Donald Trump publicly insult Benjamin Netanyahu by June 30, 2026?",NO,0.675,0.687,0.706,86.13,0,-86.13,0.023,2026-06-30T00:00:00Z
+2026-06-20,2026-06,politics,Tamas Sulyok out as President of Hungary by June 30?,NO,0.945,0.95,0.968,166.65,1,8.77,0.005,2026-06-30T00:00:00Z
+2026-06-20,2026-06,politics,"Aleksandar Vučić out as Serbian President by June 30, 2026?",NO,0.949,0.954,0.971,166.82,0,-166.82,0.021,2026-06-30T00:00:00Z
+2026-06-20,2026-06,tech_econ,Will Anthropic have the best AI model at the end of June 2026?,YES,0.962,0.967,0.976,163.48,1,5.67,0.023,2026-06-30T00:00:00Z
+2026-06-22,2026-06,geo,Will IR Iran win on 2026-06-26?,NO,0.765,0.777,0.786,52.28,1,15.01,-0.022,2026-06-27T03:00:00Z
+2026-06-23,2026-06,geo,"US x Iran diplomatic meeting by July 3, 2026?",NO,0.82,0.828,0.841,105.67,1,21.95,0.077,2026-07-03T23:59:00Z
+2026-06-25,2026-06,politics,Tamas Sulyok out as President of Hungary by June 30?,NO,0.95,0.955,0.972,164.34,1,7.74,0.0,2026-06-30T00:00:00Z
+2026-06-25,2026-06,geo,"Israel strikes Iran by June 30, 2026?",YES,0.74,0.752,0.76,6.54,1,2.16,-0.012,2026-06-30T00:00:00Z
+2026-06-25,2026-06,politics,"Will Donald Trump publicly insult Benjamin Netanyahu by June 30, 2026?",NO,0.83,0.838,0.87,78.41,0,-78.41,-0.128,2026-06-30T00:00:00Z
+2026-06-28,2026-06,geo,"US x Iran diplomatic meeting by July 3, 2026?",NO,0.795,0.807,0.816,50.76,1,12.14,0.098,2026-07-03T23:59:00Z
+2026-07-01,2026-07,tech_econ,"GPT-5.6 released by July 6, 2026?",NO,0.9,0.905,0.926,163.21,1,17.13,0.0605,2026-07-06T00:00:00Z
+2026-07-02,2026-07,geo,Will a team from LPL (China) win MSI 2026?,NO,0.71,0.722,0.728,29.83,1,11.48,-0.297,2026-07-12T00:00:00Z
+2026-07-04,2026-07,tech_econ,"GPT-5.6 released by July 9, 2026?",YES,0.855,0.863,0.885,163.78,1,26.0,-0.108,2026-07-09T00:00:00Z
+2026-07-05,2026-07,geo,Iran full airspace closure by July 15?,NO,0.956,0.961,0.967,164.3,1,6.76,-0.0195,2026-07-15T23:59:00Z
+2026-07-07,2026-07,geo,Will a team from LPL (China) win MSI 2026?,NO,0.7,0.712,0.717,26.1,1,10.56,-0.287,2026-07-12T00:00:00Z
+2026-07-10,2026-07,politics,President Trump to Attend World Cup Final?,YES,0.905,0.91,0.937,164.65,1,16.28,0.0645,2026-07-20T03:59:00Z

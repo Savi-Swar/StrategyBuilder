@@ -1,0 +1,92 @@
+# Deep research: betting-backtest methodology (verified)
+
+The mature betting-evaluation literature converges on a clear methodology for the Jan–Jul 2026 Polymarket backtest: evaluate edge against a sharp reference price rather than realized ROI (Buchdahl shows expected returns computed from a sharp book's margin-removed prices predict realized returns nearly 1:1, while soft-book prices carry no such information), gate significance with a Monte-Carlo/bootstrap null under market efficiency rather than t-tests (Kaunitz et al.'s 10.82-sigma random-bet null and Winkelmann et al.'s simulated-outcome logit framework are documented templates), and expect low power — even 14 seasons of data detects a real |beta|=0.05 bias under 50% of the time, and per-period testing produces 78% family-wise false positives. On the market-microstructure side, Polymarket's own order-book data shows entry-price realism must be conditioned on price level (median ~400bps spreads mid-range, 1,300–1,800bps below 10c, ~53bps half-spread above 90c), executable depth is shallow (76.9% of arbitrage episodes capped at ~15 shares), and near-resolution windows must be excluded as convergence-contaminated. Statistically, bets must be clustered at the event and contract level, Yes/No sides must not be double-counted, calibration regressions must use normalized probabilities when an overround exists, and fees must be modeled explicitly. Finally, the favorite-longshot bias is robustly documented on Kalshi (sub-10c contracts lose >60%) but the sports literature warns that statistically significant calibration bias is frequently unexploitable net of spread and fees — the report card should therefore require both a positive Monte-Carlo-null-significant net return AND a positive CLV-analogue (entry price vs later pre-resolution price) before declaring the model real.
+
+## Findings
+
+### CLV/sharp-reference-price logic is empirically validated: expected value computed against ...
+CLV/sharp-reference-price logic is empirically validated: expected value computed against a sharp book's margin-removed price predicts realized returns almost exactly 1:1 (37,303 matches, 2012–2017; expected 0.95 → actual ~0.95, gradients ~1), while the reverse test using soft-book prices to predict returns at the sharp book shows essentially no correlation. Implication for Polymarket: the evaluation benchmark price must come from the sharpest available reference (e.g., later/final pre-resolution Polymarket price or a cross-venue sharp quote), not just any quoted price.
+
+*high | 3-0 (both underlying claims)*
+
+Verified verbatim against the primary PDF (Buchdahl): 'The correlation is strong and almost 1:1 for each of the four brands' (p.16) and 'There is essentially no meaningful correlation between expected return (as predicted by the fair prices of the four UK bookmakers) and actual return betting Pinnacle's odds' (p.17). Robustness checks rule out margin-removal artifacts. Caveat: practitioner whitepaper, not peer-reviewed; odds were simultaneous quo
+
+### A documented end-to-end template for a calibration-correction backtest exists (Kaunitz, Zh...
+A documented end-to-end template for a calibration-correction backtest exists (Kaunitz, Zhong & Kreiner 2017): consensus bookmaker odds are a near-perfect proxy for outcome probability up to a small constant intercept (R² 0.995–0.999 over 479,440 games, intercepts ≈ −0.034 to −0.057), and betting maximum odds mispriced vs consensus at closing yielded 44.4% accuracy and +3.5% ROI ($98,865 over 56,435 flat $50 bets, 2005–2015).
+
+*high | 3-0 (claims 0 and 1)*
+
+All figures verified verbatim in the primary PDF, including the betting rule max odds > 1/(p_cons − 0.05) (Eq. 7) derived from the fitted intercepts. Caveats: arXiv preprint (public code/data but not peer-reviewed); R² values come from an 80-bin calibration curve, not per-game fits; assumes best-available odds were executable.
+
+### The correct significance gate for a betting record is a Monte-Carlo/bootstrap null, not a ...
+The correct significance gate for a betting record is a Monte-Carlo/bootstrap null, not a t-test. Two documented templates: (a) Kaunitz et al. ran 2,000 simulations of 56,435 random bets matching the strategy's outcome-type proportions at maximum odds (null mean −3.32%; strategy 10.82 SD above, p < 1e-9); (b) Gross & Rebeggiani bootstrap-resample the full bet sample (Efron 1979) to build return confidence intervals, stressing that deviations from the random-betting benchmark are only interpretable if the trading rule was pre-specified before examining the data. Note the two nulls differ: randomized bet selection vs resampled realized bets — a third variant, simulating outcomes from market-implied probabilities, is documented in Winkelmann et al. and Hegarty & Whelan.
+
+*high | 3-0 (claims 2 and 9)*
+
+Both verified verbatim against primary full texts. Kaunitz: 'The return of our strategy was 10.82 standard deviations above the mean return of the random bet strategy.' Gross & Rebeggiani (MPRA 87230): 'as long as the trading rule is prespecified before the data is examined, any significant deviation from the random betting return can be interpreted now as representative.' Caveat: Gross & Rebeggiani is a working paper.
+
+### Multiple testing and low power are severe in betting-record evaluation: under a fully effi...
+Multiple testing and low power are severe in betting-record evaluation: under a fully efficient market (Monte Carlo, outcomes drawn from market-implied probabilities calibrated to 14 Premier League seasons), the chance of a spuriously 'significant' full-period home bias at the 10% level is 11.43%, but the chance of at least one individually significant season is 77.63%; conversely, a real bias of |beta|=0.05 is detected under 50% of the time even with 14 seasons. Implication: a 6-month Polymarket backtest scanning many staking/threshold/category variants must control family-wise error, and small-sample 'edges' per category bucket are mostly noise.
+
+*high | 3-0 (claims 6, 7, 8)*
+
+Peer-reviewed (Winkelmann, Ötting, Deutscher & Makarewicz, Journal of Sports Economics 2024); all three numbers verified verbatim, including the exact simulation recipe (10,000 replications, logit regressions of bet outcome on implied probability plus bias covariates, sample sizes 1–14 seasons, induced biases βhome ∈ {−0.2,…,0.2}). The 77.63% is arithmetically consistent with ~1−0.9^14. Caveat: |beta|=0.05 is a logit coefficient in their FLB spec
+
+### Calibration-curve regression specification matters when a spread/overround exists: regress...
+Calibration-curve regression specification matters when a spread/overround exists: regressing outcomes on raw inverse odds (Pope–Peel) is systematically biased against finding favorite-longshot bias because under the efficiency null inverse odds are a multiple (not additive shift) of true probability; only normalized probabilities give a correctly sized test. Validated by exactly the Monte-Carlo efficient-market-null design the backtest needs: 10,000 bootstrapped simulated datasets show the inverse-odds test has median t ≈ −11.8 when the market is truly efficient (badly mis-sized), while the normalized-probability test has median t ≈ 0 and good power.
+
+*high | 3-0 (claims 11, 12)*
+
+Hegarty & Whelan (forthcoming, Sports Economics Review; peer-reviewed): abstract verbatim — 'the normalized probability method produces good tests… but the inverse odds method does not, with results biased against finding favorite-longshot bias'; Table 4 median t-stats −0.013 vs −11.811 confirmed. Caveat for Polymarket: binary YES/NO overround is far smaller than the ~8% bookmaker margins studied, so the bias magnitude is correspondingly smaller 
+
+### Documented favorite-longshot bias frequently does NOT survive as a profitable harvest: in ...
+Documented favorite-longshot bias frequently does NOT survive as a profitable harvest: in 252,690 soccer and 111,976 tennis bets (2011–2022, average closing odds), average payout per unit is below 1 in every odds decile — even the extreme-favorite 1% tail loses (0.997 soccer, 0.985 tennis). On Kalshi the bias is dramatic (sub-10c contracts lose >60%; above-50c contracts earn small significant positive returns; average pre-fee equal-weighted return ≈ −20%), yet statistically significant post-fee positive returns only appear above ~70c. Lesson: a significant calibration bias is a necessary but insufficient condition for a tradeable edge; the backtest must show profitability net of spread and fees, not just miscalibration.
+
+*high | 3-0 (claims 13, 19)*
+
+Both verified against primary PDFs. SER: 'the average payout per unit bet for even the lowest one percent of odds is 0.997 for the soccer data and 0.985 for the tennis data.' Kalshi (Bürgi, Deng & Whelan, Jan 2026, CEPR DP20631): 'investors who buy contracts costing less than 10c lose over 60 percent of their money… the average rate of return on Kalshi contracts is about minus 20%.' Caveats: Kalshi −20% is equal-weighted per-observation (dollar-w
+
+### Model-vs-market edge thresholds improve returns monotonically but often not past breakeven...
+Model-vs-market edge thresholds improve returns monotonically but often not past breakeven: requiring model probability ≥ 1.4× bookmaker implied probability improved average market return from −7.96% (random) to −1.72% — bootstrap-significant vs random betting for several bookmakers, yet still net-negative after margin. Implication: the Polymarket bet-selection threshold should be tuned for net profitability, and 'significantly better than random' is not the success criterion.
+
+*high | 3-0*
+
+Verified verbatim in MPRA 87230 conclusion and Table 3; monotone improvement holds for 13 of 14 bookmakers and the market average (one exception, EU 1). Caveat: 2018 working paper, not journal-published.
+
+### Polymarket entry-price realism must be conditioned on price level and phase, and top-of-bo...
+Polymarket entry-price realism must be conditioned on price level and phase, and top-of-book/midpoint assumptions materially overstate P&L: (a) median spreads are ~400bps for mid-prices 0.4–0.6, 1,300–1,800bps full spread below 0.10, and ~53bps half-spread above 0.90 — longshot entries face far worse executable prices; (b) depth is closer to uniform across the top 10 levels than top-heavy (top-of-book carries median 13.6% of top-10 depth; only 9% of markets top-heavy), so fills should walk a mostly-uniform ladder; (c) in NBA markets, median spreads were ~392bps pre-game, ~1,031bps in-game, ~7,533bps post-game; (d) executable depth is shallow — 76.9% of combinatorial arbitrage episodes averaged only ~14.8 executable shares, and a $100 position cap cut theoretical single-market profit from $4,418 to $210.
+
+*medium | 3-0 (claims 14, 15, 16, 17)*
+
+All figures verified verbatim against the two primary preprints (Dubach: ~30B order-book events, 600 markets, 52 days; UCLA Cheng/Yang/Zou: 75M snapshots, 173 NBA games, Feb–Mar 2026). Rated medium despite 3-0 votes because both are recent non-peer-reviewed preprints with short observation windows and possibly volume-selected panels; the qualitative implications (price-level-conditioned fill model, walk-the-book fills, shallow depth) are robust a
+
+### Convergence contamination has a documented handling: the UCLA Polymarket NBA study explici...
+Convergence contamination has a documented handling: the UCLA Polymarket NBA study explicitly excludes the post-game/near-resolution phase from opportunity analysis because market makers withdraw quotes and prices mechanically converge to the outcome ('Excluding this phase ensures the analysis measures only true, exploitable opportunities under genuine outcome uncertainty') — 81% of theoretical arbitrage episodes were post-game artifacts. The Jan–Jul 2026 backtest needs an analogous entry-timing cutoff excluding windows where price ≈ outcome mechanically.
+
+*high | 3-0 (claims 18 and 3)*
+
+Quote verified verbatim (Appendix A.3); exclusion is material (30/37 episodes dropped, spread widening from ~1,031 to ~7,533bps). Related entry-timing realism precedent: Kaunitz et al. flagged closing-odds entry as unrealistic and re-ran at 1–5h before kickoff (6,994 bets from 31,074 games, still +9.9%, with ~30% of displayed odds already stale) — a documented template for testing sensitivity to entry timing. Caveat: no published study gives a un
+
+### Cluster-robust inference is required for prediction-market bet records: standard errors mu...
+Cluster-robust inference is required for prediction-market bet records: standard errors must be clustered at both the event level (contracts on the same mutually-exclusive event are negatively correlated) and the contract level (repeated daily observations of the same contract are positively correlated), and Yes/No sides must not both be counted (doing so doubles apparent sample size and distorts SEs downward). This directly addresses correlated bets on date-ladders and related markets in the Polymarket backtest.
+
+*high | 3-0*
+
+Verified verbatim in Bürgi, Deng & Whelan (pp.19–20): 'standard errors are clustered at the event-level and at the Yes-contract level, because there are negative correlations within observations on the same event… and positive correlations between the observations across multiple days for the same Yes contract'; Yes+No inclusion 'would double the apparent sample size without adding any useful information.' Standard econometric practice; credible 
+
+### Fee accounting materially shapes whether an edge survives and must be modeled explicitly: ...
+Fee accounting materially shapes whether an edge survives and must be modeled explicitly: Kalshi's documented taker fee of $0.07·P·(1−P) per contract (rounded up; no maker fees before April 2025) works out to ~1.77c at a 50c price, and incorporating it moves statistically significant positive returns from 'above 50c pre-fee' to 'above ~70c post-fee.' For Polymarket the analogue is spread/slippage plus any gas/relayer costs rather than an explicit trading fee, but the methodological requirement — all-in cost per fill in the P&L — is the same.
+
+*high | 3-0*
+
+Fee formula, round-up, April 2025 maker-fee cutoff, and ROI incorporation all verified verbatim against the primary PDF and cross-checked against independent Kalshi fee guides. Caveat: the 1.77% figure is the paper's own phrasing (1.77c per $1 notional at 50c).
+
+### Synthesis — methodology checklist for the Jan–Jul 2026 Polymarket backtest, each element g...
+Synthesis — methodology checklist for the Jan–Jul 2026 Polymarket backtest, each element grounded in a verified source: (1) pre-specify the trading rule and all thresholds before touching outcome data (Gross & Rebeggiani/Dixon–Pope); (2) entry-timing cutoff excluding near-resolution convergence windows, with a sensitivity re-run at earlier entry times (UCLA NBA exclusion; Kaunitz 1–5h re-run); (3) fill model conditioned on price level and walking the book, never midpoint — use the documented spread-by-price-decile profile and near-uniform top-10 depth ladder, with per-fill size caps (Dubach; UCLA depth findings); (4) all-in costs per fill (Kalshi fee-accounting precedent); (5) per-event exposure caps and event+contract dual-clustered standard errors, counting each binary market once (Kalshi paper); (6) significance gate = Monte-Carlo efficient-market null (simulate outcomes from market-implied probabilities, Winkelmann/Whelan style) plus bootstrap CIs on realized bets, with family-wise error control across staking/threshold variants (77.63% single-period false-positive warning); (7) calibration evaluation via outcome-on-normalized-probability regressions (Hegarty–Whelan); (8) CLV-analogue = entry price vs a later/final pre-resolution price as the primary skill metric, since sharp-reference expected value predicts realized returns ~1:1 while realized ROI over ~18k bets can easily be noise given documented low power (Buchdahl; Winkelmann power results); (9) staking = flat or fractional Kelly with edge shrinkage, reported alongside flat-stake results (flat staking is the documented evaluation convention in Kaunitz and Gross & Rebeggiani); (10) report card requires jointly: positive net return significant vs the MC null, positive CLV-analogue, calibration improvement out-of-sample, and survival across the multiple-testing correction.
+
+*medium | synthesis of 22 confirmed claims*
+
+Each checklist element traces to a verified 3-0 claim above; the synthesis itself (combining them into one protocol) is the researcher's construction, hence medium confidence. Notably absent from the verified evidence base and therefore folklore/unverified here: specific fractional-Kelly variance/drawdown tables, syndicate scaling thresholds (bets needed, CLV margins), documented momentum/drift strategies in prediction-market prices, and minimum 
+
+## Caveats
+Source quality: the two Polymarket microstructure papers (arXiv 2604.24366, 2605.00864) and the Kalshi paper are 2026 preprints/working papers, not peer-reviewed; observation windows are short (52 days; one month of NBA) so exact bps/depth figures are period- and category-specific and should be re-measured on the backtest's own data rather than hard-coded. Buchdahl's Wisdom-of-the-Crowd study is a self-published practitioner whitepaper (canonical but not refereed), and Kaunitz et al. and Gross & Rebeggiani are non-journal preprints. All three claims sourced to arXiv 2605.10400 were REFUTED in verification — its U-shaped half-spread figures (27pp mid-range half-spreads), zero-near-mid-depth claim, and 50pp-final-hour-jump statistic must not be used; the confirmed Dubach paper (2604.24366) gives the opposite spread-by-price picture (widest for longshots, narrowest for near-certainties). Several requested topics returned no verified documentation at all: fractional-Kelly finite-sequence drawdown properties, professional syndicate evaluation thresholds, CLV-computation conventions for small samples, prediction-market momentum strategies, survivorship/voided-market handling, and walk-forward window sizing for calibration refits — treat any specific numbers on those as folklore. Kalshi findings transfer to Polymarket only by analogy (different fee structure — Polymarket has no explicit trading fee, costs are spread/slippage/gas — and different trader population); the Kalshi paper i
