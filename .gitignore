@@ -8,3 +8,7 @@ __pycache__/
 build/
 bfg.jar
 reports/logs/
+.env
+data/
+*.parquet
+reports/study_8k_drift_events.csv

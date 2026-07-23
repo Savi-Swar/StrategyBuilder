@@ -112,6 +112,25 @@ def hysteresis_weights(predictions: pd.DataFrame, exit_gap: float) -> pd.DataFra
     return pd.DataFrame(rows).T
 
 
+def partial_rebalance_weights(target_weights: pd.DataFrame, tau: float) -> pd.DataFrame:
+    """Garleanu-Pedersen-style partial trading: at each rebalance move a
+    fraction `tau` from the held book toward that date's target book
+    (tau=1.0 reproduces full weekly re-formation). The held book is an EWMA
+    of past targets, so turnover falls with tau and the book tilts toward
+    the persistent component of the signal — the construction-time cost
+    lever documented in reports/deep_research_net_alpha_2026-07-22.md.
+    Names leaving the target book decay geometrically instead of being
+    dumped in one trade. Dollar neutrality is preserved (EWMA of neutral
+    books is neutral); gross exposure ends below 1.0, which is fine for
+    Sharpe comparisons since returns and linear costs scale together."""
+    held = pd.Series(0.0, index=target_weights.columns)
+    rows = {}
+    for dt, target in target_weights.iterrows():
+        held = held + tau * (target.fillna(0.0) - held)
+        rows[dt] = held.copy()
+    return pd.DataFrame(rows).T
+
+
 def run_xsec_strategy(
     prices: pd.DataFrame,
     volumes: pd.DataFrame,
@@ -122,6 +141,8 @@ def run_xsec_strategy(
     seed: int = config.SEED,
     shuffle_labels: bool = False,
     membership: pd.DataFrame | None = None,
+    extra_features: dict[str, pd.DataFrame] | None = None,
+    elig_kwargs: dict | None = None,
 ) -> XSecResult:
     returns = compute_returns(prices)
     fwd = forward_return(returns, horizon)
@@ -131,12 +152,20 @@ def run_xsec_strategy(
     calendar = feats[["month", "day_of_week"]]
     ranked = feats.drop(columns=["month", "day_of_week"]).groupby(level="date").rank(pct=True) - 0.5
     ranked[["month", "day_of_week"]] = calendar
+    if extra_features:
+        # Same treatment as the built-ins: per-date cross-sectional rank.
+        # Caller owns PIT-correctness of the panels (values must be known
+        # on the date they appear — see quark/data/edgar.py).
+        for name, panel in extra_features.items():
+            extra = (panel.rank(axis=1, pct=True) - 0.5).stack()
+            extra.index.names = ["date", "ticker"]
+            ranked[name] = extra
 
     # Relative label: above cross-sectional median forward return.
     label = (fwd.rank(axis=1, pct=True) > 0.5).astype(float).where(fwd.notna())
 
     rebal = rebalance_dates(prices.index)[::rebal_every]
-    elig = eligibility(prices, volumes)
+    elig = eligibility(prices, volumes, **(elig_kwargs or {}))
     if membership is not None:
         elig = apply_membership(elig, membership)
 

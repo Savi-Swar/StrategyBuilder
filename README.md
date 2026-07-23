@@ -39,6 +39,41 @@ below — signals ship with their evidence.
   stocks ranked weekly by a gradient-boosted model; dollar-neutral extreme
   deciles, net of costs, purged walk-forward.
 
+## 2026-07 campaign — the honest search widened
+
+A two-day research push (logged in full in [RESEARCH_NOTES.md](RESEARCH_NOTES.md);
+~50 registered trials, ten adversarially-verified literature reviews) chased the
+flagship's near-zero net edge to its source and kept only what survived a
+walk-forward *config-selection* gate — the harshest test in the repo.
+
+- **Cost-aware construction (Garleanu-Pedersen partial rebalancing)** lifted the
+  weekly book, but a point-in-time membership rerun showed most of the gain was
+  survivorship: honest S&P net Sharpe plateaued ~0.1–0.28 *in-sample-selected*,
+  and **collapsed to ~0.05 under walk-forward config selection** — the flagship's
+  economic edge is not distinguishable from zero at honest selection, though the
+  IC (t≈2.2–2.4) is real. Stated plainly rather than buried.
+- **New free data families** (EDGAR fundamentals + Form-4 insider flow + overnight/
+  intraday decomposition) raised composite IC to **t=3.9** on a 5,594-name broad
+  panel — the strongest statistic in the repo — but large-cap economics stayed thin.
+- **The survivor: a cross-sectional book across 77 instruments and 7 asset classes**
+  (the Study-1 universe traded *relative-value* instead of time-series) —
+  **walk-forward net Sharpe 0.85**, shuffled-control clean, 12/15 years positive,
+  ~+0.08 correlated to the equity book. The edge was never in the most-arbitraged
+  pond; it was in cross-asset relative value at a scale institutions under-fish.
+- **A forward storm detector** (learns the pre-move state from price texture alone):
+  out-of-sample AUC 0.76, 2.6× top-decile lift, positive 11/11 years. The learned
+  "calm before the storm" is *exhaustion* — crashed-and-stabilised high-vol names —
+  not serenity.
+- **Ten cited literature reviews** (`reports/deep_research_*.md`): net-of-cost
+  construction, the factor zoo's large-cap decay, the working mathematics
+  (fundamental law, fractional Kelly), market history, the engineering body, risk
+  & game theory, the masters of niche-edge extraction, and prediction-market
+  microstructure. Sizing doctrine adopted from Benter/Thorp: shrink the edge, then
+  ~1/5-Kelly.
+
+The through-line is unchanged: **kill everything that deserves to die, size what
+survives as if the estimate is wrong.**
+
 ## Headline results (all out-of-sample 2012+, all net of costs)
 
 | | cagr | ann_vol | sharpe | sortino | max_dd | calmar | hit_rate | skew |
