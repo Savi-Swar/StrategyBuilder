@@ -74,9 +74,8 @@ found the 2026 bias pointing the opposite way from the 2021-25 literature
 spreads. Whichever direction you bet, the spread is wider than the
 mispricing. The market maker is the only participant who nets positive,
 so a live paper operation now tests that side: an arbitrage detector
-running against real order books every 30 minutes, a maker simulation that
-tracks adverse selection, and a tracker following the public on-chain
-positions of the top 30 wallets.
+running against real order books every 30 minutes and a maker simulation
+that measures adverse selection against reward income.
 
 House rule: if a strategy can be killed by its own tests, kill it, and
 size whatever survives as if the estimate is wrong.
