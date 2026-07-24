@@ -21,7 +21,7 @@ body::after {
 .wrap { padding: 26px 44px 0; }
 a { color: #ffb000; }
 
-/* ── masthead ─────────────────────────────────────────── */
+/* masthead */
 header { display: flex; align-items: flex-end; justify-content: space-between;
          flex-wrap: wrap; gap: 12px; padding: 30px 44px 18px; }
 .wordmark { font-size: 58px; font-weight: 800; letter-spacing: -2px; line-height: 1; }
@@ -35,7 +35,7 @@ header { display: flex; align-items: flex-end; justify-content: space-between;
 }
 .btn:hover { background: #ffb000; color: #060708; }
 
-/* ── tabs (sticky: the screens are always one keystroke away) ── */
+/* tabs (sticky: the screens are always one keystroke away) */
 .tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c;
   position: sticky; top: 0; z-index: 40; background: #060708; }
 .tab { flex: 1; text-align: center; padding: 13px 10px; font-size: 12px;
@@ -46,7 +46,7 @@ header { display: flex; align-items: flex-end; justify-content: space-between;
 .tab.active { background: #ffb000; color: #060708; font-weight: 700; }
 .tab .k { color: inherit; opacity: .55; margin-right: 8px; }
 
-/* ── tape ─────────────────────────────────────────────── */
+/* tape */
 .tape { border-top: 1px dashed #2a2e35; border-bottom: 1px dashed #2a2e35;
         overflow: hidden; white-space: nowrap; padding: 7px 0; margin: 8px 0 26px; }
 .tape-inner { display: inline-block; animation: tape 55s linear infinite; }
@@ -54,13 +54,13 @@ header { display: flex; align-items: flex-end; justify-content: space-between;
 .tape span { margin: 0 18px; font-size: 12px; color: #8a9199; }
 .tape .up { color: #46ff9a; } .tape .dn { color: #ff5d5d; }
 
-/* ── sections ─────────────────────────────────────────── */
+/* sections */
 h2 { font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
      color: #ffb000; margin: 40px 0 16px; font-weight: 600; }
 h2::before { content: "▚▚ "; }
 h2 .dim { color: #8a9199; }
 
-/* ── health tiles ─────────────────────────────────────── */
+/* health tiles */
 .health { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
 .htile { background: #0b0d10; border: 1px solid #22262c; padding: 14px 18px; }
 .hlabel { font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
@@ -76,7 +76,7 @@ h2 .dim { color: #8a9199; }
 .edgemath { font-size: 11.5px; color: #6d747c; margin-top: 12px; max-width: 920px;
             border-left: 2px solid #22262c; padding-left: 14px; }
 
-/* ── trade cards ──────────────────────────────────────── */
+/* trade cards */
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 16px; }
 .card { background: #0b0d10; border: 1px solid #22262c; padding: 20px 22px 16px; position: relative; }
 .card.long  { border-top: 3px solid #46ff9a; }
@@ -101,7 +101,7 @@ ul.why li::before { content: ">"; position: absolute; left: 0; color: #ffb000; }
 .sizing { margin-top: 10px; font-size: 10.5px; color: #6d747c;
           border-top: 1px dashed #22262c; padding-top: 8px; }
 
-/* ── tables ───────────────────────────────────────────── */
+/* tables */
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 @media (max-width: 980px) { .cols { grid-template-columns: 1fr; } }
 table { width: 100%; border-collapse: separate; border-spacing: 0;
@@ -123,7 +123,7 @@ tr:hover td { background: rgba(255,176,0,.035); }
 .pos { color: #46ff9a; } .neg { color: #ff5d5d; } .muted { color: #6d747c; }
 .win { color: #46ff9a; font-weight: 700; } .loss { color: #ff5d5d; font-weight: 700; }
 
-/* ── filter bar ───────────────────────────────────────── */
+/* filter bar */
 .fbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
   background: #0b0d10; border: 1px solid #22262c; padding: 12px 16px;
   margin: 6px 0 18px; }

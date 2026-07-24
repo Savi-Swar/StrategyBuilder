@@ -159,7 +159,7 @@ def card(href, title, sub, meta):
             f'<div class="s">{sub}</div><div class="m">{meta}</div></a>')
 
 
-# ── render the core documents ────────────────────────────────────────────
+# render the core documents
 core = [
     (ROOT / "RESEARCH_STORY.md", "story.html", "The campaign, start to finish",
      "How three days of research went: the equity work, the anomaly audit, the prediction-market falsification, and why the Desk exists."),
@@ -174,7 +174,7 @@ for src, out, title, sub in core:
     n_sect = len(re.findall(r"^## ", src.read_text(), re.M))
     core_cards += card(href, title, sub, f"{n_sect} sections · {src.name}")
 
-# ── render the deep-research library ─────────────────────────────────────
+# render the deep-research library
 PRETTY = {
     "net_alpha": "Net alpha: costs and construction",
     "edges": "Where edges still exist",
@@ -197,7 +197,7 @@ for src in sorted(ROOT.glob("reports/deep_research_*.md")):
     lib_cards += card(href, title, first_para(src),
                       f"deep research · {date.group(1) if date else ''}")
 
-# ── the hub ──────────────────────────────────────────────────────────────
+# the hub
 def tile(label, value, sub="", color=INK):
     return (f'<div class="htile"><div class="hlabel">{label}</div>'
             f'<div class="hval" style="color:{color}">{value}</div>'

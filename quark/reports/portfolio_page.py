@@ -134,7 +134,7 @@ function render() {
   }
 }
 
-/* ── MY BOOK: holdings tracker + rebalance recommendations ───────── */
+/* MY BOOK: holdings tracker + rebalance recommendations */
 const ETF_MAP = { SPY: "us_equity", VOO: "us_equity", IVV: "us_equity",
   VTI: "us_equity", QQQ: "us_equity", VXUS: "intl_equity", VEA: "intl_equity",
   EFA: "intl_equity", IEFA: "intl_equity", IEF: "bonds", AGG: "bonds",
