@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>VIG · The campaign, start to finish</title><style>
+* { box-sizing: border-box; margin: 0 }
+body { background: #0b0d10; color: #e6e2d8;
+  font: 13px "SF Mono", ui-monospace, Menlo, monospace; }
+header { display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 18px 26px 14px; }
+.wordmark { font-size: 30px; font-weight: 800; letter-spacing: 3px }
+.tagline { color: #6d747c; font-size: 11px; letter-spacing: 1px }
+.tagline b { color: #8a9199 }
+.stamp-date { color: #6d747c; font-size: 11px }
+.tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c;
+  position: sticky; top: 0; background: #0b0d10; z-index: 5; flex-wrap: wrap }
+.tab { padding: 11px 18px; color: #8a9199; text-decoration: none; font-size: 12px;
+  letter-spacing: 1.5px; border-right: 1px solid #22262c }
+.tab .k { color: #6d747c; margin-right: 7px; font-size: 10px }
+.tab.active { color: #e6e2d8; background: #0e1114; box-shadow: inset 0 2px 0 #ffb000 }
+.tab:hover { color: #e6e2d8 }
+.wrap { padding: 20px 26px 60px; max-width: 980px }
+h2.sect { font-size: 11px; letter-spacing: 2.5px; color: #ffb000; margin: 30px 0 10px;
+  text-transform: uppercase }
+h2.sect::before { content: "▚ " }
+h2.sect .dim { text-transform: none; letter-spacing: .5px }
+.dim { color: #6d747c; font-size: 12px }
+.htiles { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px }
+.htile { border: 1px solid #22262c; background: #0e1114; padding: 12px 16px;
+  min-width: 170px; flex: 1 }
+.hlabel { color: #6d747c; font-size: 10px; letter-spacing: 2px; text-transform: uppercase }
+.hval { font-size: 24px; font-weight: 700; margin: 6px 0 3px }
+.hsub { color: #8a9199; font-size: 11px }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px; margin: 12px 0 }
+.card { border: 1px solid #22262c; background: #0e1114; padding: 14px 16px;
+  text-decoration: none; display: block }
+.card:hover { border-color: #ffb000 }
+.card .t { color: #e6e2d8; font-size: 13px; font-weight: 700 }
+.card .s { color: #8a9199; font-size: 11px; margin-top: 6px; line-height: 1.5 }
+.card .m { color: #6d747c; font-size: 10px; margin-top: 8px; letter-spacing: 1px;
+  text-transform: uppercase }
+a { color: #e6e2d8 }
+footer { color: #6d747c; font-size: 11px; padding: 0 26px 40px }
+img { max-width: 100%; border: 1px solid #22262c; margin: 8px 0 }
+/* rendered markdown */
+.md { line-height: 1.65; font-size: 13px }
+.md h1 { font-size: 20px; margin: 24px 0 12px; letter-spacing: .5px }
+.md h2 { font-size: 14px; color: #ffb000; margin: 26px 0 10px; letter-spacing: 1px;
+  text-transform: uppercase; font-size: 12px; letter-spacing: 2px }
+.md h2::before { content: "▚ " }
+.md h3 { font-size: 13px; color: #e6e2d8; margin: 18px 0 8px }
+.md p { margin: 10px 0; color: #c9c4b8 }
+.md li { margin: 6px 0 6px 18px; color: #c9c4b8 }
+.md strong { color: #e6e2d8 }
+.md em { color: #9fb0c0; font-style: normal }
+.md code { background: #14171b; padding: 1px 5px; font-size: 12px; color: #9fe0b8 }
+.md pre { background: #0e1114; border: 1px solid #22262c; padding: 12px 14px;
+  overflow-x: auto; margin: 10px 0 }
+.md pre code { background: none; padding: 0 }
+.md table { border-collapse: collapse; width: 100%; margin: 10px 0 }
+.md td, .md th { border-bottom: 1px solid #14171b; padding: 5px 10px; text-align: left;
+  font-size: 12px }
+.md th { color: #6d747c; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase }
+.md tr:hover td { background: #0e1114 }
+.md blockquote { border-left: 2px solid #ffb000; padding-left: 14px; color: #9fb0c0;
+  margin: 10px 0 }
+.md hr { border: none; border-top: 1px solid #22262c; margin: 22px 0 }
+.crumb { color: #6d747c; font-size: 11px; margin-bottom: 14px }
+.crumb a { color: #8a9199; text-decoration: none }
+.crumb a:hover { color: #ffb000 }
+</style></head><body>
+<header>
+  <div>
+    <div class="wordmark">VIG</div>
+    <div class="tagline">the house takes its cut — <b>the research record</b></div>
+  </div>
+  <div class="stamp-date">2026-07-24 12:36</div>
+</header>
+<nav class="tabs"><a class="tab" href="../index.html"><span class="k">01</span>DESK</a><a class="tab" href="../analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab" href="../screener.html"><span class="k">03</span>SCREENER</a><a class="tab" href="../past_trades.html"><span class="k">04</span>PAST TRADES</a><a class="tab" href="../portfolio.html"><span class="k">05</span>PORTFOLIO</a><a class="tab active" href="../research.html"><span class="k">06</span>RESEARCH</a><a class="tab" href="../desk.html"><span class="k">07</span>PREDMKT</a></nav>
+<div class="wrap"><div class="crumb"><a href="../research.html">← 06 RESEARCH</a> / RESEARCH_STORY.md</div><div class="md"><h1>How this went</h1>
+<p>Three days in July 2026. The trial-by-trial log is RESEARCH_NOTES.md, the
+condensed findings are in KNOWLEDGE_BASE.md, and the literature reviews live
+under reports/deep_research_*.md. This file is the short version, told in
+order.</p>
+<h2>The equity work</h2>
+<p>I started with a cross-sectional S&amp;P signal I'd built earlier: rank ~500
+stocks weekly with a gradient-boosted model, hold the extreme deciles. The
+IC had a t-stat of 3.35, which sounds like a finished project. It wasn't.</p>
+<p>Cost-aware rebalancing (trade partway toward the target book instead of
+rebuilding it weekly, an idea from Garleanu and Pedersen) added about 0.2
+Sharpe, right where the literature said it would. Then I rebuilt the index
+membership point-in-time and watched part of the edge turn out to be
+survivorship. The harshest test came last: pick the configuration using
+trailing data only, then measure forward. Sharpe 0.28 became 0.05. Signal
+real, money gone. I wrote that down and moved on.</p>
+<p>Along the way I built new features from primary sources instead of vendors:
+EDGAR XBRL fundamentals, Form 4 insider filings, overnight versus intraday
+returns. Composite IC reached t=3.9 on a 5,594-name panel, the best
+statistic in the repo, and large-cap economics stayed thin anyway. Costs and
+crowding beat statistics.</p>
+<p>One strategy survived every test I could throw at it. Take the 77-instrument
+multi-asset universe and, instead of timing each instrument, rank them
+against each other and trade the cross-section. Walk-forward Sharpe 0.85,
+clean shuffled-label control, positive in 12 of 15 years, and it passed the
+same config-selection gate that killed the flagship.</p>
+<h2>What I learned about edges</h2>
+<p>I replicated eight published anomalies on my own panel. Six were dead or had
+flipped sign. Momentum limps along. The only one still fully alive is the
+turn-of-month effect, published in 1968, which persists because the buying
+it exploits comes from payroll calendars, and payroll calendars don't read
+papers.</p>
+<p>Other tests from this stretch: realized weather doesn't predict natural gas
+(the market trades forecasts days earlier, so whatever edge exists is in
+forecast errors, not outcomes). WallStreetBets attention stopped predicting
+anything in early 2021, which matches the academic record. Post-earnings
+drift in small caps is gone at every size tier I could measure, most likely
+because software reads every filing now.</p>
+<h2>Prediction markets</h2>
+<p>I picked prediction markets as the focus and did the homework first:
+microstructure, fee models, who the institutional players are (Susquehanna
+has been Kalshi's market maker since 2024; DRW and Wintermute were hiring
+prediction-market traders in 2026), and what the academic record claims.</p>
+<p>The famous claim is the favorite-longshot bias: favorites underpriced,
+longshots overpriced. I ran a betting backtest with a two-month development
+window and a five-month frozen out-of-sample vault, 55 registered trials in
+total. The frozen strategy scored below an efficient-market Monte Carlo
+null, at the 2.4th percentile. Worse than random betting at the same
+prices.</p>
+<p>So I measured the calibration myself on 3,341 resolved markets. The bias has
+reversed since the 2021-25 study window: the market is now mildly
+overconfident, slope 0.87. And the reverse trade loses too, 21.7% per bet
+after spreads, because the spread is wider than the mispricing in both
+directions. Every directional strategy on this venue pays a toll larger
+than the edge. The one participant who nets positive is the market maker
+collecting that toll.</p>
+<h2>The Desk</h2>
+<p>That conclusion set the current phase. Three mechanisms make documented
+money in this venue and none of them can be backtested, because they live
+in order books, reward programs, and other people's positions rather than
+in price history. So they run live, on paper, and grade themselves:</p>
+<ol>
+<li>An arbitrage detector that checks mutually-exclusive outcome sets
+   against real order-book depth every 30 minutes.</li>
+<li>A market-maker simulation that quotes both sides on paper and tracks how
+   often informed flow runs over the quotes, against the reward income.</li>
+<li>A tracker that photographs the public on-chain positions of the top 30
+   wallets twice a day and paper-copies their new directional entries.
+   The current #1 wallet made $8.5M last month, and its book shows both
+   sides of the same matches. It's a maker. That observation alone was
+   worth building the tracker.</li>
+</ol>
+<p>A scheduled job checks the ledgers daily and writes a digest. Nothing goes
+live with real money until a mechanism clears the same gates everything
+else faced.</p>
+<h2>What this produced</h2>
+<p>About 70 registered experiments, 15 dead strategies, one survivor, a
+calibration result that contradicts the published record, and a set of
+instruments that keep collecting data whether or not anyone is watching.
+Also a habit that mattered more than any single result: when a metric and
+a profit number disagree, believe the metric.</p></div></div>
+<footer>keys: <b>1–7</b> screens · every claim links to the trial that produced it ·
+negative results are kept, not buried</footer>
+
+<script>
+(() => {
+  const pages = { "1": "index.html", "2": "analysis.html", "3": "screener.html",
+                  "4": "past_trades.html", "5": "portfolio.html",
+                  "6": "research.html", "7": "desk.html" };
+  document.addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target instanceof Element && e.target.matches("input,textarea")) return;
+    const p = pages[e.key];
+    if (p) location.href = (location.pathname.includes("/research/") ? "../" : "") + p;
+  });
+})();
+</script>
+</body></html>

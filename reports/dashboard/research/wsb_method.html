@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>VIG · Attention signals: the WSB postmortem</title><style>
+* { box-sizing: border-box; margin: 0 }
+body { background: #0b0d10; color: #e6e2d8;
+  font: 13px "SF Mono", ui-monospace, Menlo, monospace; }
+header { display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 18px 26px 14px; }
+.wordmark { font-size: 30px; font-weight: 800; letter-spacing: 3px }
+.tagline { color: #6d747c; font-size: 11px; letter-spacing: 1px }
+.tagline b { color: #8a9199 }
+.stamp-date { color: #6d747c; font-size: 11px }
+.tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c;
+  position: sticky; top: 0; background: #0b0d10; z-index: 5; flex-wrap: wrap }
+.tab { padding: 11px 18px; color: #8a9199; text-decoration: none; font-size: 12px;
+  letter-spacing: 1.5px; border-right: 1px solid #22262c }
+.tab .k { color: #6d747c; margin-right: 7px; font-size: 10px }
+.tab.active { color: #e6e2d8; background: #0e1114; box-shadow: inset 0 2px 0 #ffb000 }
+.tab:hover { color: #e6e2d8 }
+.wrap { padding: 20px 26px 60px; max-width: 980px }
+h2.sect { font-size: 11px; letter-spacing: 2.5px; color: #ffb000; margin: 30px 0 10px;
+  text-transform: uppercase }
+h2.sect::before { content: "▚ " }
+h2.sect .dim { text-transform: none; letter-spacing: .5px }
+.dim { color: #6d747c; font-size: 12px }
+.htiles { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px }
+.htile { border: 1px solid #22262c; background: #0e1114; padding: 12px 16px;
+  min-width: 170px; flex: 1 }
+.hlabel { color: #6d747c; font-size: 10px; letter-spacing: 2px; text-transform: uppercase }
+.hval { font-size: 24px; font-weight: 700; margin: 6px 0 3px }
+.hsub { color: #8a9199; font-size: 11px }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px; margin: 12px 0 }
+.card { border: 1px solid #22262c; background: #0e1114; padding: 14px 16px;
+  text-decoration: none; display: block }
+.card:hover { border-color: #ffb000 }
+.card .t { color: #e6e2d8; font-size: 13px; font-weight: 700 }
+.card .s { color: #8a9199; font-size: 11px; margin-top: 6px; line-height: 1.5 }
+.card .m { color: #6d747c; font-size: 10px; margin-top: 8px; letter-spacing: 1px;
+  text-transform: uppercase }
+a { color: #e6e2d8 }
+footer { color: #6d747c; font-size: 11px; padding: 0 26px 40px }
+img { max-width: 100%; border: 1px solid #22262c; margin: 8px 0 }
+/* rendered markdown */
+.md { line-height: 1.65; font-size: 13px }
+.md h1 { font-size: 20px; margin: 24px 0 12px; letter-spacing: .5px }
+.md h2 { font-size: 14px; color: #ffb000; margin: 26px 0 10px; letter-spacing: 1px;
+  text-transform: uppercase; font-size: 12px; letter-spacing: 2px }
+.md h2::before { content: "▚ " }
+.md h3 { font-size: 13px; color: #e6e2d8; margin: 18px 0 8px }
+.md p { margin: 10px 0; color: #c9c4b8 }
+.md li { margin: 6px 0 6px 18px; color: #c9c4b8 }
+.md strong { color: #e6e2d8 }
+.md em { color: #9fb0c0; font-style: normal }
+.md code { background: #14171b; padding: 1px 5px; font-size: 12px; color: #9fe0b8 }
+.md pre { background: #0e1114; border: 1px solid #22262c; padding: 12px 14px;
+  overflow-x: auto; margin: 10px 0 }
+.md pre code { background: none; padding: 0 }
+.md table { border-collapse: collapse; width: 100%; margin: 10px 0 }
+.md td, .md th { border-bottom: 1px solid #14171b; padding: 5px 10px; text-align: left;
+  font-size: 12px }
+.md th { color: #6d747c; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase }
+.md tr:hover td { background: #0e1114 }
+.md blockquote { border-left: 2px solid #ffb000; padding-left: 14px; color: #9fb0c0;
+  margin: 10px 0 }
+.md hr { border: none; border-top: 1px solid #22262c; margin: 22px 0 }
+.crumb { color: #6d747c; font-size: 11px; margin-bottom: 14px }
+.crumb a { color: #8a9199; text-decoration: none }
+.crumb a:hover { color: #ffb000 }
+</style></head><body>
+<header>
+  <div>
+    <div class="wordmark">VIG</div>
+    <div class="tagline">the house takes its cut — <b>the research record</b></div>
+  </div>
+  <div class="stamp-date">2026-07-24 12:36</div>
+</header>
+<nav class="tabs"><a class="tab" href="../index.html"><span class="k">01</span>DESK</a><a class="tab" href="../analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab" href="../screener.html"><span class="k">03</span>SCREENER</a><a class="tab" href="../past_trades.html"><span class="k">04</span>PAST TRADES</a><a class="tab" href="../portfolio.html"><span class="k">05</span>PORTFOLIO</a><a class="tab active" href="../research.html"><span class="k">06</span>RESEARCH</a><a class="tab" href="../desk.html"><span class="k">07</span>PREDMKT</a></nav>
+<div class="wrap"><div class="crumb"><a href="../research.html">← 06 RESEARCH</a> / deep_research_wsb_method_2026-07-23.md</div><div class="md"><h1>Deep research: WSB signal methodology (UNVERIFIED — panels rate-limited)</h1>
+<p><em>Verification failed (usage limit). Claims are single-source extractions, NOT adversarially confirmed. Treat as leads, not facts.</em></p>
+<ul>
+<li>
+<p>Before the January 2021 GameStop short squeeze, due-diligence (DD) recommendations posted on r/wallstreetbets were statistically significant predictors of both stock returns and subsequent cash-flow news (i.e., the posts contained genuine fundamental information, not just price pressure).
+  [https://academic.oup.com/rfs/advance-article-abstract/doi/10.1093/rfs/hhad098/7486572]</p>
+</li>
+<li>
+<p>The return predictability of WSB due-diligence posts is eliminated in the period after the GameStop event — a documented structural break/decay point that any study pooling 2019-2026 data must model as a regime change rather than a stable signal.
+  [https://academic.oup.com/rfs/advance-article-abstract/doi/10.1093/rfs/hhad098/7486572]</p>
+</li>
+<li>
+<p>Post-GME, the composition of DD reports shifted dramatically toward price-pressure and attention-grabbing stocks, and the loss of informativeness is concentrated in exactly those report types — implying content/topic filtering matters for signal construction.
+  [https://academic.oup.com/rfs/advance-article-abstract/doi/10.1093/rfs/hhad098/7486572]</p>
+</li>
+<li>
+<p>In the pre-GameStop period (July 2018–December 2020), WSB due-diligence buy recommendations significantly predicted returns: +0.92% one-week and +2.32% one-month ahead per incremental buy DD report, even after excluding GME and AMC (+6.04% one-month including them).
+  [https://russelljame.com/wsb_3_15_2022.pdf]</p>
+</li>
+<li>
+<p>DD report predictive value fully decayed to statistical zero in the post-GME period (Jan–Jun 2021): the one-month estimate falls by 5.21% to 0.83% in the full sample and by 3.83% to -1.51% excluding GME/AMC, with neither post-period estimate distinguishable from zero; quarterly estimates show the break at Q1 2021 (-0.71%) worsening in Q2 2021 (-1.42%).
+  [https://russelljame.com/wsb_3_15_2022.pdf]</p>
+</li>
+<li>
+<p>The mechanism of decay is a regime shift in post content: the share of DD reports emphasizing price-pressure/squeeze strategies rather than fundamentals quadrupled after the GME squeeze, and the loss of informativeness is concentrated in those price-pressure reports — a documented case of signal nonstationarity tied to the Jan 2021 subscriber explosion.
+  [https://russelljame.com/wsb_3_15_2022.pdf]</p>
+</li>
+<li>
+<p>Automated ticker extraction from WSB is unreliable enough that the authors manually reviewed every report, in part because WSB users deliberately post wrong tickers to poison algorithmic scrapers — direct documentation of an adversarial ticker-extraction contamination channel beyond ordinary common-word false positives.
+  [https://russelljame.com/wsb_3_15_2022.pdf]</p>
+</li>
+<li>
+<p>WSB due-diligence (DD) reports in the pre-GameStop period (2018-2020) significantly predicted one-month-ahead returns: an incremental DD buy recommendation was associated with a 6.04% one-month return increase in the full sample and 2.32% after excluding GME and AMC, and this predictability fully reversed in the post-GME period (Jan-Jun 2021).
+  [https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3806065]</p>
+</li>
+<li>
+<p>Pre-GME DD reports positively forecast fundamental cash-flow news (media sentiment, earnings surprises, analyst forecast revisions), indicating genuine information rather than pure price pressure; these effects reverse to zero or turn significantly negative in 2021, consistent with the post-GME user influx degrading research quality.
+  [https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3806065]</p>
+</li>
+<li>
+<p>Ticker extraction from WSB posts cannot be done reliably by automated string matching: the authors manually reviewed every one of the 5,050 DD reports (July 2018-June 2021) to identify ticker and recommendation, because users add special characters around tickers and sometimes intentionally post wrong tickers to mislead algorithmic monitors.
+  [https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3806065]</p>
+</li>
+<li>
+<p>WSB coverage concentrates in speculative names and the forum underwent an order-of-magnitude regime change: DD reports tilt toward young, volatile stocks with low institutional ownership and high short interest; the forum grew from roughly 500,000 users in July 2018 to roughly 10.7 million by June 2021 with the spike at the January 2021 GME squeeze, and GME+AMC alone represent close to 25% of the 2021 DD sample.
+  [https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3806065]</p>
+</li>
+<li>
+<p>A daily long-short portfolio built from WSB buy/sell recommendations produces no risk-adjusted alpha at any holding period from one day to one year, after controlling for Fama-French factors.
+  [https://link.springer.com/article/10.1007/s11408-022-00415-w]</p>
+</li>
+<li>
+<p>WSB submission activity is positively associated with abnormal trading volume in the mentioned stocks, i.e., the attention signal moves volume even though it does not generate alpha.
+  [https://link.springer.com/article/10.1007/s11408-022-00415-w]</p>
+</li>
+<li>
+<p>The null-alpha result is robust to removing GameStop from the post-2021 sample, and the weakest predictive results occur for sell recommendations in the post-2021 subsample — consistent with post-meme-era signal decay.
+  [https://link.springer.com/article/10.1007/s11408-022-00415-w]</p>
+</li>
+<li>
+<p>Requiring a '$' prefix for ticker extraction on WSB has very low recall: only about 13% of GameStop mentions and 12% of Microsoft mentions used the dollar sign, so the authors instead match uppercase 2-5 character tokens against a known NASDAQ ticker list plus a manually curated stopword blocklist of common-word tickers, and exclude single-character tokens without '$' entirely as mostly false positives.
+  [https://arxiv.org/pdf/2105.02728]</p>
+</li>
+<li>
+<p>WSB buy signals show a documented momentum-horizon structure: they are no better than random or equally-distributed buying at 1-day to 1-week horizons, but become discernibly better at 1-3 months — success rate 51.75% after 1 day rising to 69.94% after 3 months, versus 60-62% for random/equal baselines at 3 months (up to 15.6% higher).
+  [https://arxiv.org/pdf/2105.02728]</p>
+</li>
+<li>
+<p>The short-term average-return advantage of WSB buy signals (32.03% 3-month growth vs 16.65% buying every day) was mostly driven by a handful of meme stocks (GME, AMC, BB) rather than broad signal quality — following buy signals led to consistently better outcomes for only about 7 of 20 portfolio tickers, and sell signals were outright unsuccessful (prices rose more after sell signals than average).
+  [https://arxiv.org/pdf/2105.02728]</p>
+</li>
+<li>
+<p>Separating 'proactive' from 'reactive' buy signals matters: only 46.5% of WSB buy signals preceded the price move (proactive); reactive signals — posts appearing after a price run-up — performed significantly worse, and a simple PIT-computable filter (price change over the preceding day below its 30-day moving average) yielded approximately 83% higher growth after one day and 17% higher after three months versus all buy signals.
+  [https://arxiv.org/pdf/2105.02728]</p>
+</li>
+<li>
+<p>Pushshift-archived upvote scores are unreliable (incomplete and often substantially below true values) and the authors excluded all author/moderator-deleted posts from the dataset — directly documenting both the score-integrity problem and a deliberate survivorship filter; they also confirm regime nonstationarity, with pre-2021 (Jan 2019-Dec 2020) buy-signal effects much weaker though directionally similar (3-month buy-signal return 12.57% vs 32.03% in the full sample).
+  [https://arxiv.org/pdf/2105.02728]</p>
+</li>
+<li>
+<p>The paper's first-stage attention-spike detector is a PIT-safe counts-vs-trailing-baseline construction: a day is flagged when ticker-related submission/user counts exceed the trailing 10-day mean plus one mean absolute deviation (for level variables) or double day-over-day (for change variables), with at least 4 of 6 indicators required to fire.
+  [https://arxiv.org/pdf/2203.13790]</p>
+</li>
+<li>
+<p>Applied to r/WallStreetBets Oct 2020–Jun 2021, the alert system fires almost exclusively on meme stocks — 21 suspicious days for GME and 4 for AMC versus 2 for AAPL and 1 for MSFT (consolidating to 8/4/2/1 independent events with a 10-day separation rule) — and significant positive abnormal returns follow alerts only for the meme stocks.
+  [https://arxiv.org/pdf/2203.13790]</p>
+</li>
+<li>
+<p>The horizon structure is momentum-after-attention with a multi-day lag: for the GME event dated Jan 14, 2021, cumulative abnormal return over a [-10,+10] market-model event window reaches 3.883 (388%) by day +10, with the largest daily abnormal return (+1.349, significant at 5%) on day +8 and peak abnormal volume (20.3x baseline) on day +7 — significance concentrated after, not before, the social-network alert.
+  [https://arxiv.org/pdf/2203.13790]</p>
+</li>
+<li>
+<p>Barber-Odean attention theory posits an asymmetry: attention drives individual investors' BUYING but not their selling, because buyers face a search problem over thousands of stocks while sellers choose only from the few stocks they already own — so retail attention signals should predict net buying pressure, not balanced flow.
+  [http://www.econ.yale.edu/~shiller/behfin/2001-05-11/barber-odean.pdf]</p>
+</li>
+<li>
+<p>The paper operationalizes attention with three concrete, measurable proxies — daily abnormal trading volume (stock's daily volume relative to its own baseline), extreme one-day returns (buying on the day AFTER the extreme move), and presence in the news — establishing the abnormal-attention-vs-trailing-baseline construction that a WSB mention-count signal should replicate.
+  [http://www.econ.yale.edu/~shiller/behfin/2001-05-11/barber-odean.pdf]</p>
+</li>
+<li>
+<p>Documented effect size for attention-driven retail buying: self-directed discount-brokerage investors make roughly 2x as many purchases as sales of stocks in the top 5% of abnormal volume, and are nearly 2x as likely to buy as sell the previous day's worst performers (bottom 5% one-day return) — retail herds into BOTH big winners and big losers.
+  [http://www.econ.yale.edu/~shiller/behfin/2001-05-11/barber-odean.pdf]</p>
+</li>
+</ul></div></div>
+<footer>keys: <b>1–7</b> screens · every claim links to the trial that produced it ·
+negative results are kept, not buried</footer>
+
+<script>
+(() => {
+  const pages = { "1": "index.html", "2": "analysis.html", "3": "screener.html",
+                  "4": "past_trades.html", "5": "portfolio.html",
+                  "6": "research.html", "7": "desk.html" };
+  document.addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target instanceof Element && e.target.matches("input,textarea")) return;
+    const p = pages[e.key];
+    if (p) location.href = (location.pathname.includes("/research/") ? "../" : "") + p;
+  });
+})();
+</script>
+</body></html>

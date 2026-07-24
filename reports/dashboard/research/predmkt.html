@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>VIG · Prediction markets: the venue</title><style>
+* { box-sizing: border-box; margin: 0 }
+body { background: #0b0d10; color: #e6e2d8;
+  font: 13px "SF Mono", ui-monospace, Menlo, monospace; }
+header { display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 18px 26px 14px; }
+.wordmark { font-size: 30px; font-weight: 800; letter-spacing: 3px }
+.tagline { color: #6d747c; font-size: 11px; letter-spacing: 1px }
+.tagline b { color: #8a9199 }
+.stamp-date { color: #6d747c; font-size: 11px }
+.tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c;
+  position: sticky; top: 0; background: #0b0d10; z-index: 5; flex-wrap: wrap }
+.tab { padding: 11px 18px; color: #8a9199; text-decoration: none; font-size: 12px;
+  letter-spacing: 1.5px; border-right: 1px solid #22262c }
+.tab .k { color: #6d747c; margin-right: 7px; font-size: 10px }
+.tab.active { color: #e6e2d8; background: #0e1114; box-shadow: inset 0 2px 0 #ffb000 }
+.tab:hover { color: #e6e2d8 }
+.wrap { padding: 20px 26px 60px; max-width: 980px }
+h2.sect { font-size: 11px; letter-spacing: 2.5px; color: #ffb000; margin: 30px 0 10px;
+  text-transform: uppercase }
+h2.sect::before { content: "▚ " }
+h2.sect .dim { text-transform: none; letter-spacing: .5px }
+.dim { color: #6d747c; font-size: 12px }
+.htiles { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px }
+.htile { border: 1px solid #22262c; background: #0e1114; padding: 12px 16px;
+  min-width: 170px; flex: 1 }
+.hlabel { color: #6d747c; font-size: 10px; letter-spacing: 2px; text-transform: uppercase }
+.hval { font-size: 24px; font-weight: 700; margin: 6px 0 3px }
+.hsub { color: #8a9199; font-size: 11px }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px; margin: 12px 0 }
+.card { border: 1px solid #22262c; background: #0e1114; padding: 14px 16px;
+  text-decoration: none; display: block }
+.card:hover { border-color: #ffb000 }
+.card .t { color: #e6e2d8; font-size: 13px; font-weight: 700 }
+.card .s { color: #8a9199; font-size: 11px; margin-top: 6px; line-height: 1.5 }
+.card .m { color: #6d747c; font-size: 10px; margin-top: 8px; letter-spacing: 1px;
+  text-transform: uppercase }
+a { color: #e6e2d8 }
+footer { color: #6d747c; font-size: 11px; padding: 0 26px 40px }
+img { max-width: 100%; border: 1px solid #22262c; margin: 8px 0 }
+/* rendered markdown */
+.md { line-height: 1.65; font-size: 13px }
+.md h1 { font-size: 20px; margin: 24px 0 12px; letter-spacing: .5px }
+.md h2 { font-size: 14px; color: #ffb000; margin: 26px 0 10px; letter-spacing: 1px;
+  text-transform: uppercase; font-size: 12px; letter-spacing: 2px }
+.md h2::before { content: "▚ " }
+.md h3 { font-size: 13px; color: #e6e2d8; margin: 18px 0 8px }
+.md p { margin: 10px 0; color: #c9c4b8 }
+.md li { margin: 6px 0 6px 18px; color: #c9c4b8 }
+.md strong { color: #e6e2d8 }
+.md em { color: #9fb0c0; font-style: normal }
+.md code { background: #14171b; padding: 1px 5px; font-size: 12px; color: #9fe0b8 }
+.md pre { background: #0e1114; border: 1px solid #22262c; padding: 12px 14px;
+  overflow-x: auto; margin: 10px 0 }
+.md pre code { background: none; padding: 0 }
+.md table { border-collapse: collapse; width: 100%; margin: 10px 0 }
+.md td, .md th { border-bottom: 1px solid #14171b; padding: 5px 10px; text-align: left;
+  font-size: 12px }
+.md th { color: #6d747c; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase }
+.md tr:hover td { background: #0e1114 }
+.md blockquote { border-left: 2px solid #ffb000; padding-left: 14px; color: #9fb0c0;
+  margin: 10px 0 }
+.md hr { border: none; border-top: 1px solid #22262c; margin: 22px 0 }
+.crumb { color: #6d747c; font-size: 11px; margin-bottom: 14px }
+.crumb a { color: #8a9199; text-decoration: none }
+.crumb a:hover { color: #ffb000 }
+</style></head><body>
+<header>
+  <div>
+    <div class="wordmark">VIG</div>
+    <div class="tagline">the house takes its cut — <b>the research record</b></div>
+  </div>
+  <div class="stamp-date">2026-07-24 12:36</div>
+</header>
+<nav class="tabs"><a class="tab" href="../index.html"><span class="k">01</span>DESK</a><a class="tab" href="../analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab" href="../screener.html"><span class="k">03</span>SCREENER</a><a class="tab" href="../past_trades.html"><span class="k">04</span>PAST TRADES</a><a class="tab" href="../portfolio.html"><span class="k">05</span>PORTFOLIO</a><a class="tab active" href="../research.html"><span class="k">06</span>RESEARCH</a><a class="tab" href="../desk.html"><span class="k">07</span>PREDMKT</a></nav>
+<div class="wrap"><div class="crumb"><a href="../research.html">← 06 RESEARCH</a> / deep_research_predmkt_2026-07-23.md</div><div class="md"><h1>Deep research: prediction markets operator manual (verified)</h1>
+<p>The verified evidence supports a clear picture of prediction markets as a professionally tradeable arena with documented, quantified inefficiencies. A peer-reviewed on-chain study estimates ~$40M of realized arbitrage was extracted from Polymarket (Apr 2024–Apr 2025) via two mechanisms — within-market rebalancing and cross-market combinatorial arb on outcome sets that should sum to $1. Large-scale calibration work (292M trades on Kalshi+Polymarket) documents a universal favorite-longshot bias that worsens with time-to-resolution and is strongest in politics (a 70c political contract a week out is really ~75-83%), while Kalshi transaction data shows sub-10c contracts lose &gt;60% for buyers, average pre-fee returns of about -20% per contract, and makers systematically out-earning fee-paying takers. Venue mechanics are well documented: UMA's 2-hour optimistic-oracle challenge window with $750 bonds and a 50/50 "Unknown" settlement risk, and Polymarket's quadratic liquidity-reward scoring paid daily. On the skill side, randomized tournament evidence shows probability training (base rates, debiasing, averaging) and track-record-based selection measurably improve accuracy, while historical work shows election-eve market prices added no information beyond late polls in the modern polling era — cautioning against treating market prices as unbeatable.</p>
+<h2>Findings</h2>
+<h3>Approximately $40M of realized arbitrage profit was extracted from Polymarket over Apr 2024–Apr 2025...</h3>
+<p>Approximately $40M of realized arbitrage profit was extracted from Polymarket over Apr 2024–Apr 2025, via exactly two documented mechanisms: Market Rebalancing Arbitrage (within a single market/condition, ~$10.6M) and Combinatorial Arbitrage (spanning multiple related markets). The root cause is that dependent outcome sets which should sum to $1 (exhaustive, mutually exclusive) are observably mispriced, allowing a full set to be bought below $1 or sold above $1 for near-guaranteed profit. Top 3 accounts extracted ~$4.2M each.</p>
+<p><em>high | 9-0 across three merged claims</em></p>
+<p>Verbatim from the abstract: "We find a realized estimate of 40 million USD of profit extracted" using "on-chain historical order book data"; "Our study reveals two distinct forms of arbitrage on Polymarket: Market Rebalancing Arbitrage... and Combinatorial Arbitrage"; "dependent assets are mispriced, allowing for purchasing (or selling) a certain outcome for less than (or more than) $1, guaranteeing profit." Peer-reviewed at AFT 2025; 86M bets, 17,218 conditions. Note: the window is dominated by</p>
+<h3>Across 292M trades on Kalshi and Polymarket, favorite-longshot bias is universal and worsens with ti...</h3>
+<p>Across 292M trades on Kalshi and Polymarket, favorite-longshot bias is universal and worsens with time to resolution: mean calibration slope rises from 0.99 (within 1 hour of resolution) to 1.32 (beyond 1 month) — a 70c contract one month out is really ~75%. But the bias is strongly domain-conditional: sports are well calibrated 0–48h (slopes 0.90–1.10) yet sharply underconfident beyond a month (1.74), while weather is overconfident at short horizons (slopes 0.69–0.97, prices too extreme). A longshot-fade system must therefore condition on domain and horizon, not be applied uniformly.</p>
+<p><em>medium | 6-0 across two merged claims</em></p>
+<p>Verified verbatim against the PDF: slope "rises from 0.99 (within one hour of resolution) to 1.32 (beyond one month)"; "This pattern holds on both Kalshi and Polymarket"; sports and weather figures match the domain-by-horizon table exactly. Confidence capped at medium because the source is a single-author, non-peer-reviewed Feb 2026 preprint (though the largest-sample calibration study of these venues, with published replication code); exact figures are Kalshi-based with Polymarket confirming di</p>
+<h3>Politics is the most mispriced domain — persistently underconfident at nearly all horizons (slopes 0...</h3>
+<p>Politics is the most mispriced domain — persistently underconfident at nearly all horizons (slopes 0.93–1.83): a 70c political contract one week out corresponds to ~83% true probability on Kalshi (slope 1.83) and ~75% on Polymarket (mean slope 1.31 vs Kalshi 1.64), so the bias replicates cross-platform but the magnitude does not. On Kalshi specifically, large political trades (&gt;100 contracts) are WORSE calibrated than single-contract trades (slopes 1.74 vs 1.19, gap 0.53, 95% CI [0.29, 0.75]) — consistent with the paper's hypothesis that conviction-driven partisan bets push prices toward 50% rather than toward truth; this scale effect does not replicate on Polymarket (gap 0.11, CI [−0.15, 0.39]).</p>
+<p><em>medium | 6-0 across two merged claims</em></p>
+<p>All numbers verified verbatim in the primary PDF, including the p* = 0.70^1.83/(0.70^1.83+0.30^1.83) ≈ 0.83 derivation and the bootstrap CIs. Direction independently corroborated by Bürgi/Deng/Whelan: on Kalshi low-price contracts win far less often than break-even requires. Caveats: the implied "longshot-fade/favorite-buy edge in politics" is inference — the paper does no net-of-fees backtest, and favorite returns are only "small positive" after costs; the partisan mechanism is a hypothesis (tr</p>
+<h3>Kalshi transaction-level data (2021–Apr 2025, 313,972 contracts) quantifies who loses and why: buyer...</h3>
+<p>Kalshi transaction-level data (2021–Apr 2025, 313,972 contracts) quantifies who loses and why: buyers of contracts under 10c lose over 60% on average; contracts above 50c earn small positive returns, with statistically significant (though small) positive post-fee returns above 70c; the equal-weighted average pre-fee return per contract is about −20% (a 5c contract winning 3% of the time returns −40% pre-fee; a 95c contract winning 98% of the time returns +3.1%). Makers systematically out-earn Takers — both show favorite-longshot patterns but it is more pronounced for Takers, modeled as Takers having more extreme beliefs plus paying the fee; Makers buying 50c+ contracts earn ~2.6%.</p>
+<p><em>high | 9-0 across three merged claims</em></p>
+<p>All figures verified verbatim in the PDF, including "Average loss rates for contracts costing 10c and under are over 60%" and "the average pre-fee return on a Kalshi contract in our data is -20%." Maker/taker sides recorded directly by Kalshi (no Lee-Ready inference). Caveats: working paper (not yet journal-published) by established economists; −20% is per-contract equal-weighted (volume-weighted pre-fee return is zero by construction); sample excludes sub-$1,000-volume contracts; the paper note</p>
+<h3>Kalshi fee structure (documented, historical through Apr 2025): Takers paid $0.07 × P × (1−P) per co...</h3>
+<p>Kalshi fee structure (documented, historical through Apr 2025): Takers paid $0.07 × P × (1−P) per contract rounded UP to the nearest cent (round-up makes the effective fee on a 50c contract 1.77% rather than 1.75%); Makers paid nothing until Kalshi introduced maker fees after April 2025 (currently ~25% of the taker fee on resting orders). Some index series (S&amp;P 500, Nasdaq-100) used a reduced 0.035 multiplier.</p>
+<p><em>high | 3-0</em></p>
+<p>Paper text verified verbatim; independently corroborated by Kalshi's own CFTC-filed fee schedule ("fees = round up(0.07 x C x P x (1-P))", no fees on resting orders) and contemporaneous June 2025 trader accounts of maker fees arriving. Operationally decisive for strategy design: pre-2025 economics favored maker-side execution; current maker fees thin that edge and any backtest on pre-2025 data must be re-costed.</p>
+<h3>Polymarket resolution mechanics via UMA optimistic oracle: an undisputed proposal resolves after a 2...</h3>
+<p>Polymarket resolution mechanics via UMA optimistic oracle: an undisputed proposal resolves after a 2-hour challenge (liveness) window, so clean markets settle roughly 2 hours after a valid proposal. Disputing requires a counter-bond equal to the proposer's bond (typically $750); a first dispute triggers a new proposal round, a second escalates to a UMA token-holder DVM vote, with disputed resolutions taking ~4–6 days (24–48h debate + ~48h vote). Bond economics are asymmetric: the DVM winner recovers its bond plus half the loser's bond (the other half goes to UMA's Store); in 'Too Early' or 'Unknown' outcomes the disputer is treated as winner, and 'Unknown' settles the market 50/50 at $0.50 per token — a documented resolution-risk scenario for position holders.</p>
+<p><em>high | 9-0 across three merged claims</em></p>
+<p>All mechanics verified verbatim against Polymarket's live developer docs (fetched July 2026) and cross-checked against UMA's own protocol documentation with matching bond-split worked examples. Caveats: the 2h clock starts at proposal, which can lag the real-world event; liveness is configurable in principle (2h is Polymarket's standard); some third-party sources give DVM votes as 48–96h. Note a related refuted claim: the assertion that resolution proposal is fully permissionless for any party d</p>
+<h3>Polymarket liquidity-reward program mechanics (documented): rewards are paid to maker addresses dail...</h3>
+<p>Polymarket liquidity-reward program mechanics (documented): rewards are paid to maker addresses daily at midnight UTC with a $1 minimum payout. Order scoring is quadratic in quote tightness: S(v,s) = ((v−s)/v)² · b where v = max qualifying spread from the (size-cutoff-adjusted) midpoint, s = actual spread, b = an in-game multiplier — so reward share rises quadratically as quotes tighten. For midpoints in [0.10, 0.90], single-sided resting liquidity earns at a reduced rate (score divided by scaling factor c, currently 3.0); outside that band only double-sided liquidity scores at all.</p>
+<p><em>high | 9-0 across three merged claims</em></p>
+<p>All formulas and parameters verified verbatim against Polymarket's live official docs (fetched 2026-07-23), including Q_min = max(min(Q_one, Q_two), max(Q_one/c, Q_two/c)) and the double-sided requirement at extreme midpoints. Directly actionable for a market-making strategy: the quadratic scoring rewards tight two-sided quoting, and the c=3.0 penalty quantifies the cost of one-sided exposure. Docs do not specify whether sub-$1 amounts roll over.</p>
+<h3>Forecasting skill is trainable and persistent — the transferable Tetlock/GJP components: in the IARP...</h3>
+<p>Forecasting skill is trainable and persistent — the transferable Tetlock/GJP components: in the IARPA tournament (randomized design, thousands of forecasters), probability training that corrected cognitive biases, taught reference-class (base-rate) reasoning, and provided heuristics like averaging multiple estimates improved both calibration and resolution (~6–11% Brier improvement from a short module in the 2016 replication). 'Tracking' — identifying the top 2% from Year 1 and placing them in elite teams — was itself accuracy-improving, and top performers stayed top across years, implying persistent individual skill identifiable from a track record.</p>
+<p><em>medium | 6-0 across two merged claims (but a sibling claim on the three-intervention framing was refuted 1-2)</em></p>
+<p>Training-content quote verbatim from the peer-reviewed abstract; tracking manipulation and superforecaster persistence confirmed in the 2014/2015 papers. Downgraded to medium overall because Hauenstein et al. 2024's IRT reanalysis substantially reduces or reverses the teaming/training effects after controlling for method variance (which is why the blanket three-intervention claim was refuted in verification) — though it concedes latent traits do discriminate superforecasters, supporting the pers</p>
+<h3>Historical markets-vs-polls evidence (Erikson &amp; Wlezien, 30 US presidential elections): in the PRE-p...</h3>
+<p>Historical markets-vs-polls evidence (Erikson &amp; Wlezien, 30 US presidential elections): in the PRE-poll era (1880–1932) betting markets were excellent — log-odds prices correlated +.96 with the vote, picked the winner in 13 of 14 elections, RMSE 2.30. In the POLLING era (1936–2008) the correlation fell to +.65, markets missed the popular-vote winner 3 of 16 times (1948, 1976, 2000), and market RMSE was 4.36 vs 2.72 for polls. In a head-to-head regression, election-eve prices added NO information beyond late polls (poll coefficient positive, p&lt;.001; price coefficient negative, n.s.), and properly discounted polls beat IEM prices often enough that betting the poll-vs-price gap was historically profitable.</p>
+<p><em>high | 9-0 across three merged claims (one related underdog-bias claim refuted 1-2)</em></p>
+<p>All figures verified verbatim against the full PDF including Table 1 (RMSEs 2.30/4.36/2.72) and Table 2 (poll coef 1.39, SE 0.23; price coef −1.54, SE 0.77, N=16). Caveats: N=16 is small; the Berg/Nelson/Rietz IEM literature contests the broader conclusion (though it compares RAW polls, so does not directly contradict the converted-polls result); Rothschild 2009 found debiased Intrade beat debiased polls in 2008; data end in 2008, predating Polymarket/Kalshi; IEM's ~$500 caps make the historical</p>
+<h2>Caveats</h2>
+<p>Time-sensitivity: the $40M Polymarket arbitrage estimate covers only Apr 2024–Apr 2025, dominated by the 2024 US election cycle — it is an episodic-capacity figure, not an ongoing run-rate, and competition has likely compressed it. The Kalshi economics results end at April 2025, exactly when maker fees were introduced, so the documented maker edge is now thinner and any backtest must be re-costed. Polymarket reward parameters (c=3.0, $750 bonds, 2h liveness) are 'current' per live docs and can change. Source quality: the single largest input on calibration (arXiv 2602.19520) is a single-author, non-peer-reviewed Feb 2026 preprint — its headline numbers are internally verified and directionally corroborated by the Whelan paper, but no independent replication exists yet, and the partisan-flow mechanism is hypothesis, not observation; the Whelan Kalshi paper is a credible but not-yet-journal-published working paper. The GJP training/teaming effects were materially weakened by a 2024 IRT reanalysis, so treat trainability claims as modest. The markets-vs-polls evidence predates modern venues entirely (data end 2008) and is contested by the IEM literature. Nothing verified here covers several parts of the original question: the Theo/French-whale operation, Domer and other named professionals, cross-venue divergence magnitudes, news-latency speed, whale-copy performance, or specific UMA manipulation episodes — the report should not imply those were verified. No net-of-all-costs backtest of the longshot-fade edge exists in any verified source; gross calibration edges may not survive fees and spread, especially post-April-2025 on Kalshi.</p>
+<h2>Open questions</h2>
+<ul>
+<li>Does the political-market miscalibration (slopes 1.3-1.8) survive net of fees, spread, and capital lockup as an implementable longshot-fade strategy, and did it persist after the 2024 election cycle? No verified source backtests it after costs.</li>
+<li>What is the current (post-competition, post-election) run-rate of extractable Polymarket arbitrage, and what latency/gas infrastructure do the top ~3 extracting accounts use?</li>
+<li>What are the documented specifics of the named professional cohort (Theo's 2024 neutral-polling operation, Domer's track record) and of actual UMA dispute-manipulation episodes with loss magnitudes — none of these survived into the verified claim set?</li>
+<li>Who exactly can propose resolutions on Polymarket (the permissionless-proposal claim was refuted 0-3) — what is the actual proposer whitelist/designated-reporter structure, and how does it change the oracle-risk model for a passive position holder?</li>
+</ul></div></div>
+<footer>keys: <b>1–7</b> screens · every claim links to the trial that produced it ·
+negative results are kept, not buried</footer>
+
+<script>
+(() => {
+  const pages = { "1": "index.html", "2": "analysis.html", "3": "screener.html",
+                  "4": "past_trades.html", "5": "portfolio.html",
+                  "6": "research.html", "7": "desk.html" };
+  document.addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target instanceof Element && e.target.matches("input,textarea")) return;
+    const p = pages[e.key];
+    if (p) location.href = (location.pathname.includes("/research/") ? "../" : "") + p;
+  });
+})();
+</script>
+</body></html>

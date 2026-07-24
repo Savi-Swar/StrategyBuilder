@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>VIG · 06 RESEARCH</title><style>
+* { box-sizing: border-box; margin: 0 }
+body { background: #0b0d10; color: #e6e2d8;
+  font: 13px "SF Mono", ui-monospace, Menlo, monospace; }
+header { display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 18px 26px 14px; }
+.wordmark { font-size: 30px; font-weight: 800; letter-spacing: 3px }
+.tagline { color: #6d747c; font-size: 11px; letter-spacing: 1px }
+.tagline b { color: #8a9199 }
+.stamp-date { color: #6d747c; font-size: 11px }
+.tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c;
+  position: sticky; top: 0; background: #0b0d10; z-index: 5; flex-wrap: wrap }
+.tab { padding: 11px 18px; color: #8a9199; text-decoration: none; font-size: 12px;
+  letter-spacing: 1.5px; border-right: 1px solid #22262c }
+.tab .k { color: #6d747c; margin-right: 7px; font-size: 10px }
+.tab.active { color: #e6e2d8; background: #0e1114; box-shadow: inset 0 2px 0 #ffb000 }
+.tab:hover { color: #e6e2d8 }
+.wrap { padding: 20px 26px 60px; max-width: 980px }
+h2.sect { font-size: 11px; letter-spacing: 2.5px; color: #ffb000; margin: 30px 0 10px;
+  text-transform: uppercase }
+h2.sect::before { content: "▚ " }
+h2.sect .dim { text-transform: none; letter-spacing: .5px }
+.dim { color: #6d747c; font-size: 12px }
+.htiles { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px }
+.htile { border: 1px solid #22262c; background: #0e1114; padding: 12px 16px;
+  min-width: 170px; flex: 1 }
+.hlabel { color: #6d747c; font-size: 10px; letter-spacing: 2px; text-transform: uppercase }
+.hval { font-size: 24px; font-weight: 700; margin: 6px 0 3px }
+.hsub { color: #8a9199; font-size: 11px }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px; margin: 12px 0 }
+.card { border: 1px solid #22262c; background: #0e1114; padding: 14px 16px;
+  text-decoration: none; display: block }
+.card:hover { border-color: #ffb000 }
+.card .t { color: #e6e2d8; font-size: 13px; font-weight: 700 }
+.card .s { color: #8a9199; font-size: 11px; margin-top: 6px; line-height: 1.5 }
+.card .m { color: #6d747c; font-size: 10px; margin-top: 8px; letter-spacing: 1px;
+  text-transform: uppercase }
+a { color: #e6e2d8 }
+footer { color: #6d747c; font-size: 11px; padding: 0 26px 40px }
+img { max-width: 100%; border: 1px solid #22262c; margin: 8px 0 }
+/* rendered markdown */
+.md { line-height: 1.65; font-size: 13px }
+.md h1 { font-size: 20px; margin: 24px 0 12px; letter-spacing: .5px }
+.md h2 { font-size: 14px; color: #ffb000; margin: 26px 0 10px; letter-spacing: 1px;
+  text-transform: uppercase; font-size: 12px; letter-spacing: 2px }
+.md h2::before { content: "▚ " }
+.md h3 { font-size: 13px; color: #e6e2d8; margin: 18px 0 8px }
+.md p { margin: 10px 0; color: #c9c4b8 }
+.md li { margin: 6px 0 6px 18px; color: #c9c4b8 }
+.md strong { color: #e6e2d8 }
+.md em { color: #9fb0c0; font-style: normal }
+.md code { background: #14171b; padding: 1px 5px; font-size: 12px; color: #9fe0b8 }
+.md pre { background: #0e1114; border: 1px solid #22262c; padding: 12px 14px;
+  overflow-x: auto; margin: 10px 0 }
+.md pre code { background: none; padding: 0 }
+.md table { border-collapse: collapse; width: 100%; margin: 10px 0 }
+.md td, .md th { border-bottom: 1px solid #14171b; padding: 5px 10px; text-align: left;
+  font-size: 12px }
+.md th { color: #6d747c; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase }
+.md tr:hover td { background: #0e1114 }
+.md blockquote { border-left: 2px solid #ffb000; padding-left: 14px; color: #9fb0c0;
+  margin: 10px 0 }
+.md hr { border: none; border-top: 1px solid #22262c; margin: 22px 0 }
+.crumb { color: #6d747c; font-size: 11px; margin-bottom: 14px }
+.crumb a { color: #8a9199; text-decoration: none }
+.crumb a:hover { color: #ffb000 }
+</style></head><body>
+<header>
+  <div>
+    <div class="wordmark">VIG</div>
+    <div class="tagline">the house takes its cut — <b>the research record</b></div>
+  </div>
+  <div class="stamp-date">2026-07-24 12:36</div>
+</header>
+<nav class="tabs"><a class="tab" href="index.html"><span class="k">01</span>DESK</a><a class="tab" href="analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab" href="screener.html"><span class="k">03</span>SCREENER</a><a class="tab" href="past_trades.html"><span class="k">04</span>PAST TRADES</a><a class="tab" href="portfolio.html"><span class="k">05</span>PORTFOLIO</a><a class="tab active" href="research.html"><span class="k">06</span>RESEARCH</a><a class="tab" href="desk.html"><span class="k">07</span>PREDMKT</a></nav>
+<div class="wrap">
+<p class="dim">Everything below is the actual research record — the trials,
+the numbers, the negative results. The paper sim on
+<a href="desk.html">07 PREDMKT</a> only trades what survived this page.</p>
+
+<div class="htiles">
+<div class="htile"><div class="hlabel">Registered experiments</div><div class="hval" style="color:#e6e2d8">~70</div><div class="hsub">every variant counted, none hidden</div></div>
+<div class="htile"><div class="hlabel">Strategies killed</div><div class="hval" style="color:#ff5d5d">15</div><div class="hsub">including the flagship (0.28 → 0.05)</div></div>
+<div class="htile"><div class="hlabel">Survivor</div><div class="hval" style="color:#46ff9a">0.85</div><div class="hsub">walk-forward Sharpe · 77-instrument xsec · 12/15 yrs+</div></div>
+<div class="htile"><div class="hlabel">Original finding</div><div class="hval" style="color:#ffb000">0.87</div><div class="hsub">2026 calibration slope — FLB reversed vs literature</div></div>
+</div>
+
+<h2 class="sect">The record <span class="dim">— read in this order</span></h2>
+<div class="cards"><a class="card" href="research/story.html"><div class="t">The campaign, start to finish</div><div class="s">How three days of research went: the equity work, the anomaly audit, the prediction-market falsification, and why the Desk exists.</div><div class="m">5 sections · RESEARCH_STORY.md</div></a><a class="card" href="research/knowledge_base.html"><div class="t">Knowledge base</div><div class="s">The condensed brain: verified edges, falsified claims, the math that matters, operating doctrine.</div><div class="m">9 sections · KNOWLEDGE_BASE.md</div></a><a class="card" href="research/notes.html"><div class="t">The full trial log</div><div class="s">Chronological record of every registered trial, decision, and negative result. The paper trail behind every number.</div><div class="m">36 sections · RESEARCH_NOTES.md</div></a></div>
+
+<h2 class="sect">Headline artifacts</h2>
+<div class="cards">
+<a class="card" href="research/notes.html"><div class="t">Walk-forward config selection — the honest number</div><div class="s">The harshest gate in the repo: choose configs on trailing data only, measure forward. In-sample Sharpe 0.28 became 0.05. Signal real, money gone.</div><div class="m">cycle 9 · the one to read first</div></a>
+<a class="card" href="../study2_tearsheet.png"><div class="t">Study 2 tearsheet — cross-sectional equity</div><div class="s">IC t=3.35 over 756 weeks, clean shuffled-label control, and why it still doesn't pay after costs.</div><div class="m">flagship · falsified</div></a>
+<a class="card" href="../study1_tearsheet.png"><div class="t">Study 1 tearsheet — multi-asset</div><div class="s">78 instruments, classic indicators dead after costs (best DSR 0.19), ML timing an honest failure.</div><div class="m">baselines</div></a>
+<a class="card" href="../quark_onepager.pdf"><div class="t">The one-pager</div><div class="s">The whole argument on one page.</div><div class="m">pdf</div></a>
+</div>
+
+<h2 class="sect">Deep-research library <span class="dim">— 11 verified literature reviews</span></h2>
+<div class="cards"><a class="card" href="research/backtest_method.html"><div class="t">Backtesting without lying to yourself</div><div class="s">The mature betting-evaluation literature converges on a clear methodology for the Jan–Jul 2026 Polymarket backtest: evaluate edge against a sharp reference price rather t…</div><div class="m">deep research · 2026-07-24</div></a><a class="card" href="research/edges.html"><div class="t">Where edges still exist</div><div class="s">The verified record supports a clear anatomy of trading edges: every documented edge had an identifiable structurally-constrained loser (index funds bound by tracking-err…</div><div class="m">deep research · 2026-07-23</div></a><a class="card" href="research/engineering.html"><div class="t">ML, systems and data engineering</div><div class="s">Confirmed claims below survived 3-vote adversarial verification. Unverified claims from this run are NOT included and must not be quoted.</div><div class="m">deep research · 2026-07-23</div></a><a class="card" href="research/families.html"><div class="t">Factor families, replicated</div><div class="s">100 agents; 3-vote verification. Summary:</div><div class="m">deep research · 2026-07-23</div></a><a class="card" href="research/masters.html"><div class="t">Masters of niche edges</div><div class="s">Confirmed claims below survived 3-vote verification. Synthesis interrupted by usage limit.</div><div class="m">deep research · 2026-07-23</div></a><a class="card" href="research/math.html"><div class="t">The quant math that matters</div><div class="s">Summary:</div><div class="m">deep research · 2026-07-23</div></a><a class="card" href="research/net_alpha.html"><div class="t">Net alpha: costs and construction</div><div class="s">2026-07-22. 104-agent research run: 22 sources, 102 claims extracted, 25 verified by 3-vote adversarial panels → 20 confirmed, 5 refuted. Confidence labels per finding.</div><div class="m">deep research · 2026-07-22</div></a><a class="card" href="research/predmkt.html"><div class="t">Prediction markets: the venue</div><div class="s">The verified evidence supports a clear picture of prediction markets as a professionally tradeable arena with documented, quantified inefficiencies. A peer-reviewed on-ch…</div><div class="m">deep research · 2026-07-23</div></a><a class="card" href="research/predmkt_institutions.html"><div class="t">Who trades prediction markets</div><div class="s">Institutional entry into prediction markets is real, named, and accelerating — but later and narrower than folklore suggests. Susquehanna (SIG) became Kalshi's first dedi…</div><div class="m">deep research · 2026-07-23</div></a><a class="card" href="research/risk.html"><div class="t">Risk, sizing and decision theory</div><div class="s">Confirmed claims below survived 3-vote adversarial verification. Unverified claims from this run are NOT included and must not be quoted.</div><div class="m">deep research · 2026-07-23</div></a><a class="card" href="research/wsb_method.html"><div class="t">Attention signals: the WSB postmortem</div><div class="s">Verification failed (usage limit). Claims are single-source extractions, NOT adversarially confirmed. Treat as leads, not facts.</div><div class="m">deep research · 2026-07-23</div></a></div>
+
+<h2 class="sect">Where it leads</h2>
+<p class="dim" style="font-size:13px;line-height:1.6">Every directional
+strategy on the prediction-market venue pays a spread wider than the
+mispricing — measured both ways. The only structural winner is the maker.
+That hypothesis is now running live on paper, self-grading:
+<a href="desk.html">07 PREDMKT →</a></p>
+</div>
+<footer>keys: <b>1–7</b> screens · every claim links to the trial that produced it ·
+negative results are kept, not buried</footer>
+
+<script>
+(() => {
+  const pages = { "1": "index.html", "2": "analysis.html", "3": "screener.html",
+                  "4": "past_trades.html", "5": "portfolio.html",
+                  "6": "research.html", "7": "desk.html" };
+  document.addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target instanceof Element && e.target.matches("input,textarea")) return;
+    const p = pages[e.key];
+    if (p) location.href = (location.pathname.includes("/research/") ? "../" : "") + p;
+  });
+})();
+</script>
+</body></html>

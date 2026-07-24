@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>VIG · Masters of niche edges</title><style>
+* { box-sizing: border-box; margin: 0 }
+body { background: #0b0d10; color: #e6e2d8;
+  font: 13px "SF Mono", ui-monospace, Menlo, monospace; }
+header { display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 18px 26px 14px; }
+.wordmark { font-size: 30px; font-weight: 800; letter-spacing: 3px }
+.tagline { color: #6d747c; font-size: 11px; letter-spacing: 1px }
+.tagline b { color: #8a9199 }
+.stamp-date { color: #6d747c; font-size: 11px }
+.tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c;
+  position: sticky; top: 0; background: #0b0d10; z-index: 5; flex-wrap: wrap }
+.tab { padding: 11px 18px; color: #8a9199; text-decoration: none; font-size: 12px;
+  letter-spacing: 1.5px; border-right: 1px solid #22262c }
+.tab .k { color: #6d747c; margin-right: 7px; font-size: 10px }
+.tab.active { color: #e6e2d8; background: #0e1114; box-shadow: inset 0 2px 0 #ffb000 }
+.tab:hover { color: #e6e2d8 }
+.wrap { padding: 20px 26px 60px; max-width: 980px }
+h2.sect { font-size: 11px; letter-spacing: 2.5px; color: #ffb000; margin: 30px 0 10px;
+  text-transform: uppercase }
+h2.sect::before { content: "▚ " }
+h2.sect .dim { text-transform: none; letter-spacing: .5px }
+.dim { color: #6d747c; font-size: 12px }
+.htiles { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px }
+.htile { border: 1px solid #22262c; background: #0e1114; padding: 12px 16px;
+  min-width: 170px; flex: 1 }
+.hlabel { color: #6d747c; font-size: 10px; letter-spacing: 2px; text-transform: uppercase }
+.hval { font-size: 24px; font-weight: 700; margin: 6px 0 3px }
+.hsub { color: #8a9199; font-size: 11px }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px; margin: 12px 0 }
+.card { border: 1px solid #22262c; background: #0e1114; padding: 14px 16px;
+  text-decoration: none; display: block }
+.card:hover { border-color: #ffb000 }
+.card .t { color: #e6e2d8; font-size: 13px; font-weight: 700 }
+.card .s { color: #8a9199; font-size: 11px; margin-top: 6px; line-height: 1.5 }
+.card .m { color: #6d747c; font-size: 10px; margin-top: 8px; letter-spacing: 1px;
+  text-transform: uppercase }
+a { color: #e6e2d8 }
+footer { color: #6d747c; font-size: 11px; padding: 0 26px 40px }
+img { max-width: 100%; border: 1px solid #22262c; margin: 8px 0 }
+/* rendered markdown */
+.md { line-height: 1.65; font-size: 13px }
+.md h1 { font-size: 20px; margin: 24px 0 12px; letter-spacing: .5px }
+.md h2 { font-size: 14px; color: #ffb000; margin: 26px 0 10px; letter-spacing: 1px;
+  text-transform: uppercase; font-size: 12px; letter-spacing: 2px }
+.md h2::before { content: "▚ " }
+.md h3 { font-size: 13px; color: #e6e2d8; margin: 18px 0 8px }
+.md p { margin: 10px 0; color: #c9c4b8 }
+.md li { margin: 6px 0 6px 18px; color: #c9c4b8 }
+.md strong { color: #e6e2d8 }
+.md em { color: #9fb0c0; font-style: normal }
+.md code { background: #14171b; padding: 1px 5px; font-size: 12px; color: #9fe0b8 }
+.md pre { background: #0e1114; border: 1px solid #22262c; padding: 12px 14px;
+  overflow-x: auto; margin: 10px 0 }
+.md pre code { background: none; padding: 0 }
+.md table { border-collapse: collapse; width: 100%; margin: 10px 0 }
+.md td, .md th { border-bottom: 1px solid #14171b; padding: 5px 10px; text-align: left;
+  font-size: 12px }
+.md th { color: #6d747c; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase }
+.md tr:hover td { background: #0e1114 }
+.md blockquote { border-left: 2px solid #ffb000; padding-left: 14px; color: #9fb0c0;
+  margin: 10px 0 }
+.md hr { border: none; border-top: 1px solid #22262c; margin: 22px 0 }
+.crumb { color: #6d747c; font-size: 11px; margin-bottom: 14px }
+.crumb a { color: #8a9199; text-decoration: none }
+.crumb a:hover { color: #ffb000 }
+</style></head><body>
+<header>
+  <div>
+    <div class="wordmark">VIG</div>
+    <div class="tagline">the house takes its cut — <b>the research record</b></div>
+  </div>
+  <div class="stamp-date">2026-07-24 12:36</div>
+</header>
+<nav class="tabs"><a class="tab" href="../index.html"><span class="k">01</span>DESK</a><a class="tab" href="../analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab" href="../screener.html"><span class="k">03</span>SCREENER</a><a class="tab" href="../past_trades.html"><span class="k">04</span>PAST TRADES</a><a class="tab" href="../portfolio.html"><span class="k">05</span>PORTFOLIO</a><a class="tab active" href="../research.html"><span class="k">06</span>RESEARCH</a><a class="tab" href="../desk.html"><span class="k">07</span>PREDMKT</a></nav>
+<div class="wrap"><div class="crumb"><a href="../research.html">← 06 RESEARCH</a> / deep_research_masters_2026-07-23.md</div><div class="md"><h1>Deep research: masters of niche edge extraction (verified claims)</h1>
+<p><em>Confirmed claims below survived 3-vote verification. Synthesis interrupted by usage limit.</em></p>
+<ul>
+<li>
+<p><strong>Benter's Hong Kong betting operation was profitable in four of its first five seasons, with the single losing season costing about 20% of starting capital, and the cumulative log-wealth graph shows roughly e^3.5-e^4 growth over ~2,500 races bet.</strong>
+  https://gwern.net/doc/statistics/decision/1994-benter.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Building the edge required roughly ten man-years of effort: five man-years to build the database and a model with significant advantage, plus five more to reach high profitability — supporting the thesis that the niche was too effortful for casual competitors.</strong>
+  https://gwern.net/doc/statistics/decision/1994-benter.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>The core technical insight Benter published is that a raw fundamental model is biased relative to the public odds and must be combined with the public's implied probabilities in a second-stage logit (his combined model raised pseudo-R² from .1218 public / .1245 fundamental to .1396 combined, ΔR² = .0178, which he says indicates significant profits).</strong>
+  https://gwern.net/doc/statistics/decision/1994-benter.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Benter explicitly used fractional Kelly sizing (e.g. 1/2 or 1/3 Kelly) because full Kelly is unsafe when the advantage estimate itself has error — overestimating advantage by a factor of two makes full-Kelly betting negative-growth — and his operation employed a conservative fractional Kelly throughout.</strong>
+  https://gwern.net/doc/statistics/decision/1994-benter.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Benter quantified the edge's capacity ceiling: maximum expected profit is about 0.25-0.5% of total per-race pool turnover for an effectively infinite bankroll (winning 0.1-0.2% of track turnover being a realistic start-up goal), which is why he targeted Hong Kong's extremely large pools (&gt; USD 10,000,000 per race, ~19% average track take) and why small-pool tracks cannot sustain a professional operation.</strong>
+  https://gwern.net/doc/statistics/decision/1994-benter.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Thorp's method for finding and exploiting edges followed an explicit three-step protocol — idea, quantitative development, real-world verification — which he validated cheaply: his first casino trip in 1961 turned a $10,000 bankroll into an $11,000 win in 20 hours of full-scale betting, close to his forecast midpoint of $10,000.</strong>
+  https://www.edwardothorp.com/wp-content/uploads/2016/11/thorpwilmottqfinrev2003.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Thorp's documented sizing discipline was fractional Kelly with a staged ramp-up: he cut his backers' proposed $100K bankroll to $10K as a safety measure, laddered bet sizes from $1-10 up to $50-500 over roughly 15 hours of verification play, bet fractional Kelly within each range, and only bet full Kelly at full scale.</strong>
+  https://www.edwardothorp.com/wp-content/uploads/2016/11/thorpwilmottqfinrev2003.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Thorp explicitly sized each edge's capacity in dollars before committing: he valued blackjack at $1 million to him personally and convertible hedging at $100 million; Princeton Newport Partners ultimately made about $250 million for its partners, half or more from convertibles.</strong>
+  https://www.edwardothorp.com/wp-content/uploads/2016/11/thorpwilmottqfinrev2003.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Thorp names consistent overbetting (violating Kelly) as the ruin mechanism behind documented blow-ups, attributing the misfortunes of Victor Niederhoffer and LTCM in part to it, and notes LTCM also fell to the fallacies of trusting historical limits and lognormal tail models.</strong>
+  https://www.edwardothorp.com/wp-content/uploads/2016/11/thorpwilmottqfinrev2003.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Thorp documents both his idea-search doctrine and edge decay: ideas came from sitting and thinking, academic journals, reading, and networking; his statistical arbitrage (short-term reversal found Dec 1979/Jan 1980, ~20% annualized pre-cost) compounded 26%/yr net before fees Aug 1992-Oct 2002 (~$350M profit), and in all three of his examples the inefficiency diminished only gradually over many years, requiring continuous R&amp;D.</strong>
+  https://www.edwardothorp.com/wp-content/uploads/2016/11/thorpwilmottqfinrev2003.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Thorp independently derived a risk-neutral option/warrant pricing formula years before Black-Scholes was published (1973), and deliberately kept it private as a proprietary trading tool for his warrant hedges rather than publishing it.</strong>
+  https://www.aqr.com/-/media/AQR/Documents/Insights/Interviews/AQR-Words-from-the-Wise-Ed-Thorp.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Thorp's hedge fund strategies (Princeton Newport Partners, later Ridgeline Partners) were profitable every single year for 37 years, from 1966 to 2002.</strong>
+  https://www.aqr.com/-/media/AQR/Documents/Insights/Interviews/AQR-Words-from-the-Wise-Ed-Thorp.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Thorp documents concrete edge decay in his statistical arbitrage operation: the Bamberger industry-grouped reversal model (run as a joint business 1985-1988) faded from ~25% annualized to ~15%, and his team responded by migrating to a new factor-neutralized version using principal-component risk factors with 100-200 stocks per side capped at ~1.5% per name.</strong>
+  https://www.aqr.com/-/media/AQR/Documents/Insights/Interviews/AQR-Words-from-the-Wise-Ed-Thorp.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Thorp's stated validation protocol for any claimed edge is that it must be logically demonstrable and survive adversarial challenge; he also states that discovered edges decay because capital inflows move prices toward correct pricing.</strong>
+  https://www.aqr.com/-/media/AQR/Documents/Insights/Interviews/AQR-Words-from-the-Wise-Ed-Thorp.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Burry publicly documented his stock-picking methods for years before managing outside money: he wrote for Microsoft's MSN Money under the handle 'Value Doc' starting in 1997, while still training in medicine.</strong>
+  https://substack.com/@michaeljburry/note/c-191040794 | 3-0</p>
+</li>
+<li>
+<p><strong>Burry's public track record directly seeded his fund launch: he left medicine on June 30, 2000 to found Scion Capital, and Joel Greenblatt's Gotham Capital plus White Mountains Insurance Group bought stakes in the firm — a documented link in the small-capital special-situations lineage (Greenblatt -&gt; Burry).</strong>
+  https://substack.com/@michaeljburry/note/c-191040794 | 3-0</p>
+</li>
+<li>
+<p><strong>His documented early operating method was concentrated deep-value in out-of-favor names: holding 12-18 stocks across depressed industries and buying within 10-15% of a 52-week low that shows price support.</strong>
+  https://substack.com/@michaeljburry/note/c-191040794 | 3-0</p>
+</li>
+<li>
+<p><strong>Kelly strategies are dangerously sensitive to estimation error, with errors in mean estimates roughly 20x as costly as covariance errors, rising to about 100:3:1 for near-zero-risk-aversion log investors — the theoretical basis for fractional Kelly under estimation error.</strong>
+  https://webhomes.maths.ed.ac.uk/mckinnon/blackouts/StochOptFinanceAndEnergySpringer/Chap1_KellyZiemba.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Overbetting beyond full Kelly is strictly dominated: both growth and security decline for f &gt; f*, and betting exactly twice the Kelly fraction yields a growth rate of zero (plus the risk-free rate) — the quantitative case for capping size at or below Kelly.</strong>
+  https://webhomes.maths.ed.ac.uk/mckinnon/blackouts/StochOptFinanceAndEnergySpringer/Chap1_KellyZiemba.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>The chapter attributes documented Kelly-style wealth records to named practitioners: Benter's Hong Kong racing syndicate, Thorp's Princeton-Newport, Simons's Medallion, and Keynes's King's College endowment (Keynes estimated as approximately an 80% Kelly bettor), while Buffett and Soros are characterized as full-Kelly-like concentrated investors.</strong>
+  https://webhomes.maths.ed.ac.uk/mckinnon/blackouts/StochOptFinanceAndEnergySpringer/Chap1_KellyZiemba.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Pari-mutuel rebates convert a losing gross betting record into a net profit for volume players — a documented 2004 real-money example churned $5,000 into $1.5M of bets, lost 7% gross, and netted about $30,000 via a ~9% average rebate; rebates cut professionals' effective track take from 13-30% to roughly 10-12%. This is the documented mechanism behind rebate-economics operators like Ranogajec.</strong>
+  https://webhomes.maths.ed.ac.uk/mckinnon/blackouts/StochOptFinanceAndEnergySpringer/Chap1_KellyZiemba.pdf | 3-0</p>
+</li>
+<li>
+<p><strong>Ranogajec testified under oath in 2008 that his syndicate profits from tote rebates ('loyalty payments') rather than winning bets: a 10% rebate turns a 5% gross betting loss into a 5% net profit, and betting at his volume depresses pari-mutuel pools below fair odds, making the rebate the entire edge.</strong>
+  https://varenne.art/usr/documents/press/download_url/359/the-joker-meet-zeljko-ranogajec-the-australian-who-is-the-biggest-gambler-in-the-world.pdf | 3-0</p>
+</li>
+</ul></div></div>
+<footer>keys: <b>1–7</b> screens · every claim links to the trial that produced it ·
+negative results are kept, not buried</footer>
+
+<script>
+(() => {
+  const pages = { "1": "index.html", "2": "analysis.html", "3": "screener.html",
+                  "4": "past_trades.html", "5": "portfolio.html",
+                  "6": "research.html", "7": "desk.html" };
+  document.addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target instanceof Element && e.target.matches("input,textarea")) return;
+    const p = pages[e.key];
+    if (p) location.href = (location.pathname.includes("/research/") ? "../" : "") + p;
+  });
+})();
+</script>
+</body></html>

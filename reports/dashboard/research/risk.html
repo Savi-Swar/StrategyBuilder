@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>VIG · Risk, sizing and decision theory</title><style>
+* { box-sizing: border-box; margin: 0 }
+body { background: #0b0d10; color: #e6e2d8;
+  font: 13px "SF Mono", ui-monospace, Menlo, monospace; }
+header { display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 18px 26px 14px; }
+.wordmark { font-size: 30px; font-weight: 800; letter-spacing: 3px }
+.tagline { color: #6d747c; font-size: 11px; letter-spacing: 1px }
+.tagline b { color: #8a9199 }
+.stamp-date { color: #6d747c; font-size: 11px }
+.tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c;
+  position: sticky; top: 0; background: #0b0d10; z-index: 5; flex-wrap: wrap }
+.tab { padding: 11px 18px; color: #8a9199; text-decoration: none; font-size: 12px;
+  letter-spacing: 1.5px; border-right: 1px solid #22262c }
+.tab .k { color: #6d747c; margin-right: 7px; font-size: 10px }
+.tab.active { color: #e6e2d8; background: #0e1114; box-shadow: inset 0 2px 0 #ffb000 }
+.tab:hover { color: #e6e2d8 }
+.wrap { padding: 20px 26px 60px; max-width: 980px }
+h2.sect { font-size: 11px; letter-spacing: 2.5px; color: #ffb000; margin: 30px 0 10px;
+  text-transform: uppercase }
+h2.sect::before { content: "▚ " }
+h2.sect .dim { text-transform: none; letter-spacing: .5px }
+.dim { color: #6d747c; font-size: 12px }
+.htiles { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px }
+.htile { border: 1px solid #22262c; background: #0e1114; padding: 12px 16px;
+  min-width: 170px; flex: 1 }
+.hlabel { color: #6d747c; font-size: 10px; letter-spacing: 2px; text-transform: uppercase }
+.hval { font-size: 24px; font-weight: 700; margin: 6px 0 3px }
+.hsub { color: #8a9199; font-size: 11px }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px; margin: 12px 0 }
+.card { border: 1px solid #22262c; background: #0e1114; padding: 14px 16px;
+  text-decoration: none; display: block }
+.card:hover { border-color: #ffb000 }
+.card .t { color: #e6e2d8; font-size: 13px; font-weight: 700 }
+.card .s { color: #8a9199; font-size: 11px; margin-top: 6px; line-height: 1.5 }
+.card .m { color: #6d747c; font-size: 10px; margin-top: 8px; letter-spacing: 1px;
+  text-transform: uppercase }
+a { color: #e6e2d8 }
+footer { color: #6d747c; font-size: 11px; padding: 0 26px 40px }
+img { max-width: 100%; border: 1px solid #22262c; margin: 8px 0 }
+/* rendered markdown */
+.md { line-height: 1.65; font-size: 13px }
+.md h1 { font-size: 20px; margin: 24px 0 12px; letter-spacing: .5px }
+.md h2 { font-size: 14px; color: #ffb000; margin: 26px 0 10px; letter-spacing: 1px;
+  text-transform: uppercase; font-size: 12px; letter-spacing: 2px }
+.md h2::before { content: "▚ " }
+.md h3 { font-size: 13px; color: #e6e2d8; margin: 18px 0 8px }
+.md p { margin: 10px 0; color: #c9c4b8 }
+.md li { margin: 6px 0 6px 18px; color: #c9c4b8 }
+.md strong { color: #e6e2d8 }
+.md em { color: #9fb0c0; font-style: normal }
+.md code { background: #14171b; padding: 1px 5px; font-size: 12px; color: #9fe0b8 }
+.md pre { background: #0e1114; border: 1px solid #22262c; padding: 12px 14px;
+  overflow-x: auto; margin: 10px 0 }
+.md pre code { background: none; padding: 0 }
+.md table { border-collapse: collapse; width: 100%; margin: 10px 0 }
+.md td, .md th { border-bottom: 1px solid #14171b; padding: 5px 10px; text-align: left;
+  font-size: 12px }
+.md th { color: #6d747c; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase }
+.md tr:hover td { background: #0e1114 }
+.md blockquote { border-left: 2px solid #ffb000; padding-left: 14px; color: #9fb0c0;
+  margin: 10px 0 }
+.md hr { border: none; border-top: 1px solid #22262c; margin: 22px 0 }
+.crumb { color: #6d747c; font-size: 11px; margin-bottom: 14px }
+.crumb a { color: #8a9199; text-decoration: none }
+.crumb a:hover { color: #ffb000 }
+</style></head><body>
+<header>
+  <div>
+    <div class="wordmark">VIG</div>
+    <div class="tagline">the house takes its cut — <b>the research record</b></div>
+  </div>
+  <div class="stamp-date">2026-07-24 12:36</div>
+</header>
+<nav class="tabs"><a class="tab" href="../index.html"><span class="k">01</span>DESK</a><a class="tab" href="../analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab" href="../screener.html"><span class="k">03</span>SCREENER</a><a class="tab" href="../past_trades.html"><span class="k">04</span>PAST TRADES</a><a class="tab" href="../portfolio.html"><span class="k">05</span>PORTFOLIO</a><a class="tab active" href="../research.html"><span class="k">06</span>RESEARCH</a><a class="tab" href="../desk.html"><span class="k">07</span>PREDMKT</a></nav>
+<div class="wrap"><div class="crumb"><a href="../research.html">← 06 RESEARCH</a> / deep_research_risk_2026-07-23.md</div><div class="md"><h1>Deep research: risk (verified claims; synthesis interrupted by usage limit)</h1>
+<p><em>Confirmed claims below survived 3-vote adversarial verification. Unverified claims from this run are NOT included and must not be quoted.</em></p>
+<ul>
+<li>
+<p><strong>For a single stock modeled as geometric Brownian motion, the optimal Kelly fraction is f = mu/sigma^2, where mu is the growth rate and sigma the relative volatility; the paper reproduces this as the small-mu, small-sigma limit of its exact expression f = (e^mu - 1)/(1 + e^(2mu+sigma^2) - 2e^mu).</strong>
+  Source: https://arxiv.org/pdf/1806.05293 | vote 3-0</p>
+</li>
+<li>
+<p><strong>Multi-asset Kelly fractions can be computed by solving a linear matrix equation f = M^{-1} b, where the matrix M and vector b involve only the first and second moments (means, variances, covariances) of the joint return distribution — i.e., multi-asset Kelly with covariance reduces to a matrix inversion.</strong>
+  Source: https://arxiv.org/pdf/1806.05293 | vote 3-0</p>
+</li>
+<li>
+<p><strong>Positive correlation between assets reduces the optimal Kelly fractions and negative correlation increases them, consistent with diversification logic; in the limiting case of two identical perfectly correlated stocks (rho = 1), each optimal fraction is exactly half the single-stock Kelly fraction.</strong>
+  Source: https://arxiv.org/pdf/1806.05293 | vote 3-0</p>
+</li>
+<li>
+<p><strong>The continuous-time Kelly criterion gives an optimal fraction f<em> = (mu - r)/sigma^2 for a single risky asset, and for n risky assets the optimal vector generalizes to F</em> = Sigma^{-1}(mu - r*1), i.e., the inverse covariance matrix times the excess-return vector.</strong>
+  Source: https://www.frontiersin.org/journals/applied-mathematics-and-statistics/articles/10.3389/fams.2020.577050/full | vote 3-0</p>
+</li>
+<li>
+<p><strong>Betting a multiple of the Kelly fraction is catastrophic: in the paper's empirical single-stock test (Banca Intesa, 2007–2018), triple Kelly produced a 94.3% maximum drawdown and negative CAGR (−0.59%), while half Kelly cut max drawdown to 25% versus 48.4% for full Kelly, at the cost of only ~0.55 percentage points of CAGR (2.72% vs 3.27%).</strong>
+  Source: https://www.frontiersin.org/journals/applied-mathematics-and-statistics/articles/10.3389/fams.2020.577050/full | vote 3-0</p>
+</li>
+<li>
+<p><strong>Estimation error in the inputs (mu, Sigma) effectively causes over-betting relative to the true optimum, which the authors identify as a practical danger motivating fractional Kelly; an investor wanting lower risk should scale down to a fractional Kelly strategy.</strong>
+  Source: https://www.frontiersin.org/journals/applied-mathematics-and-statistics/articles/10.3389/fams.2020.577050/full | vote 3-0</p>
+</li>
+<li>
+<p><strong>Simple normal-GARCH VaR models that passed backtests pre-crisis failed during 2008, while an asymmetric GARCH with skewed Student-t innovations (AR(1)-APARCH(1,1)-skT) still produced adequate one-day-ahead 95% VaR forecasts during the 2008 crisis year.</strong>
+  Source: https://www.researchgate.net/publication/227430024_Evaluating_value-at-risk_models_before_and_after_the_financial_crisis_of_2008_International_evidence | vote 3-0</p>
+</li>
+<li>
+<p><strong>During 2008, simple VaR models materially underestimated tail risk on major indices: for the S&amp;P 500 the EWMA (RiskMetrics) 95% one-day VaR was violated on 8.7% of days (vs 5% expected; Kupiec p=0.01, rejected) and for the FTSE 100 on 9.1% of days, while the APARCH-skT model's violation rates (5.9% and 6.3%) remained statistically acceptable.</strong>
+  Source: https://www.researchgate.net/publication/227430024_Evaluating_value-at-risk_models_before_and_after_the_financial_crisis_of_2008_International_evidence | vote 3-0</p>
+</li>
+<li>
+<p><strong>The paper's headline conclusion pushes back on the narrative that VaR as a technique failed in 2008: properly specified ARCH-family VaR forecasting worked satisfactorily even during the extreme volatility of 2008, so quantitative risk models alone should not be blamed for the crisis.</strong>
+  Source: https://www.researchgate.net/publication/227430024_Evaluating_value-at-risk_models_before_and_after_the_financial_crisis_of_2008_International_evidence | vote 3-0</p>
+</li>
+<li>
+<p><strong>Kyle's model has a unique linear equilibrium with closed forms: the insider's demand is X(v) = beta(v - p0) and the market maker's pricing rule is P = p0 + lambda(x + u), where beta = (sigma_u^2/Sigma_0)^(1/2) and lambda is proportional to (Sigma_0/sigma_u^2)^(1/2) — i.e., price impact rises with the variance of private information and falls with noise-trading variance.</strong>
+  Source: https://people.duke.edu/~qc2/BA532/1985%20EMA%20Kyle.pdf | vote 3-0</p>
+</li>
+<li>
+<p><strong>Uninformed (noise) traders systematically lose to the informed trader because market makers cannot distinguish informed from uninformed order flow — adverse selection is structural, and the informed trader's profits come directly at the expense of uninformed flow. This is the formal basis for treating 'your counterparty knowing more than you' as the base case for anonymous market orders.</strong>
+  Source: https://people.duke.edu/~qc2/BA532/1985%20EMA%20Kyle.pdf | vote 3-0</p>
+</li>
+<li>
+<p><strong>A trader with an informational edge optimally trades on it gradually rather than all at once, so that in the continuous-auction limit prices follow Brownian motion, market depth is constant, and all private information is incorporated into prices only by the end of trading — the canonical model of strategic edge exploitation under price impact.</strong>
+  Source: https://people.duke.edu/~qc2/BA532/1985%20EMA%20Kyle.pdf | vote 3-0</p>
+</li>
+</ul></div></div>
+<footer>keys: <b>1–7</b> screens · every claim links to the trial that produced it ·
+negative results are kept, not buried</footer>
+
+<script>
+(() => {
+  const pages = { "1": "index.html", "2": "analysis.html", "3": "screener.html",
+                  "4": "past_trades.html", "5": "portfolio.html",
+                  "6": "research.html", "7": "desk.html" };
+  document.addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target instanceof Element && e.target.matches("input,textarea")) return;
+    const p = pages[e.key];
+    if (p) location.href = (location.pathname.includes("/research/") ? "../" : "") + p;
+  });
+})();
+</script>
+</body></html>
