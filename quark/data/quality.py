@@ -95,9 +95,8 @@ def clean_panel(prices: pd.DataFrame, report: QualityReport | None = None) -> pd
     out[out <= 0] = np.nan
     for _, row in report.spikes.iterrows():
         out.at[row["date"], row["ticker"]] = np.nan
-    # Post-condition: a cleaned panel must satisfy the panel contract
-    # (no nonpositive prices, no identity-break return spikes). If this
-    # raises, the cleaning rules above have drifted out of sync with the
-    # contract — fix the rule, don't loosen the contract.
+    # Post-condition: a cleaned panel must satisfy the panel contract (no
+    # nonpositive prices, no identity-break return spikes). A raise here
+    # means the cleaning rules above drifted out of sync with the contract.
     from quark.data.contracts import validate_price_panel
     return validate_price_panel(out)
