@@ -179,6 +179,7 @@ PAGES = [
     ("screener", "screener.html", "03", "SCREENER"),
     ("past_trades", "past_trades.html", "04", "PAST TRADES"),
     ("portfolio", "portfolio.html", "05", "PORTFOLIO"),
+    ("predmkt", "desk.html", "06", "PREDMKT"),
 ]
 
 PALETTE_CSS = """
@@ -229,6 +230,7 @@ const CMDS = [
   { n: "03 SCREENER", m: "screen", go: () => location.href = "screener.html" },
   { n: "04 PAST TRADES", m: "screen", go: () => location.href = "past_trades.html" },
   { n: "05 PORTFOLIO", m: "screen", go: () => location.href = "portfolio.html" },
+  { n: "06 PREDMKT", m: "screen", go: () => location.href = "desk.html" },
   ...["1D", "1W", "3M", "6M", "2Y"].map(h => ({
     n: "HORIZON " + h, m: "setting",
     go: () => { localStorage.setItem("vig_hz", h); location.href = "index.html"; } })),
@@ -556,7 +558,7 @@ GLOBAL_JS = """
 (() => {
   const pages = { "1": "index.html", "2": "analysis.html",
                   "3": "screener.html", "4": "past_trades.html",
-                  "5": "portfolio.html" };
+                  "5": "portfolio.html", "6": "desk.html" };
   document.addEventListener("keydown", e => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.target instanceof Element && e.target.matches("input,textarea")) return;
@@ -623,7 +625,7 @@ def page_shell(title: str, generated_at: str, active: str, body: str,
 {tape_html}
 <div class="wrap">{body}</div>
 <footer><span class="muted">keys: <b>⌘K</b> any ticker or command ·
-<b>1–5</b> screens · <b>/</b> search · click a ticker for its security page ·
+<b>1–6</b> screens · <b>/</b> search · click a ticker for its security page ·
 click any column header to sort</span><br><br>
 Research tooling output — signals from backtested models with modest,
 documented edges (weekly IC ≈ 0.017; see RESEARCH_NOTES.md). Probabilities are
