@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>VIG · Fees, and the arbitrage that survives them</title><style>
+* { box-sizing: border-box; margin: 0 }
+body { background: #0b0d10; color: #e6e2d8;
+  font: 13px "SF Mono", ui-monospace, Menlo, monospace; }
+header { display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 18px 26px 14px; }
+.wordmark { font-size: 30px; font-weight: 800; letter-spacing: 3px }
+.tagline { color: #6d747c; font-size: 11px; letter-spacing: 1px }
+.tagline b { color: #8a9199 }
+.stamp-date { color: #6d747c; font-size: 11px }
+.tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c;
+  position: sticky; top: 0; background: #0b0d10; z-index: 5; flex-wrap: wrap }
+.tab { padding: 11px 18px; color: #8a9199; text-decoration: none; font-size: 12px;
+  letter-spacing: 1.5px; border-right: 1px solid #22262c }
+.tab .k { color: #6d747c; margin-right: 7px; font-size: 10px }
+.tab.active { color: #e6e2d8; background: #0e1114; box-shadow: inset 0 2px 0 #ffb000 }
+.tab:hover { color: #e6e2d8 }
+.wrap { padding: 20px 26px 60px; max-width: 980px }
+h2.sect { font-size: 11px; letter-spacing: 2.5px; color: #ffb000; margin: 30px 0 10px;
+  text-transform: uppercase }
+h2.sect::before { content: "▚ " }
+h2.sect .dim { text-transform: none; letter-spacing: .5px }
+.dim { color: #6d747c; font-size: 12px }
+.htiles { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px }
+.htile { border: 1px solid #22262c; background: #0e1114; padding: 12px 16px;
+  min-width: 170px; flex: 1 }
+.hlabel { color: #6d747c; font-size: 10px; letter-spacing: 2px; text-transform: uppercase }
+.hval { font-size: 24px; font-weight: 700; margin: 6px 0 3px }
+.hsub { color: #8a9199; font-size: 11px }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px; margin: 12px 0 }
+.card { border: 1px solid #22262c; background: #0e1114; padding: 14px 16px;
+  text-decoration: none; display: block }
+.card:hover { border-color: #ffb000 }
+.card .t { color: #e6e2d8; font-size: 13px; font-weight: 700 }
+.card .s { color: #8a9199; font-size: 11px; margin-top: 6px; line-height: 1.5 }
+.card .m { color: #6d747c; font-size: 10px; margin-top: 8px; letter-spacing: 1px;
+  text-transform: uppercase }
+a { color: #e6e2d8 }
+footer { color: #6d747c; font-size: 11px; padding: 0 26px 40px }
+img { max-width: 100%; border: 1px solid #22262c; margin: 8px 0 }
+/* rendered markdown */
+.md { line-height: 1.65; font-size: 13px }
+.md h1 { font-size: 20px; margin: 24px 0 12px; letter-spacing: .5px }
+.md h2 { font-size: 14px; color: #ffb000; margin: 26px 0 10px; letter-spacing: 1px;
+  text-transform: uppercase; font-size: 12px; letter-spacing: 2px }
+.md h2::before { content: "▚ " }
+.md h3 { font-size: 13px; color: #e6e2d8; margin: 18px 0 8px }
+.md p { margin: 10px 0; color: #c9c4b8 }
+.md li { margin: 6px 0 6px 18px; color: #c9c4b8 }
+.md strong { color: #e6e2d8 }
+.md em { color: #9fb0c0; font-style: normal }
+.md code { background: #14171b; padding: 1px 5px; font-size: 12px; color: #9fe0b8 }
+.md pre { background: #0e1114; border: 1px solid #22262c; padding: 12px 14px;
+  overflow-x: auto; margin: 10px 0 }
+.md pre code { background: none; padding: 0 }
+.md table { border-collapse: collapse; width: 100%; margin: 10px 0 }
+.md td, .md th { border-bottom: 1px solid #14171b; padding: 5px 10px; text-align: left;
+  font-size: 12px }
+.md th { color: #6d747c; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase }
+.md tr:hover td { background: #0e1114 }
+.md blockquote { border-left: 2px solid #ffb000; padding-left: 14px; color: #9fb0c0;
+  margin: 10px 0 }
+.md hr { border: none; border-top: 1px solid #22262c; margin: 22px 0 }
+.crumb { color: #6d747c; font-size: 11px; margin-bottom: 14px }
+.crumb a { color: #8a9199; text-decoration: none }
+.crumb a:hover { color: #ffb000 }
+</style></head><body>
+<header>
+  <div>
+    <div class="wordmark">VIG</div>
+    <div class="tagline">the house takes its cut — <b>the research record</b></div>
+  </div>
+  <div class="stamp-date">2026-07-31 15:35</div>
+</header>
+<nav class="tabs"><a class="tab" href="../index.html"><span class="k">01</span>DESK</a><a class="tab" href="../analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab" href="../screener.html"><span class="k">03</span>SCREENER</a><a class="tab" href="../past_trades.html"><span class="k">04</span>PAST TRADES</a><a class="tab" href="../portfolio.html"><span class="k">05</span>PORTFOLIO</a><a class="tab active" href="../research.html"><span class="k">06</span>RESEARCH</a><a class="tab" href="../desk.html"><span class="k">07</span>PREDMKT</a></nav>
+<div class="wrap"><div class="crumb"><a href="../research.html">← 06 RESEARCH</a> / deep_research_fees_2026-07-31.md</div><div class="md"><h1>Fees, and the arbitrage that survives them</h1>
+<p>Deep research report, 2026-07-31. All claims sourced in parentheses; items not confirmed against a primary source are marked [unconfirmed] or [partly confirmed]. Verification verdicts from the second-pass check are weighed throughout; refuted or unverifiable material is quarantined in the final section.</p>
+<h2>Verdict</h2>
+<p>The fee wall is real but has four legitimate doors, ranked by structural quality. (1) <strong>Maker-side execution</strong> — fees are taker-only in every category ("Makers are never charged fees," docs.polymarket.com/trading/fees, verified), and makers additionally collect 15–25% of the taker fees their fills generate, paid daily (docs.polymarket.com/market-makers/maker-rebates, verified). Maker execution converts the fee from a cost into income; the residual cost is adverse selection and legging risk, not fees. (2) <strong>Complete-set plumbing is fee-free</strong> — CTF split/merge/redeem and NegRiskAdapter split/merge carry no fee logic, and the convertPositions feeBips was read on-chain as 0 for six live neg-risk markets including the Fed ladder (NegRiskAdapter.sol source + eth_call on 3 RPCs, 2026-07-31, verified). Mint sets on-chain, quote both sides maker, merge or hold to redemption: zero trading fees end to end. (3) <strong>Fee-shape exploitation</strong> — fee = r·p(1−p) collapses quadratically toward the tails, so a 1c gross edge survives all-taker execution only outside roughly p∈[0.15, 0.85] at 4% (derived, arithmetic re-verified); tails-heavy ladders are an order of magnitude cheaper to take than 50c legs. (4) <strong>The fee-free surface</strong> — geopolitics/world-events is the only 0-rate category (verified quote: "Polymarket does not charge fees or profit from trading activity on these markets"), and our own scan found ~2,292 fee-free open markets; pre-fee sweep logic still works there unmodified. Best surfaces: the Fed/Economics neg-risk ladders (25% maker rebate, tails-heavy structure), the fee-free geopolitics set, and high-volatility windows (live-game endgames, FOMC releases) where dislocations exceed fee-sized thresholds (arXiv:2605.00864 + arXiv:2508.03474, both verified). Venue expansion is real but second-priority: Kalshi (0% maker on most markets + APY on positions) and Polymarket US (makers are <em>paid</em> −0.0125·p(1−p) at execution, docs.polymarket.us/fees, verified) are the two worth wiring next. <strong>Single recommended next build: the maker-side set builder simulator</strong> — it attacks the largest verified edge (the (1+ρ)·r·p(1−p) maker-vs-taker swing, ~1.56c/share at mid), it de-risks the one unmeasured input (adverse-selection markout on our resting orders) before real capital rests on the book, and every other candidate (tails targeting, politics watchlist, venues) composes with it rather than competing.</p>
+<h2>Fee schedule</h2>
+<p>Current rates (verified against docs.polymarket.com/trading/fees, fetched 2026-07-31): taker-only, applied at match time, <strong>fee = shares × rate × p × (1−p)</strong>, rounded to 5 decimals, minimum 0.00001 USDC (sub-threshold trades pay nothing). Crypto 7%; Sports, Economics, Culture, Weather, Other 5%; Finance, Politics, Mentions, Tech 4%; Geopolitics 0%. Geopolitics/world-events is the only fee-exempt category; no rationale is published anywhere found (verified absence).</p>
+<p>Makers pay nothing in any category and earn daily pUSD rebates: 25% of collected taker fees in Finance/Politics/Economics/Culture/Weather/Tech/Mentions/Other (this covers the Fed markets — the rebateRate 0.25 field we see on them is exactly this), 20% crypto, 15% sports (docs disagree slightly with the help center on sports/crypto — treat as 15–20%, discretionary; verified discrepancy). Distribution is per-market pro-rata by fee-equivalent weight, $1 minimum accrual, rates at Polymarket's sole discretion (verified).</p>
+<p>A separate Taker Rebate Program (live May 28, 2026, verified) refunds 3–50% of taker fees by trailing 30-day weighted volume: Bronze $2k→3%, Silver $20k→8%, Gold $200k→18%, Platinum $1M→32%, Diamond $4M→44%, Obsidian $10M+→50%. Weighted volume = size × (1−entry price) × category weight (Crypto 2.3, Econ/Culture/Weather/Other 1.7, Politics/Finance/Tech/Mentions 1.3, Sports 1.0, Geopolitics 0), recalculated daily, forward-only (docs.polymarket.com/programs/taker-rebates, verified — note: 6 tiers, not 7 as one research pass stated, and the official formula includes a bonus factor). Gold is realistic for an active desk and cuts the effective sports rate from 5% to ~4.1%.</p>
+<p>Contract level: CTF splitPosition/mergePositions/redeemPositions and NegRiskAdapter split/merge contain no fee logic (source read, verified). Only NegRiskAdapter.convertPositions (NO-set → YES-set + cash) has a fee hook (feeAmount = amount × feeBips/10000 to the Vault, set at prepareMarket), and getFeeBips returned <strong>0</strong> for six live neg-risk markets spanning Fed rate cuts, Fed September, 2028 presidential, NBA 2027, largest-company, and Musk-tweets, confirmed on three independent Polygon RPCs on 2026-07-31 (verified). So set assembly/unwind via mint/merge/convert is fee-free today; fees exist only on CLOB order matching (feeRateBps signed into orders, exchange-enforced maxFeeRateBps default 500 — probable, from ctf-exchange-v2 README).</p>
+<p>Rollout history (partly confirmed): Jan 2026 quiet docs-update launch on 15-min crypto at 0.07 with fees redistributed to LPs; sports as second category Feb 2026 at 0.03 (Feb 11 vs Feb 18 conflicting in press); "Fee Structure V2" Mar 30, 2026 extended fees to eight more categories; sports later raised 0.03→0.05 (current docs show 0.05; the July timing of the raise rests only on secondary aggregators — [unconfirmed] date). No announced plan to fee geopolitics or roll fees back; any claim about future changes is [unconfirmed].</p>
+<p>Deposits/withdrawals, cancellations, and resolution redemption carry no Polymarket fee (verified from docs + contract source; Polygon gas only).</p>
+<h2>Fee math</h2>
+<p>Per-share taker fee f(p) = r·p(1−p). Peak at p=0.5: r/4 per share — 1.00c (4%), 1.25c (5%), 1.75c (7%). Symmetric in p↔1−p, so buying NO at q and selling minted YES at 1−q cost identical taker fees; the minted-set route's advantage is not the formula but that split/merge are free and minted inventory can be sold maker-side (derived, arithmetic re-verified).</p>
+<p><strong>Binary complete-set arb</strong> (buy YES ask + NO ask, merge at $1), both legs taker: break-even gross edge G<em> ≈ 2r·p(1−p). Max at p=0.5: 2.0c / 2.5c / 3.5c per set at r = 4/5/7%. At p=0.05: 0.38c / 0.48c / 0.67c. Solving 2r·p(1−p) &lt; 0.01: a </em><em>1c gross edge survives all-taker only at p &lt; 0.146 or p &gt; 0.854 (4%), p &lt; 0.113 / &gt; 0.887 (5%), p &lt; 0.077 / &gt; 0.923 (7%)</em>* (derived; roots re-computed and confirmed). Mid-price 1c edges are strictly dead all-taker at every 2026 rate.</p>
+<p><strong>K-outcome neg-risk ladder</strong> (buy every NO at q_i = 1−p_i, payout K−1): total taker fee per set = r·Σq_i(1−q_i) = <strong>r·(1−Σp_i²)</strong> — r times the Gini–Simpson complement of the YES-price ladder. Flat ladders cost up to r·(1−1/K); concentrated/tails-heavy ladders cost far less (derived, verified).</p>
+<p>Worked Fed-style example (7 outcomes, YES prices 0.60/0.25/0.05/0.04/0.03/0.02/0.01; Σp² = 0.428; gross edge 2c/set): all-taker fee = 0.572r = <strong>2.29c (4%) / 2.86c (5%) / 4.00c (7%)</strong> — net negative at every rate. Resting maker on the two fat legs (0.4275 of the 0.572 fee-mass) leaves taker fees ≈ 0.72c and adds rebates ≈ 0.53c at r=5%, ρ=25%: <strong>net fee ≈ 0.19c, preserving ~1.8c of the 2c edge</strong> (derived; all arithmetic independently re-verified).</p>
+<p><strong>Maker economics.</strong> Because every taker fill has an equal maker counterpart, the pro-rata rebate pool collapses in expectation to ≈ ρ·r·q(1−q) per maker-filled share (derivation from the verified pool formula — probable, since it is a pool, not a guaranteed per-fill credit). The maker-vs-taker swing is therefore <strong>(1+ρ)·r·q(1−q) ≈ 1.56c/share</strong> at mid (r=5%, ρ=0.25): taker pays 1.25c, maker earns ~0.31c. Maker EV = P(fill)·[edge + ρ·r·q(1−q) − AS(q)], where AS is adverse-selection markout; maker beats taker iff AS &lt; swing + captured half-spread (~2–2.5c threshold at mid on typical 1–2c spreads). <strong>Empirical AS magnitudes on Polymarket are unpublished — this is the key unmeasured input</strong> (verified absence). Around scheduled news (FOMC prints) markouts plausibly exceed the threshold; taker execution is likely right only in the post-announcement dislocation window [unconfirmed judgment].</p>
+<p>Cheapest end-to-end structure: mint sets on-chain (free), quote both sides maker (sell YES at a_Y, NO at a_N with a_Y + a_N ≥ 1 + δ), collect δ plus two rebates on fill, merge or redeem free. Risk is inventory/legging until both sides fill, not fees (verified mechanics).</p>
+<h2>Maker side</h2>
+<p>Fees are taker-only; maker/taker status is by resting status; partial-fill remainders are cancellable; "price improvement always benefits the taker," so makers fill exactly at limit — per-fill edge math is deterministic (docs.polymarket.com/concepts/order-lifecycle, verified). The unified complementary book matches a YES buy at 60c against a NO buy at 40c via minting (verified). Price-time (FIFO) priority is asserted uniformly by secondary sources but <strong>not officially documented</strong> — treat as probable.</p>
+<p>A separate Liquidity Rewards program pays daily USDC to orders merely resting near the midpoint (quadratic spread scoring, two-sided boost; pool reportedly ~$5M+/month — program existence official, formula details secondary-sourced, probable). It stacks with rebates: resting arb legs earn before filling.</p>
+<p>Feasibility evidence: historical arb legs were assembled non-atomically over ~30–60 minute windows — ~75% of related bids within ~950 blocks; speed was not decisive (arXiv:2508.03474, verified). Taker-side depth is a hard bottleneck — 76.9% of combinatorial opportunities executable for only ~14.8 shares on average (arXiv:2605.00864, verified) — so maker accumulation is the only route to size. Adverse selection is the cost that replaces fees: resting bids fill fastest when the set reprices against them, and binary markets gap on news; mitigations are quote-skew toward the light side, offsetting at small loss, and hedging correlated markets (practitioner guidance, startpolymarket.com, probable/qualitative — no hard fill-probability numbers exist anywhere, verified absence). Native legging-risk tool: NegRiskAdapter.convert restructures a partial NO-set into YES-everywhere-else + cash atomically, currently at 0 fee (verified on-chain).</p>
+<p>No direct evidence exists that professional arbitrageurs run maker-side set completion — but arXiv:2605.11640 shows public fill data structurally cannot identify maker strategies, so absence of evidence is expected, not informative [unconfirmed either way]. Operationally: rebate accrual is queryable via API; 5-decimal rounding zeroes both fee and rebate weight on tiny near-extreme fills; the matching-engine-restarts doc implies resting orders need restart/cancel-latency handling in the bot (verified).</p>
+<h2>Surfaces</h2>
+<p><strong>Fee-free geopolitics.</strong> The only official 0-rate category (verified). Our scan's ~2,292 fee-free markets "scattered in Politics" are most plausibly geopolitics/world-events markets cross-tagged Politics in the Gamma API — the Politics <em>fee category</em> is charged 4% (fee-free scope verified; the tag reconciliation of our private scan is [unverifiable] from public sources). Pre-fee taker sweeps work here unchanged.</p>
+<p><strong>Tails.</strong> f(p) peaks at 50c and is ~5x cheaper at p=0.95 (0.24c/share sports vs 1.25c). Ladder arbs whose fee-bearing legs sit at 1–10c or 90–99c clear fees an order of magnitude more easily; arbs requiring taker fills near 50c bear maximum drag (derived from verified formula).</p>
+<p><strong>Sports.</strong> Pre-fee, sports arb was abundant and largely un-harvested ("Sports are largely absent from the plots — maybe a less explored venue for arbitrageurs," arXiv:2508.03474, verified verbatim). Post-fee at 5%, the NBA study's median combinatorial edge (101 bps gross, concentrated in final minutes of live games, ~$15 executable) does <strong>not</strong> clear two taker legs near mid — the paper assumed zero fees, so on-venue sports taker arb is dead except tail-priced legs or maker execution (paper numbers verified; post-fee inference derived). Cross-venue Kalshi–Polymarket sports spreads (1–2c typical, 5–15 windows/day during finals-type events, claimed ~$14–17 net per 1,000-contract round trip) are the one practitioner-reported surviving sports route — single blog source, [unconfirmed]; a lead to measure, not evidence.</p>
+<p><strong>Event windows.</strong> Dislocations exceed fee thresholds in high-volatility windows: NBA endgames (verified), 2024-election-style political peaks (verified), our own FOMC-week findings. New-listing-window edge is plausible but has zero measured primary evidence [unconfirmed] — worth instrumenting, not assuming.</p>
+<p><strong>Resolution risk filter.</strong> UMA can settle ambiguous markets 50/50 ($0.50/share both sides), and DVM disputes lock capital 4–6 days (verified). A complete single-condition neg-risk set is immune — the full basket redeems $1 under any partition including 50/50 (structural, verified) — but combinatorial and cross-venue structures carry real 50/50/inconsistent-resolution basis risk. Prefer pure set arb; screen out subjective-criteria markets from multi-market structures.</p>
+<p><strong>Longshot bias</strong> persists per secondary syntheses of the academic literature, favoring maker-side selling of ladder tails where taker counterparties bear near-minimal fees (probable, secondary-sourced).</p>
+<p>No published study measures arb profitability under the actual 2026 fee regime — AFT 2025 is entirely pre-fee, the NBA study assumed zero sports fees. <strong>Our own paper-trading measurements are ahead of the public literature here</strong> (verified absence).</p>
+<h2>Venues</h2>
+<p>US-eligible set: Kalshi, Polymarket US, ForecastEx/IBKR, Robinhood/Rothera, Crypto.com, Railbird/DraftKings when live. Polymarket global, Limitless, and Myriad real-money exclude US persons (Limitless ToS verified verbatim; synthesis probable).</p>
+<ul>
+<li><strong>Kalshi</strong>: taker ~0.07·p(1−p) per contract, max 1.75c at 50c; July 7, 2026 schedule keeps 0.07 and adds a per-contract multiplier defaulting to 1 [partly confirmed — the primary PDF was unreachable from this network (TLS interception); numbers rest on convergent secondaries and the long-standing published schedule; the ceil-vs-round detail unresolved]. Maker fees 0% on most markets, select markets excepted (help center confirmed; exact excepted-market maker rate conflicts across sources, and one secondary now cites a 0.0175 maker coefficient on some markets — verify against the primary PDF before relying). Pays variable APY on cash <strong>and</strong> open positions (3.25% per help center; daily accrual, monthly payment, $250 minimum — verified; later 3.75–4.05% figures [unconfirmed]), making long-dated full-set lockup positive-carry. Buy-the-field on mutually-exclusive events, executed maker-side, is near-fee-free (probable). ~$31B June volume — the largest venue (verified via PYMNTS/Sportico).</li>
+<li><strong>Polymarket US</strong> (QCX, CFTC): schedule effective Jul 1, 2026 — taker 0.06·C·p(1−p) (max $1.50/100), <strong>maker rebate Θ = −0.0125 paid at execution</strong> (max $0.31/100 at p=0.5), plus 10/25/50% monthly taker-volume rebates above $250k/$1M/$10M, weekly payout, banker's rounding (docs.polymarket.us/fees, every number verified). The only surface where passive fills earn cash at execution rather than via a daily pool. Requires US KYC; listing mix skews sports (probable). $3.5B June volume (verified).</li>
+<li><strong>ForecastEx/IBKR</strong>: flat $0.01/contract (YES+NO bids sum to $1.01), cheapest CFTC fee, plus a monthly incentive coupon passing collateral interest to position holders [partly confirmed — mechanism verified via IBKR Campus/secondaries; the 3.13–3.83% APY range unconfirmed; note its economic ladders are typically threshold pairs, <strong>not</strong> strictly mutually-exclusive buckets — the neg-risk-equivalence claim was flagged questionable in verification]. Thin books.</li>
+<li><strong>Rothera</strong> (Robinhood/SIG JV, live June 2026, ~$2B first month — verified): commissions reportedly capped ~$0.01/contract [unconfirmed — Robinhood fee reports conflict: flat $0.01 vs a k·p(1−p) formula with k=10%; check the primary fee-schedule PDF before modeling].</li>
+<li><strong>Crypto.com</strong>: fees partially waived when held to resolution ($0.02 open fee on $1 contracts; expiry waives tech fee on $10 contracts) — probable, consistent secondaries.</li>
+<li><strong>Railbird/DraftKings</strong>: DCM approved, acquired Oct 2025, first sports contracts filed, no fee schedule yet (verified) — watch, don't build.</li>
+<li><strong>Not viable</strong>: Drift BET (~$295M April 2026 exploit, rebranded Velocity, private beta — verified including live redirect check); Myriad (~$3.9k fees/30d, US restricted to play-money — verified negligible); Limitless (attractive fee model, US-barred by ToS — verified); Paradex (Jan 2026 $0-price liquidation incident — probable red flag).</li>
+</ul>
+<p>Cross-venue Polymarket–Kalshi spreads of 2–5% persist on major events for user-base reasons (probable, secondary examples not independently verified); risks are resolution mismatch, thin-book partial fills, and months-long lockup. Fee-optimal construction: passive leg where makers are paid (Polymarket US) or free (Kalshi), aggressive leg where cheapest (ForecastEx $0.01 flat; geopolitics 0% is global-only, unusable for a US desk) (synthesis, probable). Arb capacity meaningfully exists only on the big four (Kalshi $31B / Polymarket global $10.8B / Polymarket US $3.5B / Rothera $2B, June — verified).</p>
+<h2>Competition after the fee wall</h2>
+<p>No public dataset measures arb volume across the fee boundary or tracks pre-fee arb wallets through it — "arb died" claims are fee-math inference, not measurement (verified absence). What is measured: platform volume did <strong>not</strong> collapse — weekly notional rose ~26% (~$1.97B → ~$2.48B) the week after the Mar 30 full rollout, revenue went ~10x, sports volume rose after its fee launch (DeFi Rate + Pine Analytics, verified). The dynamic fee explicitly targeted taker-side latency arb in 15-min crypto (peak round-trip cost exceeds typical latency-arb margins; simultaneous removal of the 500ms taker delay confirms the deliberate regime switch — verified), and practitioner consensus is those bots are obsolete: "a profitable bot in 2026 must be a maker bot" (HTX, near-verbatim, probable).</p>
+<p>The adaptation channel is measurable: ~$34.6M in maker rebates distributed to ~140k wallets since Jan 2026, with the top 1% of makers capturing ~74.5% and the top wallet ~$844k (third-party on-chain tracker, probable). Read this correctly: it argues <strong>against</strong> the hope that taker exit left an uncontested maker pool — professional competition moved to the maker side. (The migration framing is inference; concentration could predate fees — flagged in verification.) Pre-fee baseline for scale expectations: ~$39.6M total arb profit Apr 2024–Apr 2025, top account $2.01M over 4,049 txns, top-10 ~$8.1M (arXiv:2508.03474, every figure verified against the PDF); residual single-market arb was already nearly extinct by early 2026 (7 episodes, $210 total, across 3,042 NBA markets) while combinatorial arb persisted at retail size (arXiv:2605.00864, verified).</p>
+<p>Net: the surviving competitive position is maker-side craft (adverse-selection management) plus surface selection, not speed. Our edge claim must come from set-structure awareness (neg-risk mint/merge/convert plumbing) and fee-curve placement, both of which the rebate leaderboard's generic makers may not exploit — [unconfirmed], to be tested cheaply in simulation.</p>
+<h2>Detector/executor spec</h2>
+<p>Context: fee-aware 60s sweeps already exist in the system. Additions, in build order.</p>
+<h3>1. Maker-side set builder — simulator first (recommended next build)</h3>
+<p>Goal: measure whether maker-legged neg-risk set completion preserves edge after adverse selection, before committing capital.</p>
+<p>Detector:
+- Scan neg-risk events (Gamma API) for ladders where Σ(best NO ask) &lt; K−1−θ (taker check, existing) <strong>and</strong> Σ(best NO bid + 1 tick) &lt; K−1−θ_m (maker-feasible check). θ_m can be far tighter than θ because maker fee = 0 and expected rebate ≈ ρ·r·q(1−q) per filled share is added back per leg.
+- Rank candidates by (a) edge after modeled fees, (b) fee-mass concentration 1−Σp_i² (prefer low — tails-heavy), (c) rebateRate (prefer 0.25 categories: Fed/Economics/Politics), (d) resolution-criteria objectivity flag.
+- Leg-selection rule from the worked example: rest maker orders on the fat legs (highest q(1−q) fee-mass); take the tail legs where f(p) is near zero. Hybrid beats pure-maker on time-to-completion and pure-taker on cost.</p>
+<p>Executor (paper-sim phase):
+- Post simulated resting bids one tick inside best bid on chosen legs; log book-state at post time.
+- Fill model: conservatively, count a simulated fill only when the printed trade price crosses our level (trade-through), not when quotes touch it — avoids optimistic queue assumptions since FIFO priority is only probable, not documented.
+- <strong>Markout logging is the point</strong>: for every simulated fill, record mid at t+10s/60s/300s/1800s. This produces the AS(q) distribution nobody has published. Decision rule after ≥2 weeks: go live iff median AS &lt; (1+ρ)·r·q(1−q) + captured half-spread on the target legs.
+- Legging state machine: PARTIAL sets either (a) continue working remaining legs with edge re-check per sweep, (b) convert via NegRiskAdapter (re-read getFeeBips on-chain before each session — currently 0, verified, but contract-settable), or (c) unwind maker-side. Hard timeout → taker-complete only if residual edge after taker fees &gt; 0.
+- Ops: handle matching-engine restarts (re-post logic), track rebate accrual via the maker-rebates API endpoint, respect the 5-decimal fee rounding when sizing tiny tail fills.</p>
+<h3>2. Tails-heavy ladder targeting (cheap, ship into existing sweeps)</h3>
+<p>Add two computed columns to the existing 60s sweep: fee_mass = r·(1−Σp_i²) per set, and net_edge = gross_edge − fee_mass (all-taker) alongside net_edge_hybrid (fat legs maker at expected-rebate credit). Alert threshold on net_edge_hybrid, not gross. Prioritize ladders with a dominant outcome (Σp² high). Also apply the binary band rule: flag any 2-outcome arb only when p is outside the survival band for its category rate ([0.146, 0.854] at 4%, [0.113, 0.887] at 5%, [0.077, 0.923] at 7%).</p>
+<h3>3. Fee-free geopolitics watchlist (cheap, immediate)</h3>
+<p>Pull feeRateBps==0 markets from Gamma (~2,292 at last scan); run the pre-fee sweep logic against them at full aggression with θ set to spread+gas only. Re-scan category membership weekly — the exemption has no sunset language but is discretionary [unconfirmed forward]. Do not label these "Politics fee-free": the Politics category is 4%; these are geopolitics/world-events cross-tags (probable).</p>
+<h3>4. Venue expansion (after 1–3 are producing data)</h3>
+<p>Priority order: Kalshi read-only feed first (largest venue, mutually-exclusive event detection for buy-the-field, and first re-verify the maker-fee scope against the primary fee PDF from a network without TLS interception); Polymarket US second (maker-paid rebate makes it the natural passive-leg venue if the desk KYCs); ForecastEx only for long-dated Fed/CPI structures where the $0.01 flat fee and coupon carry dominate (but verify threshold-pair vs exclusive-bucket structure per contract before assuming set-arb applies). Cross-venue execution waits until single-venue maker sim results are in: it adds resolution-mismatch basis risk that pure Polymarket set arb structurally lacks (verified immunity of complete sets).</p>
+<p>Sizing note across everything: measured depth caps single-opportunity taker size near $15 in the studied sports books (verified); size comes only from maker accumulation over time, which is what build 1 tests.</p>
+<h2>Refuted or unverifiable</h2>
+<ul>
+<li><strong>"Finance markets rebate 50% to makers"</strong> (HTX article) — refuted: official docs say 25% for Finance; HTX gives no percentages and also misstates the rebate currency (pUSD, not USDC). Use official docs only.</li>
+<li><strong>"Taker Rebate Program has 7 tiers"</strong> — refuted by the docs: 6 tiers (Bronze through Obsidian). Corrected above.</li>
+<li><strong>Kalshi Klear funding requirement for APY</strong> — not present in the cited help article; treat as refuted until sourced.</li>
+<li><strong>igamingbusiness citation for the July sports fee hike</strong> — the cited URL is a March article about the March 30 change; the 0.03→0.05 hike is real (docs show 0.05) but its July timing rests only on aggregator sites. Date unverified.</li>
+<li><strong>ForecastEx ladders as neg-risk-equivalent mutually-exclusive sets</strong> — flagged questionable in verification; ForecastEx contracts are typically above/below threshold pairs. Verify per-contract before porting set-arb logic.</li>
+<li><strong>Kalshi primary fee PDF</strong> — unreachable from this network (TLS cert served for an unrelated domain); all Kalshi numbers are convergent-secondary. Re-verify before building on them. Ceil-vs-round rounding unresolved.</li>
+<li><strong>Robinhood/Rothera commission schedule</strong> — two mutually exclusive versions circulate (flat $0.01 vs 10%·p(1−p)); unresolved, check the primary PDF.</li>
+<li><strong>Cross-venue Kalshi–Polymarket sports profitability</strong> ($14–17/1,000 contracts net) — single unverifiable blog; a hypothesis to measure.</li>
+<li><strong>New-listing-window edge</strong> — blog-only; one blog attributes a 12.3s→2.7s arb-window shrinkage to an academic study that does not contain it. Unmeasured.</li>
+<li><strong>"Automated strategies net 8–12% annually after fees"</strong> — unsourced aggregator figure; ignore.</li>
+<li><strong>Kalshi promotional 0% fees / zero-fee crypto perps</strong> — low-quality SEO sources that elsewhere misstate Polymarket's fees; unconfirmed.</li>
+<li><strong>Composition of our 2,292 fee-free markets</strong> as geopolitics cross-tags — plausible reconciliation, unverifiable publicly; testable directly against Gamma tag data.</li>
+<li><strong>Maker migration (vs pre-existing concentration) in the rebate leaderboard</strong> — inference the data cannot prove.</li>
+<li><strong>Fee denomination side</strong> (tokens vs USDC on buys/sells) — value-neutral to second order but unconfirmed for the 2026 regime; check against one live fill during sim.</li>
+<li><strong>Adverse-selection magnitudes on Polymarket resting orders</strong> — no published numbers exist; this is precisely what build 1's markout logging produces.</li>
+</ul></div></div>
+<footer>keys: <b>1–7</b> screens · every claim links to the trial that produced it ·
+negative results are kept, not buried</footer>
+
+<script>
+(() => {
+  const pages = { "1": "index.html", "2": "analysis.html", "3": "screener.html",
+                  "4": "past_trades.html", "5": "portfolio.html",
+                  "6": "research.html", "7": "desk.html" };
+  document.addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target instanceof Element && e.target.matches("input,textarea")) return;
+    const p = pages[e.key];
+    if (p) location.href = (location.pathname.includes("/research/") ? "../" : "") + p;
+  });
+})();
+</script>
+</body></html>
