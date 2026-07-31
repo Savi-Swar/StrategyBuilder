@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>VIG · Data: sources and independent collectors</title><style>
+* { box-sizing: border-box; margin: 0 }
+body { background: #0b0d10; color: #e6e2d8;
+  font: 13px "SF Mono", ui-monospace, Menlo, monospace; }
+header { display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 18px 26px 14px; }
+.wordmark { font-size: 30px; font-weight: 800; letter-spacing: 3px }
+.tagline { color: #6d747c; font-size: 11px; letter-spacing: 1px }
+.tagline b { color: #8a9199 }
+.stamp-date { color: #6d747c; font-size: 11px }
+.tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c;
+  position: sticky; top: 0; background: #0b0d10; z-index: 5; flex-wrap: wrap }
+.tab { padding: 11px 18px; color: #8a9199; text-decoration: none; font-size: 12px;
+  letter-spacing: 1.5px; border-right: 1px solid #22262c }
+.tab .k { color: #6d747c; margin-right: 7px; font-size: 10px }
+.tab.active { color: #e6e2d8; background: #0e1114; box-shadow: inset 0 2px 0 #ffb000 }
+.tab:hover { color: #e6e2d8 }
+.wrap { padding: 20px 26px 60px; max-width: 980px }
+h2.sect { font-size: 11px; letter-spacing: 2.5px; color: #ffb000; margin: 30px 0 10px;
+  text-transform: uppercase }
+h2.sect::before { content: "▚ " }
+h2.sect .dim { text-transform: none; letter-spacing: .5px }
+.dim { color: #6d747c; font-size: 12px }
+.htiles { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px }
+.htile { border: 1px solid #22262c; background: #0e1114; padding: 12px 16px;
+  min-width: 170px; flex: 1 }
+.hlabel { color: #6d747c; font-size: 10px; letter-spacing: 2px; text-transform: uppercase }
+.hval { font-size: 24px; font-weight: 700; margin: 6px 0 3px }
+.hsub { color: #8a9199; font-size: 11px }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px; margin: 12px 0 }
+.card { border: 1px solid #22262c; background: #0e1114; padding: 14px 16px;
+  text-decoration: none; display: block }
+.card:hover { border-color: #ffb000 }
+.card .t { color: #e6e2d8; font-size: 13px; font-weight: 700 }
+.card .s { color: #8a9199; font-size: 11px; margin-top: 6px; line-height: 1.5 }
+.card .m { color: #6d747c; font-size: 10px; margin-top: 8px; letter-spacing: 1px;
+  text-transform: uppercase }
+a { color: #e6e2d8 }
+footer { color: #6d747c; font-size: 11px; padding: 0 26px 40px }
+img { max-width: 100%; border: 1px solid #22262c; margin: 8px 0 }
+/* rendered markdown */
+.md { line-height: 1.65; font-size: 13px }
+.md h1 { font-size: 20px; margin: 24px 0 12px; letter-spacing: .5px }
+.md h2 { font-size: 14px; color: #ffb000; margin: 26px 0 10px; letter-spacing: 1px;
+  text-transform: uppercase; font-size: 12px; letter-spacing: 2px }
+.md h2::before { content: "▚ " }
+.md h3 { font-size: 13px; color: #e6e2d8; margin: 18px 0 8px }
+.md p { margin: 10px 0; color: #c9c4b8 }
+.md li { margin: 6px 0 6px 18px; color: #c9c4b8 }
+.md strong { color: #e6e2d8 }
+.md em { color: #9fb0c0; font-style: normal }
+.md code { background: #14171b; padding: 1px 5px; font-size: 12px; color: #9fe0b8 }
+.md pre { background: #0e1114; border: 1px solid #22262c; padding: 12px 14px;
+  overflow-x: auto; margin: 10px 0 }
+.md pre code { background: none; padding: 0 }
+.md table { border-collapse: collapse; width: 100%; margin: 10px 0 }
+.md td, .md th { border-bottom: 1px solid #14171b; padding: 5px 10px; text-align: left;
+  font-size: 12px }
+.md th { color: #6d747c; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase }
+.md tr:hover td { background: #0e1114 }
+.md blockquote { border-left: 2px solid #ffb000; padding-left: 14px; color: #9fb0c0;
+  margin: 10px 0 }
+.md hr { border: none; border-top: 1px solid #22262c; margin: 22px 0 }
+.crumb { color: #6d747c; font-size: 11px; margin-bottom: 14px }
+.crumb a { color: #8a9199; text-decoration: none }
+.crumb a:hover { color: #ffb000 }
+</style></head><body>
+<header>
+  <div>
+    <div class="wordmark">VIG</div>
+    <div class="tagline">the house takes its cut — <b>the research record</b></div>
+  </div>
+  <div class="stamp-date">2026-07-31 16:15</div>
+</header>
+<nav class="tabs"><a class="tab" href="../index.html"><span class="k">01</span>DESK</a><a class="tab" href="../analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab" href="../screener.html"><span class="k">03</span>SCREENER</a><a class="tab" href="../past_trades.html"><span class="k">04</span>PAST TRADES</a><a class="tab" href="../portfolio.html"><span class="k">05</span>PORTFOLIO</a><a class="tab active" href="../research.html"><span class="k">06</span>RESEARCH</a><a class="tab" href="../desk.html"><span class="k">07</span>PREDMKT</a></nav>
+<div class="wrap"><div class="crumb"><a href="../research.html">← 06 RESEARCH</a> / deep_research_data_2026-07-31.md</div><div class="md"><h1>Data: sources and independent collectors</h1>
+<p>2026-07-31. Deep-research pass over five dimensions: on-chain mining, already-indexed datasets, official Polymarket APIs, cross-venue references, and collector engineering at $0. All claims sourced in parentheses; verification verdicts weighed; unconfirmed items marked; refuted/unverifiable items collected at the end.</p>
+<h2>Verdict</h2>
+<p>The single highest-value new collector is the <strong>CLOB websocket book recorder</strong>, because order-book state is the only data that can never be backfilled: there is no historical order-book endpoint anywhere in the CLOB API (confirmed absent from clob-openapi.yaml path enumeration, verified), and book snapshots + price_change diffs on the market websocket are the sole record of depth, spread, queue, and per-trade fee_rate_bps — the raw material for maker fill-rate, markout, and event-window supply work. Everything else on the list is either backfillable later or cheap enough to add opportunistically. Ranked build order:</p>
+<ol>
+<li><strong>wss book recorder</strong> (windowed capture around event windows; CLOB market channel, verified live) — irreplaceable data, fee_rate_bps only streams here.</li>
+<li><strong>Kalshi REST sweeper</strong> (markets + orderbooks + /series/fee_changes joined to the existing Polymarket census) — full market-data surface verified keyless and no-auth on both hosts (live curl, HTTP 200); the cheapest genuine cross-venue arb measurement available.</li>
+<li><strong>UMA dispute ledger</strong> — gamma <code>umaResolutionStatuses</code> transition poller (current-state-only array, verified) plus UMA subgraph backfill (entities verified in UMA docs).</li>
+<li><strong>On-chain post-fee arb miner</strong> via Envio HyperSync — replicates AFT-2025 on the post-fee regime, which the paper explicitly could not do ("we do not take into account the fees because Polymarket currently does not charge per trade", AFT-2025 Sec 7.1, verified); realized fees are now directly on-chain in both event regimes.</li>
+<li><strong>Sharp-reference feeds</strong>: Atlanta Fed xlsx daily ingest (verified working download), the-odds-api credit-budgeted snapshots (verified 500 credits/mo free), VoteHub polls poller (verified 200 no-auth).</li>
+</ol>
+<p>Ranked datasets to pull (no collector needed): HuggingFace <strong>TimeSeventeen/Polymarket-v1</strong> (verified: full v1 tape 2022-11-21→2026-04-28, 1.2B OrderFilled rows, ~49GB parquet, CC-BY-4.0 — includes ~4 weeks of post-fee trading plus the split/merge/redeem events needed for realized-arb computation with zero mining); Dune <code>polymarket_polygon</code> and unified <code>prediction_markets.*</code> for retrospective queries (verified, ~24h latency — never for live sweeps); warproxxx/poly_data self-hosted for the post-Apr-28 v2 tape (verified: GPL-3.0, 2,258 stars, pushed 2026-06-29, HyperSync free tier in production).</p>
+<h2>On-chain: post-fee arb replication</h2>
+<p>The AFT-2025 measurement (Saguillo/Ghafouri/Kiffer/Suarez-Tangil, "Unravelling the Probabilistic Forest") mined Jan 1 2024–Apr 1 2025 via Alchemy's public node, filtering CTF contract 0x4D97…6045 for OrderFilled/PositionSplit/PositionsMerge, and explicitly excluded fees (paper PDF Sec 4.2 and 7.1, verified against the extracted text). A post-fee rerun is therefore new measurement, not replication theater — and the fee expansion of Mar 30 2026 gives it a natural event study.</p>
+<p>But the paper's exact pipeline is broken by a protocol migration:</p>
+<ul>
+<li><strong>CTF Exchange V2</strong> deployed at 0xE111180000d2663C0091e4f400237545B87B996B on 2026-03-31, one day after the fee expansion (eth_getCode binary search + live trade receipts via polygon.drpc.org; Sourcify-verified contract; github.com/Polymarket/ctf-exchange-v2 — verified).</li>
+<li><strong>Order flow cut over Apr 28–May 4 2026</strong>: old-signature OrderFilled 17,714 vs new-signature 2 at block 86,120,000, flipping to 0 vs 9,748 at 86,380,000 (independently reproduced by the verification pass with exact-match counts and block timestamps 2026-04-28T07:07 and 2026-05-04T07:34 UTC — verified). Goldsky's docs state the migration date and that subgraphs are discontinued (verified, verbatim quote). Any post-fee measurement spans <strong>two event regimes</strong>.</li>
+<li><strong>Fees are on-chain in both regimes.</strong> The classic OrderFilled signature carries a uint256 fee as its last data word (keccak topic0 reproduction + live Apr 22 logs showing nonzero fees in 6,261/7,218 fills — verified), and V2's OrderFilled adds explicit fee, builder, and metadata fields plus a separate FeeCharged event (Sourcify ABI + live topic matching — verified). This is better data than AFT had: realized taker fees and maker rebates per fill, plus builder attribution.</li>
+<li><strong>NegRiskAdapter survives the migration</strong> — PositionsConverted (the NO-conversion event central to AFT's dominant strategy), PositionSplit, PositionsMerge, PayoutRedemption all keccak-verified and observed live post-cutover (~4–6 events/block; verified). Whether V2's CtfCollateralAdapter changes the stakeholder address post-cutover is unconfirmed — check before trusting stakeholder filters.</li>
+<li><strong>Contamination hazard</strong>: the Gnosis CTF is shared infrastructure. ProphetCTFExchange (0x127aD3…1839, Sourcify exact_match, deployed block 86,244,025 ≈ May 1 2026) emits the <em>classic</em> Polymarket OrderFilled topic0 (verified), so naive topic-only scans double-count a separate venue. Filter all events to Polymarket conditionIds (Gamma API) or known exchange/adapter addresses. The additional April lookalike emitter and non-Polymarket PositionSplit callers were not re-verified (unconfirmed detail, same mitigation applies).</li>
+<li><strong>V2 wrapped collateral</strong>: an ERC20 at 0xC011…2DFB moves in every V2 fill instead of raw USDC.e (live receipts — verified); USDC-transfer-based P&amp;L accounting from the AFT methodology breaks after the cutover.</li>
+<li><strong>Scale</strong>: block 84,854,382 (Mar 30 00:00 UTC) to head ~91.19M = 6.33M blocks at 1.68s; sampled fill rates 151–212/block pre-cutover, 47–109/block post — order 10^8 fill events total (probable; 8 non-random 100-block windows with time-of-day bias, order-of-magnitude only). The apparent post-fee fills/block drop is a candidate headline result but <strong>unconfirmed as stated</strong> — needs a proper daily series before claiming fee-induced volume decline.</li>
+</ul>
+<p>Extraction path: free RPCs cannot carry this. dRPC public is the best keyless option (100-block getLogs cap, 10K-log responses handled — reproduced) but returned intermittent empty arrays in the original pass (silent-empty did <strong>not</strong> reproduce in verification — one transient 403 did; treat zero-result windows as retry-mandatory either way); polygon-rpc.com 401s getLogs (reproduced); publicnode/nodies gate archive requests behind tokens/paid plans (verification corrected the original "non-browser blocking" framing); 1rpc.io caps at exactly 50 blocks (reproduced). A full pass is ≥63K requests over 1–3 days. Alchemy free caps getLogs at 10 blocks/request at 60 CU (docs — verified); a full pass ≈38M CU vs a reported ~30M CU/mo free allowance (allowance figure from search snippets only — probable, not confirmed). The right tool is <strong>Envio HyperSync</strong> (polygon.hypersync.xyz, chain 137 confirmed in docs, ~2000x benchmark for sparse topic-filtered scans — verified; free API token mandatory, free-tier quota absent from docs — unconfirmed, check at signup). warproxxx/poly_data uses HyperSync free tier in production (verified), which is practical evidence the quota suffices for this workload.</p>
+<p>Decoder assets: Polymarket/ctf-exchange-v2 repo is the authoritative V2 ABI (verified); polymarket-subgraph's AssemblyScript mappings are ready-made decoders but V2 coverage is unconfirmed — check commits for 0xE111… before relying on them; Whittaker's blog tutorials are pre-fee, pre-V2, wallet-level (directionally useful only); py-clob-client is off-chain-API only — metadata, not mining.</p>
+<h2>Already-indexed sources</h2>
+<ul>
+<li><strong>TimeSeventeen/Polymarket-v1 (HuggingFace)</strong> — the best single find. Complete v1 lifecycle 2022-11-21→2026-04-28: raw OrderFilled tape (1,201,580,990 rows), relayer-filtered daily_aligned layer, and CTF split/merge/resolution/redemption events; ~49.1GB compressed parquet, CC-BY-4.0 (dataset card — verified; the ~2.64B total-row figure is not on the card — unconfirmed but unrefuted). Covers ~4 weeks post-fee, so question (a) gets a zero-mining first pass. No order-book data, per the card.</li>
+<li><strong>Dune</strong> — <code>polymarket_polygon</code> curated schema (per-fill market_trades with taker-side flag, v1+NegRisk+v2+v3 coverage, ~24h refresh, from Nov 2022 — verified) and unified <code>prediction_markets.*</code> combining Polymarket per-fill with Kalshi <strong>daily-aggregated</strong> trade_report (verified from docs; the ~May 2026 launch date, Jun 2021 Kalshi start, and canonical-Yes/No details were not found on fetched pages — unconfirmed). Kalshi aggregation means per-fill cross-venue arb cannot be measured on Dune. Free-plan constraints: no CSV export; API export at 20 credits/MB (verified) against a reported 2,500 credits/mo (search-summary only — probable) ≈ 125MB/mo ceiling — aggregates yes, bulk tape no. ~24h latency confirms Dune is retrospective-only; live collection stays on Actions/HyperSync (verified + trivial inference).</li>
+<li><strong>Goldsky public subgraphs are a trap going forward</strong>: Polymarket migrated to v2 on Apr 28 2026 and abandoned subgraphs; Goldsky's docs state existing public endpoints "will return incomplete or incorrect data" (verified, verbatim). Historical pre-v2 use only. The replacement (Turbo Pipelines) is paid.</li>
+<li><strong>warproxxx/poly_data</strong> — cheapest self-hosted post-v2 tape: HyperSync streaming from the V2 exchange, CSV outputs, v1 preserved at tag v1-final (verified; nits: markets come from the CLOB API per README, and README claims backfill is fast rather than hours-to-days).</li>
+<li><strong>SII-WANGZJ/Polymarket_data</strong> (107GB, 1.1B records, five parquet layers) — probable; end date and freshness ambiguous in its own README — unconfirmed.</li>
+<li><strong>Orderbook history</strong>: no official archive exists; BrockMisner HF datasets (10s book snapshots, crypto up/down markets only) and a JS-gated Kaggle tick-level dataset (contents unverified) are the only free partials — probable. This gap is exactly what the book recorder fills.</li>
+<li><strong>UMA base rates</strong>: UMA's own subgraphs expose PriceRequest, PriceRequestRound, CommittedVote, RevealedVote, VoterGroup, RewardsClaimed (verified verbatim from UMA docs), and disputes resolve on a 65% staked-UMA majority (verified quote). The Graph free-quota figure (~100k queries/mo) is unverified. The primo_data Dune dashboard 404'd — unconfirmed, treat as a manual fork candidate only. the_liolik's cross-venue arb dashboard exists per search index — unconfirmed, uninspected.</li>
+<li><strong>Flipside is dead</strong> as a $0 source: Studio/API/SDK deprecated 2025-06-20, data business sold to SonarX (verified from its own docs).</li>
+<li>Kaggle ismetsemedov/polymarket-prediction-markets — pre-cleaned CSVs to Dec 2025, entirely pre-fee (probable, via search summary); base-rate material only.</li>
+</ul>
+<h2>Official Polymarket APIs</h2>
+<p>Four keyless surfaces, all verified live 2026-07-31:</p>
+<ul>
+<li><strong>Gamma</strong> (gamma-api.polymarket.com): market/event metadata now carrying fee fields (feeType, feesEnabled, takerBaseFee/makerBaseFee), rewards params, umaBond/umaReward/resolvedBy, and <code>umaResolutionStatuses</code> (verified live). The status array has <strong>no timestamps</strong> and no history endpoint exists (verified probe + spec absence) — dispute transitions must be recorded live.</li>
+<li><strong>Data-API</strong> (data-api.polymarket.com): /trades is the full public tape (10k limit, 10k offset per time window, windowed pagination — verified from spec). Trade objects contain <strong>no fee field</strong> (live curl reproduced exact key set — verified): per-trade fees exist only on the wss last_trade_price message (fee_rate_bps) or on-chain, so the tape alone cannot answer question (a). /positions carries per-position PnL fields; /activity spans 12 types including SPLIT/MERGE/REDEEM/CONVERSION and MAKER_REBATE/TAKER_REBATE (verified from specs) — the primitives for per-wallet realized neg-risk arb attribution and rebate measurement. /holders is capped at top-20, current-state only (verified). Undocumented-but-live: /oi, /value, /live-volume, /v1/leaderboard, /v1/builders/volume (probed — verified).</li>
+<li><strong>CLOB REST</strong> (clob.polymarket.com): /book(+batch), /price(+s), /midpoint(+s), /spread(+s), /last-trade-price(+batch), /tick-size, /neg-risk, /fee-rate, /sampling-markets, /rewards/markets/current, /prices-history — all no-auth, all present in clob-openapi.yaml (verified). /prices-history probes: 1-min bars retained to at least Oct 2024, but fidelity=1 windows cap near 15 days and interval=max silently truncates to ~1 month of ~10-min bars — bulk download must be chunked ≤14-day startTs/endTs windows; empty arrays are silent failures (verified live). Note: verification's /fee-rate probe returned base_fee:1000 on a sampled market — the original base_fee:0 was market-specific, and docs now describe volume-tiered fees.</li>
+<li><strong>Websockets</strong>: the CLOB market channel (book snapshots, price_change diffs, last_trade_price with fee_rate_bps, tick_size_change; opt-in best_bid_ask/new_market/market_resolved via custom_feature_enabled; PING every 10s; dynamic sub/unsub — verified from docs) and the RTDS firehose wss://ws-live-data.polymarket.com (DEFAULT_HOST in the official real-time-data-client, verified at client.ts line 4): site-wide activity trades + orders_matched on one connection, no auth, JSON filters. Per-connection asset cap is undocumented (unconfirmed; ~250/conn is a practitioner figure, not re-verified).</li>
+</ul>
+<p>Rate limits are documented, IP-based, sliding-window, throttled-not-rejected, and generous: Gamma 4,000/10s general, CLOB /book 1,500/10s, /prices-history 1,000/10s, data-api /trades 200/10s (rate-limits.md — verified, every number matched).</p>
+<p>What must be recorded live because it can never be reconstructed: order-book state (no historical endpoint — verified), per-trade fee_rate_bps off the wss, holders/oi/liquidity/rewards-config snapshots, umaResolutionStatuses transitions, and new_market/market_resolved/tick_size timing. What need not be collected live: the trade tape itself (data-api /trades reconstructs it later).</p>
+<p><strong>Unconfirmed and load-bearing</strong>: the semantics of takerBaseFee/makerBaseFee=1000 as inputs to the fee formula were not verified against the fees docs — confirm against docs.polymarket.com/trading/fees and /api-reference/get-fees.md (volume-tiered) before hardcoding fee-aware arb math. See also the refuted fee-rate numbers below.</p>
+<h2>Cross-venue references</h2>
+<ul>
+<li><strong>Kalshi</strong>: the whole REST market-data surface is public with no account and no auth — /markets, /markets/{ticker}/orderbook, /markets/trades returned 200 on both api.elections.kalshi.com and external-api.kalshi.com (live curl, reproduced by verification — verified). Candlesticks are public at the series-scoped path only (verified 200 vs 404). Fees are machine-readable: /series/fee_changes 200 unauth, and series objects carry fee_multiplier and fee_type ("quadratic" observed — verified). Historical archive endpoints + /historical/cutoff also public (verified). The websocket requires API-key signature at handshake even for public channels (verified from docs), and whether a non-KYC account can mint a key is unstated (unconfirmed) — so the collector shape is REST polling, which the ~30 req/s unauthenticated figure (secondary source — probable) comfortably supports at 60s cadence.</li>
+<li><strong>Fed ladders</strong>: CME FedWatch has no free API — web tool free, EOD REST ~$25/mo, intraday licensed (CME's own pages — verified); CmeWS site JSON is Akamai-403 even with a browser UA (verified). The $0 anchor is the <strong>Atlanta Fed Market Probability Tracker</strong> full-history xlsx at a stable atlantafed.org URL (~2MB, downloads with a browser User-Agent, plain curl 403s; zip-validated — verified). SOFR-options methodology, not a FedWatch clone — use as reference, not gospel. pyfedwatch exists if a free ZQ source ever appears (repo exists, correctness unaudited — probable).</li>
+<li><strong>Sports</strong>: the-odds-api free tier is real — 500 credits/mo, cost = markets × regions (official docs — verified), ≈16 one-market/one-region snapshots/day. Two corrections from verification: the free plan card says "all sports, MOST bookmakers" (partially coverage-limited — the original "all bookmakers" claim is refuted), and no-credit-card was not confirmed. Historical odds are paid-only (verified) — the sharp-reference history must be self-collected going forward, which is the argument for starting the collector now. Regions are us/us2/uk/au/eu (verified); Pinnacle listed under EU bookmakers on the site's own pages (verified first-party) but spot-check one free call given the "most bookmakers" carve-out. Alternative odds APIs (odds-api.io, oddspapi.io, sharpapi.io) are marketing-verified only — unconfirmed, backups at best.</li>
+<li><strong>Midterms</strong>: FiveThirtyEight is dead — shut March 2025, archives erased May 2026 (verified via Nieman Lab / E&amp;P coverage); build nothing on its URLs. <strong>VoteHub</strong> api.votehub.com/polls?poll_type=generic-ballot returns structured poll JSON, no auth (verified live, reproduced); no averages endpoint (404) — compute the average in the collector. Silver Bulletin's generic-ballot page is public but the model is paywalled Substack (probable); scraping the free page is the only $0 path. PredictIt's marketdata API exists but Cloudflare-403s curl even with a browser UA (verified) — flaky-to-unusable from Actions runners; deprioritize.</li>
+</ul>
+<h2>Collector engineering at $0</h2>
+<ul>
+<li><strong>GitHub Actions</strong> remains free/unlimited-minutes on public-repo standard runners; 6h job cap, 35-day workflow cap, 20 concurrent jobs, GITHUB_TOKEN 1,000 req/hr/repo (docs — verified). Cron fires 5–30+ min late with no SLA and jobs can be dropped (docs + community threads — verified): the desk's existing loop-inside-a-long-job pattern (26-min windows, 60s sweeps) is the correct design, not a workaround. <strong>Scheduled workflows auto-disable after 60 days without repo activity</strong> (verified, verbatim) — commit-producing collectors self-reset; an artifact-only collector silently dies at day 60.</li>
+<li><strong>Storage envelope</strong>: repos ideally &lt;1GB, strongly &lt;5GB; &gt;50MiB files warn, &gt;100MiB hard-block (docs — verified). Rotate CSV ledgers on partitioned daily/monthly paths well before 50MiB, and prefer append-only partitioned files over rewriting one growing file (history bloat — git-scraping prior art, Willison/Flat Data — verified). Artifacts are 1–90-day retention on public repos (verified) — staging only. LFS is a metered trap: 10GiB storage + 10GiB bandwidth free, hard-blocked mid-month on overage, pointer-only clones without a payment method (verified). The $0 archival channels are <strong>GitHub Releases</strong> (1000 assets/release, &lt;2GiB each, explicitly no total-size or bandwidth limit — verified) and <strong>Cloudflare R2</strong> (10GB-month Standard + 1M Class A + 10M Class B ops free, zero egress — verified; Standard storage only).</li>
+<li><strong>Always-on compute tightened in 2026</strong>: Oracle silently halved Always Free Ampere A1 to 2 OCPU/12GB effective ~June 15 2026, discovered via shutdowns (Oracle docs + InfoQ/linuxiac — verified), and <strong>reclaims instances idling under 20% CPU/network/memory at 95th percentile over 7 days</strong> (docs — verified) — a real risk for a naturally idle websocket recorder; PAYG exemption is contested both ways (unconfirmed). GCP's e2-micro survives (1 VM in us-west1/central1/east1, 30GB disk, but only 1GB/mo free egress — verified): ship compressed, push to zero-egress sinks. Fly.io has no free tier for new orgs since Oct 2024 (verified).</li>
+<li><strong>WS recorder failure modes</strong>: the documented contract is text PING/10s, dynamic sub/unsub, initial book snapshot on subscribe, hash fields on book messages (verified). The load-bearing hazard is the server-side "silent freeze" — healthy TCP and PONGs, zero book events for hours (practitioner observation, Mar 2026, ~250 tokens/conn × 6 conns — probable, not independently reproduced): liveness must be judged by <strong>data inactivity</strong> (~120s watchdog + REST /midpoint spot-checks), never by ping/pong. There is no server-side replay; gap handling is snapshot-on-reconnect as a new epoch. nevuamarkets/poly-websockets provides reconnect (5s) and batching (100ms) defaults (verified) but is merely <em>silent</em> on gap detection/book recovery (verification corrected the original "explicitly disclaims" — overstated); that logic must be built regardless.</li>
+<li><strong>Formats</strong>: raw WS messages as zstd-compressed JSONL partitioned by date/market; compact to parquet+zstd for analytics (zstd ~4x faster decompress than zlib at equal ratio, per Databento — probable).</li>
+</ul>
+<h2>Build plan for this desk</h2>
+<p>The desk today: public-repo GitHub Actions crons committing CSV ledgers (desk health ledger, 26-min neg-risk sweep windows, whale tracker). Additions, in order:</p>
+<p><strong>1. wss book recorder (build first).</strong> Windowed capture, not 24/7: schedule 1–5h capture jobs around known event windows (FOMC days, game windows, Nov 3 2026 midterms) inside single long-lived Actions jobs under the 6h cap. Connect to the CLOB market channel with a rotating watchlist from the existing census (top-N by volume + any market inside an event window); subscribe with custom_feature_enabled for best_bid_ask/market_resolved. Record raw book, price_change, last_trade_price (this is the only public stream of per-trade fee_rate_bps — verified) as zstd JSONL, one file per date/market-group. Liveness = 120s data-inactivity watchdog cross-checked against REST /midpoint; on freeze, reconnect and start a new snapshot epoch — never trust PONG. Optionally hold one RTDS connection (wss://ws-live-data.polymarket.com) in the same job as a free site-wide trade firehose. Commit per-window summary CSVs to the ledger; promote raw JSONL to a monthly GitHub Release; if volumes grow, spill to R2. If the desk later wants continuous coverage, a GCP e2-micro is the free VM of choice (Oracle's idle-reclamation makes a low-CPU recorder a reclamation target — verified).</p>
+<p><strong>2. Kalshi REST sweeper.</strong> Piggyback on the existing 60s sweep pattern: each cycle pull /markets (filtered to categories overlapping the Polymarket census), orderbooks for matched pairs, and cache /series/{ticker} fee_multiplier/fee_type plus /series/fee_changes for fee-aware edge math (all verified no-auth). Join on a maintained Polymarket↔Kalshi market map; commit a cross-venue spread ledger CSV. This turns the existing single-venue census into genuine cross-venue arb measurement at zero marginal cost. Backfill resolved-market studies from the public /historical endpoints.</p>
+<p><strong>3. UMA dispute ledger.</strong> Cheap cron: one Gamma sweep per run over recently-closed markets, logging (conditionId, umaResolutionStatuses, umaBond, umaReward, resolvedBy, observed_at) and emitting a transition row whenever the status array changes — this is the only way to get timestamped proposed→disputed→resolved transitions (verified current-state-only). Backfill historical base rates from UMA's voting subgraphs (PriceRequest/CommittedVote/RevealedVote entities — verified) or UMA's on-chain OptimisticOracle events; verify The Graph's free quota at signup (unconfirmed).</p>
+<p><strong>4. On-chain post-fee arb miner.</strong> HyperSync-based incremental job keyed on a committed block cursor: each run pulls V2 OrderFilled + FeeCharged + NRA PositionsConverted + CTF PositionSplit/PositionsMerge since the cursor, filters to Polymarket conditionIds from Gamma (mandatory — ProphetCTFExchange contamination is proven, verified), decodes fees from the event fields (both regimes carry them on-chain — verified), and commits (i) per-market-hour volume/fee/rebate aggregates and (ii) a split-merge round-trip table (same-address split-then-sell / buy-then-merge within N blocks = executed arb candidate, now net of realized fees) — AFT's definitions on the post-fee regime. Backfill Mar 30→today in chunked jobs under the 6h cap; take the pre-Apr-28 portion from TimeSeventeen/Polymarket-v1 instead of mining it. Track the wrapped-collateral ERC20, not USDC.e, after the cutover (verified). Validate sampled windows against dRPC. Before hardcoding fee math, confirm the formula and current rates against docs.polymarket.com/trading/fees and get-fees.md (volume-tiered) — the secondary-press rate table was refuted (below).</p>
+<p><strong>5. Sharp-reference feeds.</strong> (a) Daily Atlanta Fed mpt_histdata.xlsx ingest (browser UA required — verified), parsed to a meeting-probability CSV ledger as the Fed-ladder fair-value anchor. (b) the-odds-api snapshotter with a hard credit budgeter (~16 calls/day, concentrated inside event windows; spot-check Pinnacle presence in eu on the free tier first — "most bookmakers" caveat, verified). No backfill exists at $0, so every day not collecting is reference history lost. (c) VoteHub /polls poller (verified) with an in-collector average as the midterms reference; optional scrape of Silver Bulletin's free generic-ballot page. Skip PredictIt (Cloudflare-403 from CI — verified).</p>
+<p><strong>Storage architecture as ledgers grow.</strong> Keep hot CSV ledgers small: partition by month, rotate before 50MiB, append-only. Monthly compaction job: CSV/JSONL → parquet+zstd, attach to a GitHub Release (no size/bandwidth limits — verified), keep only the current month hot in the repo. R2 (10GB free, zero egress) is the overflow tier for raw WS captures. Never LFS. Artifacts only as intra-run staging. The desk's continuous commits keep the 60-day scheduler-disable timer reset, but add an explicit keepalive commit to any artifact-only workflow.</p>
+<h2>Refuted / unverifiable</h2>
+<ul>
+<li><strong>Fee-rate table (REFUTED in detail).</strong> The secondary-press per-category rates (Crypto 1.80%, Economics 1.50%, Mentions 1.56%, Culture/Weather 1.25%, Finance/Politics/Tech 1.00%, Sports 0.75%; 20–50% maker rebates) do not match current primary docs, which list feeRate Crypto 0.07, Sports 0.05, Finance/Politics/Tech/Mentions 0.04, Economics/Culture/Weather/Other 0.05, Geopolitics 0, with 15–25% maker rebates; the Mar 30 date is not on the primary page. The formula fee = C × feeRate × p × (1−p) IS confirmed verbatim. Use primary docs only for the P&amp;L model.</li>
+<li><strong>the-odds-api "all bookmakers" on free tier (REFUTED).</strong> Free Starter plan says "most bookmakers"; only paid tiers say all. No-credit-card also unconfirmed.</li>
+<li><strong>nevuamarkets/poly-websockets "explicitly no gap detection" (OVERSTATED).</strong> README is silent, not explicit; the engineering conclusion (build it yourself) stands.</li>
+<li><strong>dRPC silent-empty-array behavior (DID NOT REPRODUCE).</strong> Original pass saw 0-then-5,518 on the same window; verification saw one transient 403 instead. Retry-zero-windows remains the safe design either way.</li>
+<li><strong>publicnode/nodies "block non-browser clients" (CORRECTED).</strong> The 403s are archive-request/paid-plan gating, not UA blocking. Same practical conclusion: unusable for scans.</li>
+<li><strong>Unverifiable at $0 this pass</strong>: primo_data UMA Dune dashboard (404 on fetch); the_liolik cross-venue Dune dashboard (uninspected); Kaggle tick-level orderbook dataset contents (JS-gated); SII-WANGZJ dataset freshness; Alchemy free CU allowance (30M vs 300M conflicting); HyperSync free-tier quota; The Graph free quota; CLOB wss per-connection asset cap; Kalshi non-KYC API-key eligibility; Oracle PAYG exemption from A1 cuts; Dune 2,500-credit free allowance; polymarket-subgraph V2 coverage; takerBaseFee/makerBaseFee field semantics; post-fee fills/block decline as a real volume effect (needs a daily series); AFT-2025 dataset-design details in claim 34 beyond its cited anchors.</li>
+<li><strong>Dead sources (verified dead, listed to prevent regression)</strong>: FiveThirtyEight (shut 2025, archives erased 2026); Flipside (deprecated 2025, sold to SonarX); Goldsky public Polymarket subgraphs (incorrect data post-Apr-28-2026); Fly.io free tier (new orgs, Oct 2024).</li>
+</ul></div></div>
+<footer>keys: <b>1–7</b> screens · every claim links to the trial that produced it ·
+negative results are kept, not buried</footer>
+
+<script>
+(() => {
+  const pages = { "1": "index.html", "2": "analysis.html", "3": "screener.html",
+                  "4": "past_trades.html", "5": "portfolio.html",
+                  "6": "research.html", "7": "desk.html" };
+  document.addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target instanceof Element && e.target.matches("input,textarea")) return;
+    const p = pages[e.key];
+    if (p) location.href = (location.pathname.includes("/research/") ? "../" : "") + p;
+  });
+})();
+</script>
+</body></html>

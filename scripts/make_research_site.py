@@ -189,6 +189,7 @@ PRETTY = {
     "backtest_method": "Backtesting without lying to yourself",
     "arb": "Arbitrage: building the best machine",
     "fees": "Fees, and the arbitrage that survives them",
+    "data": "Data: sources and independent collectors",
 }
 lib_cards = ""
 for src in sorted(ROOT.glob("reports/deep_research_*.md")):
