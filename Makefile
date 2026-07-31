@@ -24,7 +24,7 @@ backfill:           ## re-fetch EDGAR 8-K announcement dates for [FROM, TO]
 	python3 scripts/fetch_8k_async.py --start $(FROM) --end $(TO)
 
 desk:               ## regenerate the paper-desk screen from live ledgers
-	python3 /Users/swarup44891/moneymaker3000/desk_page.py
+	python3 /Users/swarup44891/Downloads/desk/desk_page.py
 
 all: refresh terminal research
 
