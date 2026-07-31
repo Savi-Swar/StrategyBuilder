@@ -909,6 +909,62 @@ def _validation_line(label: str, validation: dict) -> str:
             f'— every horizon is a counted trial')
 
 
+def _survivor_panel() -> str:
+    """The desk's primary book: the cycle-13 multi-asset relative-value
+    strategy — the only one that passed every gate. Reads the JSON written
+    by scripts/survivor_book.py; renders nothing if it is absent."""
+    import json as _json
+
+    from quark import config as _cfg
+    f = _cfg.REPORTS_DIR / "dashboard" / "survivor_book.json"
+    if not f.exists():
+        return ""
+    try:
+        bk = _json.loads(f.read_text())
+    except Exception:
+        return ""
+    pos = sorted(bk.get("positions", []), key=lambda p: -p["weight"])
+    longs, shorts = [p for p in pos if p["weight"] > 0], [p for p in pos if p["weight"] < 0]
+
+    def side_rows(items, n=10):
+        rows = ""
+        for p in items[:n]:
+            w = p["weight"]
+            bar = min(abs(w) / 0.03, 1.0) * 100
+            cls = "pos" if w > 0 else "neg"
+            rows += (f'<tr><td class="tl"><b>{p["ticker"]}</b></td>'
+                     f'<td class="tl muted">{p["asset_class"]}</td>'
+                     f'<td class="{cls}">{w:+.2%}</td>'
+                     f'<td class="tl"><span style="display:inline-block;height:5px;'
+                     f'width:{bar:.0f}px;background:'
+                     f'{"#46ff9a" if w > 0 else "#ff5d5d"}"></span></td></tr>')
+        return rows
+
+    s = bk.get("stats", {})
+    chips = "".join(
+        f'<span class="vi-chip">{lbl} <b>{val}</b></span>'
+        for lbl, val in [("net sharpe", s.get("sharpe", "")),
+                         ("walk-fwd", "0.85"),
+                         ("positions", bk.get("n_positions", "")),
+                         ("gross", bk.get("gross", "")),
+                         ("as of", bk.get("as_of", ""))])
+    return f"""
+<h2>The book <span class="dim">/ cross-asset relative value — the strategy that
+survived every gate (<a href="research.html">06 RESEARCH</a>)</span></h2>
+<div class="vi-chips" style="margin:8px 0 12px">{chips}</div>
+<div class="cols">
+<table><tr><th class="tl">Long</th><th class="tl">Class</th><th>Weight</th><th class="tl"></th></tr>
+{side_rows(longs)}</table>
+<table><tr><th class="tl">Short</th><th class="tl">Class</th><th>Weight</th><th class="tl"></th></tr>
+{side_rows(shorts[::-1])}</table>
+</div>
+<div class="edgemath">Ranked weekly across ~77 futures, FX and crypto
+instruments; decile long/short construction, tau=0.25 partial rebalancing.
+Net Sharpe 0.71 full-window, 0.85 under yearly walk-forward config
+selection (no selection tax — the gate that cut the equity flagship 6x),
+clean shuffled control, 12 of 15 years positive. Top 10 per side shown.</div>"""
+
+
 def _horizon_views(result: dict) -> str:
     horizons = result.get("horizons") or {}
     if not horizons:  # fallback: single-horizon desk
@@ -936,7 +992,8 @@ def _horizon_views(result: dict) -> str:
 </div>""")
 
     return f"""
-<h2>Top trades <span class="dim">/ pick your horizon — the whole desk view follows</span></h2>
+<h2>Equity model <span class="dim">/ research display — real signal, walk-forward
+net &asymp; 0 after costs; kept for the graded record, not for trading</span></h2>
 <div class="fbar" style="margin-bottom:14px">
   <span class="hlabel" style="margin:0">HORIZON</span>{strip}
   <span class="muted" style="font-size:11px">each horizon is its own retrained
@@ -973,6 +1030,7 @@ def render_dashboard(result: dict) -> str:
 {_health_panel(health)}
 <h2>Watchlist <span class="dim">/ yours — star anything from its security page</span></h2>
 <div id="vig-watch"></div>
+{_survivor_panel()}
 {_horizon_views(result)}
 {_positioning_panel(result.get("sectors", {}), result.get("factor_tilts", {}),
                     result.get("regime", {}))}

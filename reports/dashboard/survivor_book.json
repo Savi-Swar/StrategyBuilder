@@ -1,0 +1,349 @@
+{
+ "as_of": "2026-07-24",
+ "n_positions": 56,
+ "gross": 0.77,
+ "stats": {
+  "sharpe": 0.7106,
+  "ann_vol": 0.0633,
+  "max_dd": -0.1401,
+  "hit_rate": 0.5253
+ },
+ "positions": [
+  {
+   "ticker": "XRP-USD",
+   "name": "XRP-USD",
+   "asset_class": "crypto",
+   "weight": -0.0358
+  },
+  {
+   "ticker": "SGD=X",
+   "name": "SGD=X",
+   "asset_class": "fx_em",
+   "weight": -0.0341
+  },
+  {
+   "ticker": "EURJPY=X",
+   "name": "EURJPY=X",
+   "asset_class": "fx_cross",
+   "weight": -0.024
+  },
+  {
+   "ticker": "BTC-USD",
+   "name": "BTC-USD",
+   "asset_class": "crypto",
+   "weight": -0.0233
+  },
+  {
+   "ticker": "CHF=X",
+   "name": "CHF=X",
+   "asset_class": "fx_g10",
+   "weight": -0.0217
+  },
+  {
+   "ticker": "SEK=X",
+   "name": "SEK=X",
+   "asset_class": "fx_g10",
+   "weight": -0.0213
+  },
+  {
+   "ticker": "THB=X",
+   "name": "THB=X",
+   "asset_class": "fx_em",
+   "weight": -0.0207
+  },
+  {
+   "ticker": "ETH-USD",
+   "name": "ETH-USD",
+   "asset_class": "crypto",
+   "weight": -0.0205
+  },
+  {
+   "ticker": "USDZAR=X",
+   "name": "USDZAR=X",
+   "asset_class": "fx_em",
+   "weight": -0.0204
+  },
+  {
+   "ticker": "AUDUSD=X",
+   "name": "AUDUSD=X",
+   "asset_class": "fx_g10",
+   "weight": -0.0167
+  },
+  {
+   "ticker": "SOL-USD",
+   "name": "SOL-USD",
+   "asset_class": "crypto",
+   "weight": -0.015
+  },
+  {
+   "ticker": "EURAUD=X",
+   "name": "EURAUD=X",
+   "asset_class": "fx_cross",
+   "weight": -0.015
+  },
+  {
+   "ticker": "GBPCHF=X",
+   "name": "GBPCHF=X",
+   "asset_class": "fx_cross",
+   "weight": -0.0126
+  },
+  {
+   "ticker": "EURCHF=X",
+   "name": "EURCHF=X",
+   "asset_class": "fx_cross",
+   "weight": -0.0121
+  },
+  {
+   "ticker": "NZDUSD=X",
+   "name": "NZDUSD=X",
+   "asset_class": "fx_g10",
+   "weight": -0.0116
+  },
+  {
+   "ticker": "^AXJO",
+   "name": "^AXJO",
+   "asset_class": "equity_index",
+   "weight": -0.0112
+  },
+  {
+   "ticker": "^GDAXI",
+   "name": "^GDAXI",
+   "asset_class": "equity_index",
+   "weight": -0.011
+  },
+  {
+   "ticker": "USDMXN=X",
+   "name": "USDMXN=X",
+   "asset_class": "fx_em",
+   "weight": -0.0101
+  },
+  {
+   "ticker": "BRL=X",
+   "name": "BRL=X",
+   "asset_class": "fx_em",
+   "weight": -0.0096
+  },
+  {
+   "ticker": "NOK=X",
+   "name": "NOK=X",
+   "asset_class": "fx_g10",
+   "weight": -0.0077
+  },
+  {
+   "ticker": "^STOXX50E",
+   "name": "^STOXX50E",
+   "asset_class": "equity_index",
+   "weight": -0.0064
+  },
+  {
+   "ticker": "CADJPY=X",
+   "name": "CADJPY=X",
+   "asset_class": "fx_cross",
+   "weight": -0.0059
+  },
+  {
+   "ticker": "JPY=X",
+   "name": "JPY=X",
+   "asset_class": "fx_g10",
+   "weight": -0.0057
+  },
+  {
+   "ticker": "^FCHI",
+   "name": "^FCHI",
+   "asset_class": "equity_index",
+   "weight": -0.0041
+  },
+  {
+   "ticker": "^IBEX",
+   "name": "^IBEX",
+   "asset_class": "equity_index",
+   "weight": -0.0025
+  },
+  {
+   "ticker": "USDINR=X",
+   "name": "USDINR=X",
+   "asset_class": "fx_em",
+   "weight": 0.0021
+  },
+  {
+   "ticker": "EURGBP=X",
+   "name": "EURGBP=X",
+   "asset_class": "fx_cross",
+   "weight": 0.0022
+  },
+  {
+   "ticker": "^FTSE",
+   "name": "^FTSE",
+   "asset_class": "equity_index",
+   "weight": 0.0024
+  },
+  {
+   "ticker": "TWD=X",
+   "name": "TWD=X",
+   "asset_class": "fx_em",
+   "weight": 0.0025
+  },
+  {
+   "ticker": "RB=F",
+   "name": "RB=F",
+   "asset_class": "commodity",
+   "weight": 0.0027
+  },
+  {
+   "ticker": "^NSEI",
+   "name": "^NSEI",
+   "asset_class": "equity_index",
+   "weight": 0.0033
+  },
+  {
+   "ticker": "GBPUSD=X",
+   "name": "GBPUSD=X",
+   "asset_class": "fx_g10",
+   "weight": 0.0039
+  },
+  {
+   "ticker": "^JKSE",
+   "name": "^JKSE",
+   "asset_class": "equity_index",
+   "weight": 0.0043
+  },
+  {
+   "ticker": "HO=F",
+   "name": "HO=F",
+   "asset_class": "commodity",
+   "weight": 0.0047
+  },
+  {
+   "ticker": "PL=F",
+   "name": "PL=F",
+   "asset_class": "commodity",
+   "weight": 0.0063
+  },
+  {
+   "ticker": "^AEX",
+   "name": "^AEX",
+   "asset_class": "equity_index",
+   "weight": 0.0066
+  },
+  {
+   "ticker": "NZDJPY=X",
+   "name": "NZDJPY=X",
+   "asset_class": "fx_cross",
+   "weight": 0.0087
+  },
+  {
+   "ticker": "^IXIC",
+   "name": "^IXIC",
+   "asset_class": "equity_index",
+   "weight": 0.0102
+  },
+  {
+   "ticker": "^KS11",
+   "name": "^KS11",
+   "asset_class": "equity_index",
+   "weight": 0.0103
+  },
+  {
+   "ticker": "AUDJPY=X",
+   "name": "AUDJPY=X",
+   "asset_class": "fx_cross",
+   "weight": 0.0103
+  },
+  {
+   "ticker": "ZW=F",
+   "name": "ZW=F",
+   "asset_class": "commodity",
+   "weight": 0.0104
+  },
+  {
+   "ticker": "HE=F",
+   "name": "HE=F",
+   "asset_class": "commodity",
+   "weight": 0.0105
+  },
+  {
+   "ticker": "AUDNZD=X",
+   "name": "AUDNZD=X",
+   "asset_class": "fx_cross",
+   "weight": 0.0106
+  },
+  {
+   "ticker": "BZ=F",
+   "name": "BZ=F",
+   "asset_class": "commodity",
+   "weight": 0.0107
+  },
+  {
+   "ticker": "GBPJPY=X",
+   "name": "GBPJPY=X",
+   "asset_class": "fx_cross",
+   "weight": 0.0125
+  },
+  {
+   "ticker": "CL=F",
+   "name": "CL=F",
+   "asset_class": "commodity",
+   "weight": 0.0125
+  },
+  {
+   "ticker": "^N225",
+   "name": "^N225",
+   "asset_class": "equity_index",
+   "weight": 0.0125
+  },
+  {
+   "ticker": "CAD=X",
+   "name": "CAD=X",
+   "asset_class": "fx_g10",
+   "weight": 0.0136
+  },
+  {
+   "ticker": "^SSMI",
+   "name": "^SSMI",
+   "asset_class": "equity_index",
+   "weight": 0.0146
+  },
+  {
+   "ticker": "^MXX",
+   "name": "^MXX",
+   "asset_class": "equity_index",
+   "weight": 0.0208
+  },
+  {
+   "ticker": "CHFJPY=X",
+   "name": "CHFJPY=X",
+   "asset_class": "fx_cross",
+   "weight": 0.0214
+  },
+  {
+   "ticker": "^STI",
+   "name": "^STI",
+   "asset_class": "equity_index",
+   "weight": 0.0244
+  },
+  {
+   "ticker": "CC=F",
+   "name": "CC=F",
+   "asset_class": "commodity",
+   "weight": 0.0283
+  },
+  {
+   "ticker": "KC=F",
+   "name": "KC=F",
+   "asset_class": "commodity",
+   "weight": 0.0287
+  },
+  {
+   "ticker": "SI=F",
+   "name": "SI=F",
+   "asset_class": "commodity",
+   "weight": 0.0312
+  },
+  {
+   "ticker": "PA=F",
+   "name": "PA=F",
+   "asset_class": "commodity",
+   "weight": 0.0331
+  }
+ ]
+}

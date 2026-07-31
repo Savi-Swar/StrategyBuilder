@@ -27,3 +27,6 @@ desk:               ## regenerate the paper-desk screen from live ledgers
 	python3 /Users/swarup44891/moneymaker3000/desk_page.py
 
 all: refresh terminal research
+
+book:               ## regenerate the survivor book for screen 01
+	python3 scripts/survivor_book.py
