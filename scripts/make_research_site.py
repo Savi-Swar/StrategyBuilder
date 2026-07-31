@@ -187,6 +187,7 @@ PRETTY = {
     "predmkt_institutions": "Who trades prediction markets",
     "wsb_method": "Attention signals: the WSB postmortem",
     "backtest_method": "Backtesting without lying to yourself",
+    "arb": "Arbitrage: building the best machine",
 }
 lib_cards = ""
 for src in sorted(ROOT.glob("reports/deep_research_*.md")):
