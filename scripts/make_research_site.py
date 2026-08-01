@@ -190,6 +190,7 @@ PRETTY = {
     "arb": "Arbitrage: building the best machine",
     "fees": "Fees, and the arbitrage that survives them",
     "data": "Data: sources and independent collectors",
+    "impl": "Implementing the patient games",
 }
 lib_cards = ""
 for src in sorted(ROOT.glob("reports/deep_research_*.md")):
