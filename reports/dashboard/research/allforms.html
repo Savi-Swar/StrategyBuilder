@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>VIG · Arbitrage across all forms and venues</title><style>
+* { box-sizing: border-box; margin: 0 }
+body { background: #0b0d10; color: #e6e2d8;
+  font: 13px "SF Mono", ui-monospace, Menlo, monospace; }
+header { display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 18px 26px 14px; }
+.wordmark { font-size: 30px; font-weight: 800; letter-spacing: 3px }
+.tagline { color: #6d747c; font-size: 11px; letter-spacing: 1px }
+.tagline b { color: #8a9199 }
+.stamp-date { color: #6d747c; font-size: 11px }
+.tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c;
+  position: sticky; top: 0; background: #0b0d10; z-index: 5; flex-wrap: wrap }
+.tab { padding: 11px 18px; color: #8a9199; text-decoration: none; font-size: 12px;
+  letter-spacing: 1.5px; border-right: 1px solid #22262c }
+.tab .k { color: #6d747c; margin-right: 7px; font-size: 10px }
+.tab.active { color: #e6e2d8; background: #0e1114; box-shadow: inset 0 2px 0 #ffb000 }
+.tab:hover { color: #e6e2d8 }
+.wrap { padding: 20px 26px 60px; max-width: 980px }
+h2.sect { font-size: 11px; letter-spacing: 2.5px; color: #ffb000; margin: 30px 0 10px;
+  text-transform: uppercase }
+h2.sect::before { content: "▚ " }
+h2.sect .dim { text-transform: none; letter-spacing: .5px }
+.dim { color: #6d747c; font-size: 12px }
+.htiles { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px }
+.htile { border: 1px solid #22262c; background: #0e1114; padding: 12px 16px;
+  min-width: 170px; flex: 1 }
+.hlabel { color: #6d747c; font-size: 10px; letter-spacing: 2px; text-transform: uppercase }
+.hval { font-size: 24px; font-weight: 700; margin: 6px 0 3px }
+.hsub { color: #8a9199; font-size: 11px }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px; margin: 12px 0 }
+.card { border: 1px solid #22262c; background: #0e1114; padding: 14px 16px;
+  text-decoration: none; display: block }
+.card:hover { border-color: #ffb000 }
+.card .t { color: #e6e2d8; font-size: 13px; font-weight: 700 }
+.card .s { color: #8a9199; font-size: 11px; margin-top: 6px; line-height: 1.5 }
+.card .m { color: #6d747c; font-size: 10px; margin-top: 8px; letter-spacing: 1px;
+  text-transform: uppercase }
+a { color: #e6e2d8 }
+footer { color: #6d747c; font-size: 11px; padding: 0 26px 40px }
+img { max-width: 100%; border: 1px solid #22262c; margin: 8px 0 }
+/* rendered markdown */
+.md { line-height: 1.65; font-size: 13px }
+.md h1 { font-size: 20px; margin: 24px 0 12px; letter-spacing: .5px }
+.md h2 { font-size: 14px; color: #ffb000; margin: 26px 0 10px; letter-spacing: 1px;
+  text-transform: uppercase; font-size: 12px; letter-spacing: 2px }
+.md h2::before { content: "▚ " }
+.md h3 { font-size: 13px; color: #e6e2d8; margin: 18px 0 8px }
+.md p { margin: 10px 0; color: #c9c4b8 }
+.md li { margin: 6px 0 6px 18px; color: #c9c4b8 }
+.md strong { color: #e6e2d8 }
+.md em { color: #9fb0c0; font-style: normal }
+.md code { background: #14171b; padding: 1px 5px; font-size: 12px; color: #9fe0b8 }
+.md pre { background: #0e1114; border: 1px solid #22262c; padding: 12px 14px;
+  overflow-x: auto; margin: 10px 0 }
+.md pre code { background: none; padding: 0 }
+.md table { border-collapse: collapse; width: 100%; margin: 10px 0 }
+.md td, .md th { border-bottom: 1px solid #14171b; padding: 5px 10px; text-align: left;
+  font-size: 12px }
+.md th { color: #6d747c; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase }
+.md tr:hover td { background: #0e1114 }
+.md blockquote { border-left: 2px solid #ffb000; padding-left: 14px; color: #9fb0c0;
+  margin: 10px 0 }
+.md hr { border: none; border-top: 1px solid #22262c; margin: 22px 0 }
+.crumb { color: #6d747c; font-size: 11px; margin-bottom: 14px }
+.crumb a { color: #8a9199; text-decoration: none }
+.crumb a:hover { color: #ffb000 }
+</style></head><body>
+<header>
+  <div>
+    <div class="wordmark">VIG</div>
+    <div class="tagline">the house takes its cut — <b>the research record</b></div>
+  </div>
+  <div class="stamp-date">2026-08-02 14:15</div>
+</header>
+<nav class="tabs"><a class="tab" href="../index.html"><span class="k">01</span>DESK</a><a class="tab" href="../analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab" href="../screener.html"><span class="k">03</span>SCREENER</a><a class="tab" href="../past_trades.html"><span class="k">04</span>PAST TRADES</a><a class="tab" href="../portfolio.html"><span class="k">05</span>PORTFOLIO</a><a class="tab active" href="../research.html"><span class="k">06</span>RESEARCH</a><a class="tab" href="../desk.html"><span class="k">07</span>PREDMKT</a></nav>
+<div class="wrap"><div class="crumb"><a href="../research.html">← 06 RESEARCH</a> / deep_research_allforms_2026-08-02.md</div><div class="md"><h1>Arbitrage across all forms and venues</h1>
+<p>Date: 2026-08-02. Scope: every arbitrage form the desk can name, across every real-money-priced venue it can reach, ranked by what is actually wireable for a patient $0, US-connected (F-1) operator. Supersedes the Polymarket-only framing in deep_research_arb_2026-07-31.md and deep_research_impl_2026-08-01.md. House style: every claim sourced in parens; unconfirmed marked; refuted claims quarantined at the end.</p>
+<h2>Verdict</h2>
+<p>The executable universe is five venues — Polymarket, Kalshi, Limitless, SX Bet, Manifold — but they split cleanly by role. Only two are real-money-executable legs for this operator, and only one of those without a compliance problem. Ranked by what is worth wiring:</p>
+<ol>
+<li>
+<p><strong>Same-venue rebalancing on Polymarket (TRUE LOCK, largest measured dollars).</strong> Single-condition YES+NO priced away from $1 ($10.58M realized Apr2024-Apr2025) and neg-risk set rebalancing (~$29.0M) are the only genuine locks and hold essentially all the historically measured money (arXiv:2508.03474, confirmed against full text). Maker-reachable at $0, depth-capped to tens of shares per episode. This stays the desk's spine.</p>
+</li>
+<li>
+<p><strong>Cross-venue crypto Limitless↔Polymarket (BTC/ETH Up/Down) — first genuine cross-venue LOCK CANDIDATE.</strong> Both venues now resolve short-dated crypto up/down via Chainlink Data Streams (theblock.co/post/370444; docs.limitless.exchange llms.txt; verify CONFIRMED). If a market-pair references the identical stream/round/strike-reference/window/tie-rule, YES-cheap + NO-other for combined &lt;$1 is oracle-identical with no settlement-divergence risk. Maker-reachable, no measured history — the desk must measure it. Binding risks: per-pair spec-identity verification, capital split across Base+Polygon, non-atomic legging.</p>
+</li>
+<li>
+<p><strong>Cross-venue sports (SX Bet as the fee-free leg) — reachable, but a SPREAD, not a lock.</strong> SX Bet's 0% single-bet commission (help.sx.bet, docs.sx.bet; CONFIRMED) removes the fee wall that made single-venue Polymarket sports arb fee-negative. But the three venues settle on different mechanisms (SX creator-report Outcome1/Outcome2/Void; Polymarket UMA; Kalshi rulebook 6.3(c)), so the spread is compensation for settlement divergence, not free money (Cardi B precedent: $0.26/$0.74 Kalshi vs $1.00 YES Polymarket; CONFIRMED). Small risk-scored book at most.</p>
+</li>
+<li>
+<p><strong>Resolution-dependent cross-market forms</strong> (deadline/containment, combinatorial/logical, calendar/temporal, dutch-book) — all patient, all economically tiny (~$95.2K/yr venue-wide, top pair $60,237; arXiv:2508.03474 CONFIRMED), all split-risk-bearing. Small caps only.</p>
+</li>
+<li>
+<p><strong>Excluded:</strong> single-market taker sniping on live crypto/sports (3.6s lifetimes, unwinnable speed race at $0; arXiv:2605.00864); Kalshi and SX Bet and Limitless real-money <strong>execution</strong> for this operator (see compliance below); Manifold (play-money).</p>
+</li>
+</ol>
+<p><strong>Honest verdict on cross-venue sports:</strong> it is real and structurally the opposite of the single-venue Polymarket form that measured fee-negative — but for THIS desk it is a measurement layer, not an execution layer. Execution needs funded capital on ≥2 venues simultaneously, and the two on-chain sports venues (SX Bet, Limitless) both prohibit US persons from transacting, while Kalshi requires a US-person account an F-1 holder cannot open. So the sports cross-venue collector is worth building <em>as a basis monitor</em>, and only as a basis monitor, unless/until the compliance picture changes. No credible public figure for realized cross-venue sports P&amp;L exists; every "2-8% spread = profit" number traces to marketing guides (unverifiable).</p>
+<h2>Dimension 1: Arbitrage forms (taxonomy)</h2>
+<p><strong>True locks (payoff offsets regardless of resolution):</strong>
+- <em>Single-condition rebalancing</em> — YES+NO on one oracle away from $1; buy both &lt;$1 or sell both &gt;$1, atomic split/merge to $1. $10.58M realized on Polymarket ($5.90M buying below + $4.68M selling above; arXiv:2508.03474 confirmed against 2025aft-arbitrage.pdf). Same mechanism on Limitless (every YES+NO pair fully collateralized by $1.00 USDC; docs.limitless.exchange merge-split, CONFIRMED). Maker legs pay zero fee on both. Depth-capped.
+- <em>Neg-risk set rebalancing</em> — mutually-exclusive winner-take-all set; buy all legs when ask-sum&lt;$1 or sell all when bid-sum&gt;$1, NegRiskAdapter caps collateral at $1. Largest measured bucket, ~$29.0M (arXiv:2508.03474). Hazards that break it: augmented events with "Other" placeholder legs, second-YES oracle freeze, 50/50 $0.50 resolution. Polymarket only among executable venues; Limitless documents no neg-risk multi-outcome adapter (verify per-event).</p>
+<p><strong>Locks only under oracle-identity (candidate):</strong>
+- <em>Cross-venue same-event crypto</em> — Limitless↔Polymarket BTC/ETH Up/Down, both Chainlink Data Streams. A lock only if stream/round/strike-reference (open vs prior-close)/end-timestamp/tie-rule match per pair; otherwise the two can resolve oppositely and both legs lose. No measured history (probable; verify CONFIRMED as candidate, not demonstrated lock).</p>
+<p><strong>Spreads, not locks (resolution-dependent):</strong>
+- <em>Cross-venue sports</em> — settlement-mechanism divergence across SX/PM/Kalshi (probable/CONFIRMED). ~2x notional, no cross-margin.
+- <em>Cross-venue same-event non-crypto</em> (PM vs Kalshi politics/econ/Fed) — ~6% of events cross-listed, execution-adjusted deviations 2-4%, ~$0.07 half-life over minutes; persists because rulebook vs UMA can resolve near-identical contracts oppositely plus semantic non-fungibility (arXiv:2601.01706 Gebele &amp; Matthes, CONFIRMED). No credible realized P&amp;L.
+- <em>Deadline/containment</em> ("X by earlier" nested in "X by later") — lock direction is buy cheap superset/short expensive subset; in NO-space the implication reverses (desk derivation, unconfirmed — no primary literature). Not a lock: separate UMA questions split by wording drift (MSTR "sold BTC by May 31" resolved NO despite a June-1 8-K, sibling resolved YES; CONFIRMED via CoinDesk/Benzinga).
+- <em>Combinatorial/logical</em> — real but negligible: $95.2K realized across ~4-5 dependent pairs vs $39.6M total (~0.24%); leaks because arbitrage-free logical pricing is #P-hard (Kroer et al. EC'16 arXiv:1606.02825, verified). Non-atomic separate questions.
+- <em>Calendar/temporal</em> (semifinal→final bracket nesting) — special case of containment; no dedicated measured size; folds into the $95K bucket (unconfirmed derivation). Cleaner same-venue (one oracle) than cross-venue.
+- <em>Dutch-book across correlated non-identical markets</em> — general case of combinatorial; correlation is not identity, so payoffs don't perfectly offset. Collapses into either a formal neg-risk lock or the $95K resolution-dependent bucket (probable synthesis).</p>
+<p><strong>Sports grids</strong> (correct-score/bracket/mutually-exclusive grids) are structurally neg-risk partitions: within-grid rebalancing is a same-venue lock. NBA measurement (arXiv:2605.00864, 173 games, 75M snapshots): only 7 executable single-market episodes (median 3.6s lifetime, unwinnable speed race) but 290 combinatorial episodes at median 101bps, 76.9% depth-capped to ~14.8 shares, concentrated in final live minutes. Detection is not the constraint; depth is (CONFIRMED).</p>
+<h2>Dimension 2: Venues and execution mechanics</h2>
+<p><strong>Polymarket</strong> — Polygon, pUSD/USDC, CTF split/merge via gasless relayer; batch endpoint posts 1-15 signed orders but processes them with independent per-order results (explicitly NOT all-or-nothing; docs.polymarket.com, CONFIRMED). Only atomic repair is the on-chain NegRiskAdapter convert within one event. 2026 sports taker fee: θ=0.03 (Mar) → 0.05 (Jul), max $1.25/100 shares at 50%; makers pay 0 + 15% sports-fee rebate; politics/geopolitics fee-free (marketmath.io/igamingbusiness.com/startpolymarket.com; CONFIRMED, secondary but concordant).</p>
+<p><strong>Limitless</strong> — Base (Coinbase L2), USDC native collateral, YES+NO pair = $1.00, shares $0.01-$0.99 (docs.limitless.exchange, CONFIRMED). CLOB+AMM; short-dated crypto resolves via Chainlink Data Streams. Three wallet paths: smart-wallet gas fully sponsored (~$0, USDC only), EOA/embedded pay a few cents ETH/tx (approve+trade may be two txs first use; CONFIRMED). Maker/resting orders pay ZERO fee; taker buy 0.40-3.00% / sell 0.42-1.50%, AMM flat 0.40%. Placement not anonymous-keyless: Privy Bearer-token auth + EIP-712 signing, but no KYC/manual-key gate (CONFIRMED). <strong>ToS explicitly prohibits US persons from trading</strong> (operated from Panama; docs.limitless.exchange ToS, CONFIRMED).</p>
+<p><strong>SX Bet</strong> — P2P on-chain betting exchange, chain ID 4162 (SX Rollup, an Arbitrum Orbit chain, ~250ms blocks), USDC, also live on Arbitrum (docs.sx.technology, CONFIRMED). <strong>0% commission on single bets for both maker and taker; 5% only on winning-parlay profit; native chain covers all gas</strong> — a bet costs the user ~$0 (help.sx.bet/docs.sx.bet, CONFIRMED). Reads fully keyless ("No API key or account is required to fetch market data"; full order book + Centrifugo WS, CONFIRMED). Writes: EIP-712-signed maker (POST /orders/new) and taker (POST /orders/fill/v2), settle on-chain in USDC (CONFIRMED). Mid-migration: sunsetting the SX token for a fully-gasless architecture, snapshot 15 May 2026, activation deadline 15 Aug 2026, destination chain unannounced — execution surface unstable through late 2026 (blog.sx.bet, CONFIRMED). <strong>Not available to US persons</strong> (SX T&amp;Cs, CONFIRMED).</p>
+<p><strong>Kalshi</strong> — CFTC-regulated, USD. Keyless for DATA (real prices, good for basis measurement). Taker fee = 0.07·contracts·P·(1-P), peak ~1.75% at P=0.5, ~0 at extremes; maker rebate; ~0.25% flat maker fee on marquee events (kalshi.com fee schedule, CONFIRMED). Real-money trading needs a US-person brokerage account this operator (F-1, no SSN) cannot open — measurement/pricing venue only.</p>
+<p><strong>Manifold</strong> — keyless but play-money (mana); zero real-capital value; sandbox for detection/execution logic only (CONFIRMED).</p>
+<p><strong>Compliance conclusion:</strong> both on-chain sports/crypto venues (Limitless, SX Bet) bar US persons from transacting; Kalshi is account-gated for this operator. Keyless reads from all are fine. There is currently <strong>no compliant real-money execution leg</strong> for the operator on any cross-venue form — the desk's cross-venue work is measurement-first by necessity, not just by caution (CONFIRMED synthesis).</p>
+<h2>Dimension 3: Atomicity and legging</h2>
+<p>Multi-leg atomicity does not exist cross-venue and only partially within one. Polymarket batch is per-order independent, not atomic; the sole atomic op is NegRiskAdapter convert scoped to one event (CONFIRMED). Cross-venue (Base/Polygon/Arbitrum, no shared collateral) is inherently non-atomic — every cross-venue form is a maker-patient play (rest a quote on one venue, hedge on fill) requiring ~2x capital held simultaneously (CONFIRMED). Limitless↔Polymarket rebalancing between chains uses Circle CCTP (burn-and-mint, low fee, ~minutes latency) — bridging latency, not gas, is the binding cross-venue execution cost (probable). MEV/frontrunning risk is low on both L2s (Base single Coinbase sequencer; SX single-sequencer Orbit + off-chain order book; no contestable public mempool), sequencer reordering a theoretical residual (probable).</p>
+<h2>Dimension 4: External reference / offline validation</h2>
+<p>the-odds-api free tier = 500 credits/month, cost = markets × regions (1×1 = 1 credit), historical 10× — ceiling ~16 calls/day (the-odds-api.com, CONFIRMED). Too slow to be a live arb scanner (arbs close in seconds; Gebele &amp; Matthes measured ~2-7s cross-venue windows). Its role is a <strong>sharp-reference anchor</strong>: use Pinnacle consensus fair odds to detect whether PM/SX/Kalshi are stale, then confirm on the keyless venue feeds (probable derivation, sound).</p>
+<h2>Build spec for THIS desk</h2>
+<h3>A. Limitless cross-venue crypto collector (BTC/ETH Up/Down) — BUILD, priority 1 of the new work</h3>
+<p>Purpose: measure the rank-2 lock candidate. Read-only, $0, no compliance issue (reads are unrestricted).</p>
+<ul>
+<li><strong>Feeds:</strong> Limitless keyless market reads on Base (CLOB depth + AMM); Polymarket keyless crypto up/down reads on Polygon. Both keyless.</li>
+<li><strong>Core requirement — spec-identity resolver:</strong> per candidate market-pair, extract and match Chainlink stream ID, round/window boundaries, strike-reference convention (open vs prior-close), end-timestamp, and tie-rule. Emit a boolean <code>oracle_identical</code> per pair. This is the load-bearing component — the lock exists ONLY when it is true. Mismatched window/reference is not a smaller edge, it is a two-legged loss.</li>
+<li><strong>Signal:</strong> for oracle-identical pairs, compute min-cost YES-here + NO-there; flag combined ask-sum &lt; $1 (maker-achievable) net of zero maker fees.</li>
+<li><strong>Needs:</strong> the two keyless read feeds; a Chainlink stream-spec parser; clock-sync across chains; a depth model (how many shares fillable as maker on each side). No keys, no capital to measure. Execution would need USDC pre-positioned on both Base and Polygon and would violate Limitless US ToS — so ship the monitor, not the executor.</li>
+<li><strong>Output:</strong> per-pair <code>oracle_identical</code>, gross edge, maker-fillable depth, and a running distribution — the desk has NO historical P&amp;L for this pair and must generate it.</li>
+</ul>
+<h3>B. SX Bet / sports cross-venue collector — BUILD as a basis monitor only; justified but bounded</h3>
+<p>Justification: SX Bet's 0% single-bet fee is the specific fact that reopens sports cross-venue vs the fee-negative single-venue Polymarket result. The same major-league games are priced concurrently on PM, Kalshi, and SX (CONFIRMED). So the <em>measurement</em> is worth building. Execution is NOT justified for this operator: SX and sportsbooks bar/limit US arbers, Kalshi is account-gated, and settlement divergence means the spread is risk compensation, not a lock.</p>
+<ul>
+<li><strong>Feeds:</strong> SX Bet keyless REST (get-sports/leagues/markets/odds/full order book) + Centrifugo WS; Polymarket keyless sports reads; Kalshi keyless data; the-odds-api free tier + Pinnacle as sharp anchor (~16 calls/day, batch to marquee games only).</li>
+<li><strong>Core requirement — settlement-diff engine:</strong> per game-pair, diff the resolution rules (OT inclusion, DNP/void, postponement/tie) across SX (Outcome1/Outcome2/Void creator-report), PM (UMA), Kalshi (rulebook 6.3(c)). Any divergence downgrades a "locked" spread to a directional bet — tag it, don't count it as arb.</li>
+<li><strong>Signal:</strong> per game, post-fee implied-price divergence (SX 0% leg vs PM taker/maker vs Kalshi P(1-P) curve), with fee routing baked in (place taker on SX, maker on PM/Kalshi). Cross-check against Pinnacle staleness.</li>
+<li><strong>Needs:</strong> the four read feeds; the settlement-diff engine; a fee-routing model per venue; the-odds-api key (free tier). No capital, no writes.</li>
+<li><strong>Bound:</strong> ship as monitor. Do not wire execution — no compliant funded leg exists, and SX's 15-Aug-2026 migration makes its write surface unstable regardless.</li>
+</ul>
+<h3>C. N-venue normalized market model — BUILD, the shared substrate under A and B</h3>
+<p>Both collectors need the same abstraction: a venue-agnostic market object so PM, Kalshi, Limitless, SX (and Manifold as sandbox) are comparable.</p>
+<ul>
+<li><strong>Schema per market:</strong> canonical event id; venue; chain; outcome legs with live bid/ask + depth; oracle/resolution source (Chainlink stream id | UMA | Kalshi rulebook | SX creator-report); resolution rule digest (for the settlement-diff engine); fee function (maker/taker, category-specific — PM sports θ, Kalshi P(1-P), SX 0%, Limitless taker curve); collateral/chain and bridging path; keyless-read vs execution-gated flag; US-compliance flag.</li>
+<li><strong>Matching layer:</strong> cross-venue event linker (crypto: Chainlink spec-identity; sports: league/team/start-time + rule digest). Emit <code>same_underlying</code> and <code>oracle_identical</code> separately — they are not the same predicate and conflating them is how a spread gets mislabeled a lock.</li>
+<li><strong>Fee/depth normalizer:</strong> every price reported net of the correct fee function and capped by fillable depth, so cross-venue sums are apples-to-apples.</li>
+<li><strong>Needs:</strong> the per-venue read adapters (all keyless); a resolution-rule digester; a chain/bridging cost table (CCTP latency for Base↔Polygon). This is the piece to build first — A and B are thin signal layers on top of it.</li>
+</ul>
+<h2>Refuted / dropped</h2>
+<ul>
+<li><strong>REFUTED — SX Bet ~$200m lifetime volume.</strong> Primary/press states over $500M in bets from 10,000+ users; the ~$200m figure is understated/stale (verify REFUTED). Use $500M+ if a volume figure is needed; it is not load-bearing.</li>
+<li><strong>DROPPED — placeholder/test research entries.</strong> The <code>crossvenue_crypto</code> finding ("a", source "b"), and the <code>stat_arb</code> and <code>aggregation</code> summaries ("test claim", source "test source") are content-free test stubs (verify UNVERIFIABLE). No signal; excluded from all sections above. Note: the <em>substance</em> of cross-venue crypto is carried by the <code>taxonomy_complete</code> and <code>onchain_mechanics</code> findings, which are real and verified — only the stub entry is dropped.</li>
+<li><strong>FLAGGED weak — "SX covers 40+ soccer leagues + Olympics."</strong> SX is a genuine multi-sport exchange covering major US/tennis/soccer, but the specific 40+/Olympics counts rest on secondary review sites, not primary docs (verify PARTLY). Treat the coverage gradient (deep marquee, thin niche) as sound; the exact counts as unconfirmed.</li>
+<li><strong>FLAGGED weak — "Kalshi is the sharp leg / most US-sports volume / tightest NFL-NBA-MLB pricing."</strong> Directionally consistent with 2026 reporting but sourced to comparison/opinion articles, not hard primary metrics (verify PARTLY). Analytically reasonable, not proven; do not hard-code Kalshi as the sharp anchor — use Pinnacle for that.</li>
+<li><strong>FLAGGED — sportsbook arb edge "~0.5-2% after fees."</strong> Mechanism (not risk-free; line can move before the second leg fills) CONFIRMED; the specific 0.5-2% band is a rule-of-thumb, not pinned to a primary quote (verify PARTLY). Treat as typical range.</li>
+<li><strong>FLAGGED — "cross-venue sign flips positive."</strong> Component premises (SX 0% singles, PM/Kalshi maker rebates, independent-book divergence) all CONFIRMED, but the positive-edge conclusion is a valid analytical argument, not a measured result (verify PARTLY). No primary source demonstrates realized positive cross-venue sports edge — hence the measure-first build spec.</li>
+<li><strong>NUANCE — "exchanges do NOT limit winners."</strong> True for stake caps on SX; Betfair does not limit but applies a Premium Charge to sustained winners (verify note). Not load-bearing.</li>
+</ul></div></div>
+<footer>keys: <b>1–7</b> screens · every claim links to the trial that produced it ·
+negative results are kept, not buried</footer>
+
+<script>
+(() => {
+  const pages = { "1": "index.html", "2": "analysis.html", "3": "screener.html",
+                  "4": "past_trades.html", "5": "portfolio.html",
+                  "6": "research.html", "7": "desk.html" };
+  document.addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target instanceof Element && e.target.matches("input,textarea")) return;
+    const p = pages[e.key];
+    if (p) location.href = (location.pathname.includes("/research/") ? "../" : "") + p;
+  });
+})();
+</script>
+</body></html>

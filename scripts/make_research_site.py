@@ -191,6 +191,7 @@ PRETTY = {
     "fees": "Fees, and the arbitrage that survives them",
     "data": "Data: sources and independent collectors",
     "impl": "Implementing the patient games",
+    "allforms": "Arbitrage across all forms and venues",
 }
 lib_cards = ""
 for src in sorted(ROOT.glob("reports/deep_research_*.md")):
