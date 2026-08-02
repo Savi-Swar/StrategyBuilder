@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>VIG · Tier 6 & 7: the penny edges (partial)</title><style>
+* { box-sizing: border-box; margin: 0 }
+body { background: #0b0d10; color: #e6e2d8;
+  font: 13px "SF Mono", ui-monospace, Menlo, monospace; }
+header { display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 18px 26px 14px; }
+.wordmark { font-size: 30px; font-weight: 800; letter-spacing: 3px }
+.tagline { color: #6d747c; font-size: 11px; letter-spacing: 1px }
+.tagline b { color: #8a9199 }
+.stamp-date { color: #6d747c; font-size: 11px }
+.tabs { display: flex; border-top: 1px solid #22262c; border-bottom: 1px solid #22262c;
+  position: sticky; top: 0; background: #0b0d10; z-index: 5; flex-wrap: wrap }
+.tab { padding: 11px 18px; color: #8a9199; text-decoration: none; font-size: 12px;
+  letter-spacing: 1.5px; border-right: 1px solid #22262c }
+.tab .k { color: #6d747c; margin-right: 7px; font-size: 10px }
+.tab.active { color: #e6e2d8; background: #0e1114; box-shadow: inset 0 2px 0 #ffb000 }
+.tab:hover { color: #e6e2d8 }
+.wrap { padding: 20px 26px 60px; max-width: 980px }
+h2.sect { font-size: 11px; letter-spacing: 2.5px; color: #ffb000; margin: 30px 0 10px;
+  text-transform: uppercase }
+h2.sect::before { content: "▚ " }
+h2.sect .dim { text-transform: none; letter-spacing: .5px }
+.dim { color: #6d747c; font-size: 12px }
+.htiles { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px }
+.htile { border: 1px solid #22262c; background: #0e1114; padding: 12px 16px;
+  min-width: 170px; flex: 1 }
+.hlabel { color: #6d747c; font-size: 10px; letter-spacing: 2px; text-transform: uppercase }
+.hval { font-size: 24px; font-weight: 700; margin: 6px 0 3px }
+.hsub { color: #8a9199; font-size: 11px }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px; margin: 12px 0 }
+.card { border: 1px solid #22262c; background: #0e1114; padding: 14px 16px;
+  text-decoration: none; display: block }
+.card:hover { border-color: #ffb000 }
+.card .t { color: #e6e2d8; font-size: 13px; font-weight: 700 }
+.card .s { color: #8a9199; font-size: 11px; margin-top: 6px; line-height: 1.5 }
+.card .m { color: #6d747c; font-size: 10px; margin-top: 8px; letter-spacing: 1px;
+  text-transform: uppercase }
+a { color: #e6e2d8 }
+footer { color: #6d747c; font-size: 11px; padding: 0 26px 40px }
+img { max-width: 100%; border: 1px solid #22262c; margin: 8px 0 }
+/* rendered markdown */
+.md { line-height: 1.65; font-size: 13px }
+.md h1 { font-size: 20px; margin: 24px 0 12px; letter-spacing: .5px }
+.md h2 { font-size: 14px; color: #ffb000; margin: 26px 0 10px; letter-spacing: 1px;
+  text-transform: uppercase; font-size: 12px; letter-spacing: 2px }
+.md h2::before { content: "▚ " }
+.md h3 { font-size: 13px; color: #e6e2d8; margin: 18px 0 8px }
+.md p { margin: 10px 0; color: #c9c4b8 }
+.md li { margin: 6px 0 6px 18px; color: #c9c4b8 }
+.md strong { color: #e6e2d8 }
+.md em { color: #9fb0c0; font-style: normal }
+.md code { background: #14171b; padding: 1px 5px; font-size: 12px; color: #9fe0b8 }
+.md pre { background: #0e1114; border: 1px solid #22262c; padding: 12px 14px;
+  overflow-x: auto; margin: 10px 0 }
+.md pre code { background: none; padding: 0 }
+.md table { border-collapse: collapse; width: 100%; margin: 10px 0 }
+.md td, .md th { border-bottom: 1px solid #14171b; padding: 5px 10px; text-align: left;
+  font-size: 12px }
+.md th { color: #6d747c; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase }
+.md tr:hover td { background: #0e1114 }
+.md blockquote { border-left: 2px solid #ffb000; padding-left: 14px; color: #9fb0c0;
+  margin: 10px 0 }
+.md hr { border: none; border-top: 1px solid #22262c; margin: 22px 0 }
+.crumb { color: #6d747c; font-size: 11px; margin-bottom: 14px }
+.crumb a { color: #8a9199; text-decoration: none }
+.crumb a:hover { color: #ffb000 }
+</style></head><body>
+<header>
+  <div>
+    <div class="wordmark">VIG</div>
+    <div class="tagline">the house takes its cut — <b>the research record</b></div>
+  </div>
+  <div class="stamp-date">2026-08-02 17:49</div>
+</header>
+<nav class="tabs"><a class="tab" href="../index.html"><span class="k">01</span>DESK</a><a class="tab" href="../analysis.html"><span class="k">02</span>ANALYSIS</a><a class="tab" href="../screener.html"><span class="k">03</span>SCREENER</a><a class="tab" href="../past_trades.html"><span class="k">04</span>PAST TRADES</a><a class="tab" href="../portfolio.html"><span class="k">05</span>PORTFOLIO</a><a class="tab active" href="../research.html"><span class="k">06</span>RESEARCH</a><a class="tab" href="../desk.html"><span class="k">07</span>PREDMKT</a></nav>
+<div class="wrap"><div class="crumb"><a href="../research.html">← 06 RESEARCH</a> / deep_research_pennies_2026-08-02.md</div><div class="md"><h1>Tier 6 &amp; 7: The Penny Edges</h1>
+<p><em>Deep research, 2026-08-02. Question: do any tier-6/7 "penny" micro-edges genuinely clear break-even for a $0-budget, automated, F-1 operator? Scope covers method-level micro-arbitrage (surveys, gift cards, coin hunting, airdrops, cashback, bank bonuses, class-action claims) and in-game/virtual economies (Steam, MTGO/MTGA, EVE/MMO gold, Second Life, Roblox). Not financial or legal advice.</em></p>
+<h2>Verdict</h2>
+<p>Mostly no. Of everything surveyed, exactly three edges survive all four screens (real, automatable-enough, fee-light, F-1-legal): <strong>class-action no-proof claims</strong>, <strong>cashback stacking on spend you'd do anyway</strong>, and <strong>bank signup bonuses</strong>. Ranked by defensibility for this operator: (1) no-proof settlement claims — real dollars, minutes of work, passive-income character, but capped to your genuine purchase history; (2) cashback stacking — legal and automatable but a rebate on existing spend, not income; (3) bank signup bonuses — passive interest income but manual, KYC-gated, and ChexSystems-capped. Every other edge fails at least one screen, and the failures are structural, not fixable. The automatable, zero-marginal-cost edges (Steam market flips, gift-card bots, multi-wallet airdrop farming) get competed to the fee floor, ToS-banned, or sybil-filtered; the edges that persist survive <em>precisely because</em> they can't be automated to scale — they're bounded to one honest person's real footprint (synthesis of all findings; the inverse correlation between automatability and persistence is the central result). And the whole category collides with the F-1 line: passive financial income is generally fine, but labor-for-pay — flipping-as-a-business, microtask work, gig apps — is unauthorized employment (Avvo immigration counsel; usavisalaw; BYU ISS). Honest ceiling: low-hundreds to low-thousands of dollars <strong>per year</strong> from the surviving set combined, essentially all of it from spend-back and one-time free-money claims. Not a stacking engine, and below minimum wage on any per-hour basis.</p>
+<h2>The break-even that kills penny edges</h2>
+<p>A micro-edge is worth an automated $0 operator's time only when two things both hold: marginal cost per opportunity is near zero, <strong>and</strong> no per-item human decision is required (synthesis of findings; framing, not a sourced fact). The recurring failure mode is a fixed cost per opportunity — gas, shipping, a listing fee, or above all a few seconds of finite human attention — swamping a gross of $0.02 to $10. When even one manual glance is needed per item, the edge is labor mislabeled as arbitrage, and it dies at the attention wall.</p>
+<p><strong>The screen.</strong> Pick up a penny edge only if all four hold (derived heuristic, not a sourced fact — inputs are individually supported below):</p>
+<ul>
+<li><strong>a.</strong> gross-per-opportunity &gt; ~5x (marginal $ cost + your automated cost-per-decision)</li>
+<li><strong>b.</strong> the full pipeline (find → execute → cash out) runs with zero per-item human judgment</li>
+<li><strong>c.</strong> it is passive financial income in character, not labor/business/gambling (F-1 safety)</li>
+<li><strong>d.</strong> it has a real primary-source cashout path, not a points wall</li>
+</ul>
+<p>If a human must eyeball each item, it fails (b) and is labor. If dollars can't leave the platform, it fails (d). Most rejected edges below fail (b), (c), or (d) — frequently all three.</p>
+<h2>Method-level micro-edges</h2>
+<p><strong>Class-action no-proof claims — ACCEPT (best fit).</strong> Many consumer settlements pay $5–$50 on a signed attestation with no receipt, and aggregators (Top Class Actions, Class Action Buddy) list open claims, making them software-findable (verified). Passive payout character fits F-1. Critical constraint: each no-proof claim is a sworn declaration under penalty of perjury (18 U.S.C. §1621) that you were a genuine class member; blanket auto-filing is perjury/fraud, and administrators use analytics to catch implausible/duplicate filings (verified). So it's findable-automatable but the eligibility check is irreducibly manual and honest, which caps it to your real purchase history. Realistic: tens to low-hundreds of dollars/yr, essentially one-time.</p>
+<p><strong>Cashback stacking — ACCEPT, but it's a rebate, not income.</strong> Card + portal + app + code on one purchase can reach ~15–25% back (walletgrower, snaplii — <em>affiliate sources, magnitudes unverified</em>). It's legal and partly automatable (extensions), and passive in character (it lowers your own costs). But it is a discount on existing consumption; buying more to farm it is negative-EV. Value is bounded by genuine spend, not scalable.</p>
+<p><strong>Bank signup-bonus "churning" — CONDITIONAL ACCEPT.</strong> $300–$900 per bank, and the IRS treats these as interest income (1099-INT) — the passive category generally acceptable for F-1 (verified). But it is <em>not</em> truly automatable (account opening is manual, KYC-gated), not zero-marginal-cost (min-balance / direct-deposit requirements), and ChexSystems caps how many accounts you can open. One of the few legal free-money sources for an F-1 with banking access, but a manual, capacity-limited grind. Confirm nonresident-alien tax treatment with a professional (caveat flagged).</p>
+<p><strong>Microtask / survey work (MTurk, Swagbucks) — REJECT for F-1.</strong> Two independent kills. Economics: documented below-minimum-wage returns, roughly $2–6/hr (earnifyhub, thefr.app — <em>soft, Reddit-sourced; directionally consistent with broader evidence that microtask work pays below minimum</em>) versus the $7.25 federal minimum (verified, unchanged since 2009). Legality: active labor-for-pay = unauthorized employment; immigration counsel explicitly warns MTurk "will put your visa at risk" (Avvo — verified).</p>
+<p><strong>Steam market / CS2 item arbitrage — REJECT.</strong> The 15% fee (10% game + 5% Steam) eats intra-market spread; a typical historical opportunity was worth ~$0.02, and three sequential flips lose ~38.6% to fees (0.85³ ≈ 0.614; verified). Automation violates Steam ToS and draws permanent, generally irreversible bans (verified). The classic "automatable but fee-and-ToS-dead" trap.</p>
+<p><strong>Crypto airdrop / testnet sybil farming — MOSTLY REJECT.</strong> 88% of airdropped tokens lose value within 3 months (verified across 2026 sources). Sybil defenses actively detect and burn multi-wallet activity — i.e., they target exactly the automatable version. <em>Caveat: the "~85% of airdrops sybil-filtered" figure is overstated; documented cases show closer to ~40% (e.g., Linea ~517k of 1.3M), and the 85% appears only in proxy-selling blogs with a conflict of interest.</em> Genuine single-wallet farming needs 6–12 months of manual, varied activity — labor, not passive automation — and its F-1 character is grey (daily "farming" resembles a business, not investment).</p>
+<p><strong>Gift card arbitrage (Raise/CardCash) — REJECT.</strong> Secondary discounts are thin (~12.5% avg; CardCash 2026 report — verified) and it only profits when juiced by credit-card signup bonuses. Platforms run aggressive fraud detection (velocity, IP, denomination spikes). Systematic buy-to-resell is a business = F-1 unauthorized-business risk (verified), and it needs credit cards F-1 students often lack.</p>
+<p><strong>Coin roll hunting — REJECT (labor-bound, F-1 grey).</strong> ~2–3 silver coins per box of half-dollars (~$6 each for 90% silver); the widely-cited success case made ~$15k/yr — but only at ~15 hrs/week of manual searching (CNBC 2019 — verified), and the silver is increasingly depleted. Non-automatable (you must physically inspect coins), and selling finds for profit systematically reads as a business.</p>
+<p><strong>Bottle/can cross-state deposit arbitrage — REJECT: it's a crime.</strong> Michigan classifies knowingly redeeming out-of-state containers as fraud: fines at 25–100 containers, misdemeanor (up to 93 days) at 100–10,000, felony (up to 5 years, $5,000) above 10,000 (Michigan EGLE; Monroe County — verified). The per-can gross can never justify criminal exposure. Auto-disqualified for anyone, doubly for a visa holder.</p>
+<p><strong>Retail/online resale flipping — REJECT for F-1.</strong> Beyond thin margins and per-item labor (source, list, ship — the fixed-cost killer), systematically buying to resell is operating a business = unauthorized self-employment risk (WashU OISS; verified principle). Occasional sale of your own used items is fine; a flipping operation is not.</p>
+<p><strong>Matched betting / free-bet "arbitrage" — REJECT for F-1 (unconfirmed specifics).</strong> Even where mathematically near-riskless, it's gambling, not passive investment income; many states ban online sports betting, books limit advantage players, and participation carries status risk (framing, not primary-sourced). Do not treat as a financial edge.</p>
+<p><strong>Amazon Vine / paid product testing — REJECT for F-1 (unconfirmed specifics).</strong> Receiving goods (and their taxable value) for producing reviews is compensated services, not passive income, and it's non-cash/non-liquid — you get products, not money (framing). Fails cashout even setting status aside.</p>
+<h2>In-game and virtual economies (Tier 7)</h2>
+<p>This is a near-total dead end, failing on three independent axes — any one disqualifying.</p>
+<p><strong>Axis 1 — the cashout wall.</strong> Most in-game value can't legally become USD. Steam wallet funds are non-withdrawable store credit with no cash value; the only exit is a refund within 14 days if entirely unused (Steam Subscriber Agreement — verified). <em>Caveat: the common claim that this is "to avoid money-transmitter status" is a reasonable inference, not something Valve states.</em> MTG Arena has no cashout and no player-to-player trading by design — a closed one-way spending loop (Draftsim; Cardmarket — verified). EVE ISK and MMO gold allow only one-directional legit flow (buy PLEX with cash, sell for ISK); selling for USD is RMT — EULA violation, zero-tolerance permaban, confiscation even into a negative wallet, and Jagex now bans even first offenses (EVE support; Jagex Sept 2025 RWT policy — verified).</p>
+<p><strong>Axis 2 — bot saturation where cashout does exist.</strong> MTGO is the textbook case: tickets/cards <em>are</em> cashoutable to USD/PayPal, but Cardhoarder/Goatbots price to the thousandth of a ticket 24/7 and set both bid and ask, leaving no human-exploitable spread (verified). <em>Caveat: the "$0.90–0.98 per ~$1 ticket" cashout rate is stale/optimistic; current sources cite ~$0.77/ticket minus a 3–4% fee.</em> MTGO set-redemption arbitrage once netted $20–40/set on a $5 fee, but WotC raised redemption to ~$25/set + shipping in 2013 to compress it; margins are now thin/negative and need full-set capital lockup (verified).</p>
+<p><strong>Axis 3 — the F-1 killer (decisive, even for legit-cashout channels).</strong> Consistent active buy-and-resell for profit is self-employment = unauthorized employment for an F-1 physically in the US, counting even if remote or paid abroad; passive investing is fine, recurring flipping is not (usavisalaw; BYU ISS — core dividing line verified). <em>Caveat: the stronger specifics — that monetized UGC and recurring online sales are categorically "material participation," and that a DSO with constructive knowledge "must" terminate SEVIS — are plausible extrapolations stated too categorically, not confirmed from primary USCIS/ICE text.</em></p>
+<p>Channels with real dollars (MTGO; Second Life Linden → USD via Tilia/PayPal; Roblox DevEx at ~$0.0035/earned-Robux, 30k minimum; TCGplayer buylist) are all labor-bound businesses that trip the F-1 line and are bot-saturated or fee-throttled (verified/probable). The software-automatable ones (skin/currency flipping) either can't cash out (Steam) or are RMT bans (EVE/MMO). Retro/ROM markets offer no legal transferable edge — resale of digital ROMs is infringement (verified). <strong>Net:</strong> no software-findable, passive, cashoutable, F-1-safe micro-edge exists here. Least-bad, non-recurring option: selling down a personal MTGO/paper collection you already own (reads as passive disposal of personal property) — not a legal income engine.</p>
+<h2>The scoreboard</h2>
+<table>
+<thead>
+<tr>
+<th>Edge</th>
+<th>Real?</th>
+<th>Automatable?</th>
+<th>Fee-light?</th>
+<th>F-1-legal?</th>
+<th>Realistic $/mo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Class-action no-proof claims</td>
+<td>Yes</td>
+<td>Findable only (honest check manual)</td>
+<td>Yes</td>
+<td>Yes (passive)</td>
+<td>~$5–20</td>
+</tr>
+<tr>
+<td>Cashback stacking (own spend)</td>
+<td>Yes</td>
+<td>Partly</td>
+<td>Yes</td>
+<td>Yes (rebate)</td>
+<td>Bounded by spend; not income</td>
+</tr>
+<tr>
+<td>Bank signup bonuses</td>
+<td>Yes</td>
+<td>No (manual/KYC)</td>
+<td>Mostly</td>
+<td>Yes (interest)</td>
+<td>~$25–75, capacity-capped</td>
+</tr>
+<tr>
+<td>Surveys / MTurk</td>
+<td>Yes</td>
+<td>No (ToS/bot)</td>
+<td>Yes</td>
+<td><strong>No (labor)</strong></td>
+<td>$2–6/hr, below min wage</td>
+</tr>
+<tr>
+<td>Steam / CS2 flips</td>
+<td>Yes</td>
+<td>Yes</td>
+<td><strong>No (15%)</strong></td>
+<td>Grey</td>
+<td>~$0 after fees</td>
+</tr>
+<tr>
+<td>Gift card arbitrage</td>
+<td>Marginal</td>
+<td>Partly</td>
+<td>Thin</td>
+<td><strong>No (business)</strong></td>
+<td>~$0 without CC bonuses</td>
+</tr>
+<tr>
+<td>Crypto airdrop farming</td>
+<td>Sometimes</td>
+<td>Multi-wallet burned</td>
+<td>Gas</td>
+<td>Grey</td>
+<td>Negative EV</td>
+</tr>
+<tr>
+<td>Coin roll hunting</td>
+<td>Yes</td>
+<td><strong>No (manual)</strong></td>
+<td>Yes</td>
+<td>Grey (business)</td>
+<td>~$15k/yr only at 15 hr/wk</td>
+</tr>
+<tr>
+<td>Bottle deposit cross-state</td>
+<td>Yes</td>
+<td>Partly</td>
+<td>Yes</td>
+<td><strong>No (crime)</strong></td>
+<td>Illegal</td>
+</tr>
+<tr>
+<td>Retail/resale flipping</td>
+<td>Yes</td>
+<td>Partly</td>
+<td><strong>No (ship)</strong></td>
+<td><strong>No (business)</strong></td>
+<td>Labor, not passive</td>
+</tr>
+<tr>
+<td>MTGO tickets / redemption</td>
+<td>Yes</td>
+<td>Bot-saturated</td>
+<td>Thin</td>
+<td><strong>No (business)</strong></td>
+<td>~$0 human spread</td>
+</tr>
+<tr>
+<td>Steam wallet / MTGA / EVE</td>
+<td>—</td>
+<td>Varies</td>
+<td>—</td>
+<td>—</td>
+<td><strong>Can't cash out</strong></td>
+</tr>
+</tbody>
+</table>
+<h2>The brutal ceiling</h2>
+<p>A hundred stacked penny edges do <strong>not</strong> sum to real money for one person, because <strong>attention is the binding constraint, not idea count</strong>. The labor-bound edges cap below the $7.25 federal minimum wage — surveys at $2–6/hr; coin hunting reaching ~$15k/yr only via 15 hrs/week of manual grind; hitting $500/mo requires ~15 hrs/wk at $8.33/hr, which most never sustain (verified arithmetic; soft wage anchors). The truly-passive automatable set (bank-bonus interest, cashback on unavoidable spend, no-proof claims) is legal but capacity-bounded to a low-thousands/yr ceiling — and that cap is not a bug, it's <em>why</em> those edges still exist: automatability invites competition until net edge hits the cost floor, so anything that survives does so because it can't be scaled past one honest person's footprint. Realistic honest number for one compliant F-1 operator: <strong>a few hundred to low-thousands of dollars per year</strong> from the passive-legal set combined, nearly all of it spend-back and one-time free-money claims. Do not build a stacking penny engine expecting minimum wage. The attention wall and the passive/labor legal line cap it below that.</p></div></div>
+<footer>keys: <b>1–7</b> screens · every claim links to the trial that produced it ·
+negative results are kept, not buried</footer>
+
+<script>
+(() => {
+  const pages = { "1": "index.html", "2": "analysis.html", "3": "screener.html",
+                  "4": "past_trades.html", "5": "portfolio.html",
+                  "6": "research.html", "7": "desk.html" };
+  document.addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target instanceof Element && e.target.matches("input,textarea")) return;
+    const p = pages[e.key];
+    if (p) location.href = (location.pathname.includes("/research/") ? "../" : "") + p;
+  });
+})();
+</script>
+</body></html>

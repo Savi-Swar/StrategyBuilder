@@ -194,6 +194,7 @@ PRETTY = {
     "allforms": "Arbitrage across all forms and venues",
     "smallmkt": "The small-market cost-floor moat",
     "novelmoats": "Novel small-market moats",
+    "pennies": "Tier 6 & 7: the penny edges (partial)",
 }
 lib_cards = ""
 for src in sorted(ROOT.glob("reports/deep_research_*.md")):
